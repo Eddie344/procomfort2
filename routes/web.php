@@ -11,6 +11,20 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::redirect('/', '/cabinet')->middleware('redirectfrommain');
+
+
+Auth::routes(['register' => false]);
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+
+Route::prefix('admin')->middleware('isadmin')->group(function () {
+    Route::view('/', 'admin.home')->name('admin');
+});
+
+Route::prefix('cabinet')->middleware('iscustomer')->group(function () {
+    Route::get('/', function () {
+        echo 'Кабинет';
+    })->name('cabinet');
 });
