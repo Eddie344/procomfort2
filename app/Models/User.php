@@ -1,11 +1,12 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -17,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'surname', 'alias', 'city', 'email', 'phone', 'password',
     ];
 
     /**
@@ -37,5 +38,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // возвращает имя и фамилию пользователя
+    public function getFullName()
+    {
+        return "$this->name $this->surname";
+    }
+
+    public function ordersDiller()
+    {
+        return $this->hasMany('App\Models\Order');
+    }
 
 }

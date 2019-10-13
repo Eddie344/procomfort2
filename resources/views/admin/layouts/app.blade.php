@@ -25,9 +25,9 @@
     <div id="app">
         <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap shadow">
             <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{{ url('/admin') }}">
-                {{ config('app.name', 'Laravel') }}
+                {{ config('app.name', 'ProComfort') }}
             </a>
-            <input class="form-control form-control-dark w-100" type="text" placeholder="Поиск" aria-label="Search">
+
             <div class="dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-user"></i>{{ Auth::user()->name }}
@@ -48,36 +48,88 @@
         </nav>
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
             <div class="sidebar-sticky">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fa fa-home"></i>
-                            Главная <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fa fa-clipboard"></i>
-                            Заказы
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fa fa-users"></i>
-                            Заказчики
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fa fa-th-list"></i>
-                            Склад
-                        </a>
-                    </li>
-                </ul>
+                <div class="nav flex-column">
+                    <div class="accordion" id="sidebar-accordion">
+
+                        <div class="card">
+                            <a href="#" class="card-header">
+                                <span><i class="fa fa-home"></i>Главная</span>
+                            </a>
+                        </div>
+
+                        <div class="card">
+                            <a href="{{ route('orders.index') }}" class="card-header">
+                                <span><i class="fa fa-clipboard"></i>Заказы</span>
+                                <span class="badge badge-primary py-2">4</span>
+                            </a>
+                        </div>
+
+                        <div class="card">
+                            <a href="{{ route('customers.index') }}" class="card-header">
+                                <span><i class="fa fa-users"></i>Заказчики</span>
+                            </a>
+                        </div>
+
+                        <div class="card">
+                            <a href="#" class="card-header" id="heading3" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                                <span><i class="fa fa-th-list"></i>Склад</span>
+                            </a>
+                            <div id="collapse3" class="collapse" aria-labelledby="heading3" data-parent="#sidebar-accordion">
+                                <div class="list-group">
+                                    <a class="list-group-item" href="{{ route('rollstorage') }}">Ткани рулонные</a>
+                                    <a class="list-group-item" href="#">Ткани зебра</a>
+                                    <a class="list-group-item" href="vert_fabric_storage.html">Ткани вертикальные</a>
+                                    <a class="list-group-item" href="goriz_fabric_storage.html">Лента горизонтальная</a>
+                                    <a class="list-group-item" href="metal_storage.html">Металл</a>
+                                    <a class="list-group-item" href="furn_storage.html">Фурнитура</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="accordion" id="sidebar-prices">
+                                <a href="#" class="card-header" id="heading4" data-toggle="collapse" data-target="#collapse4" aria-expanded="true" aria-controls="collapse4">
+                                    <span><i class="fa fa-money"></i>Прайсы</span>
+                                </a>
+                                <div id="collapse4" class="collapse" aria-labelledby="heading4" data-parent="#sidebar-prices">
+                                    <div class="list-group">
+                                        <a href="#" class="list-group-item" id="heading5" data-toggle="collapse" data-target="#collapse5" aria-expanded="true" aria-controls="collapse5">
+                                            Рулонные шторы
+                                        </a>
+                                        <div id="collapse5" class="collapse" aria-labelledby="heading5" data-parent="#sidebar-accordion">
+                                            <div class="list-group">
+                                                <a class="list-group-item price-padding" href="price_roll_mini.html">Mini</a>
+                                                <a class="list-group-item price-padding" href="#">UNI-1</a>
+                                                <a class="list-group-item price-padding" href="#">UNI-2</a>
+                                                <a class="list-group-item price-padding" href="#">D-25</a>
+                                            </div>
+                                        </div>
+
+                                        <a href="#" class="list-group-item" id="heading6" data-toggle="collapse" data-target="#collapse6" aria-expanded="true" aria-controls="collapse6">
+                                            Зебра
+                                        </a>
+                                        <div id="collapse6" class="collapse" aria-labelledby="heading6" data-parent="#sidebar-accordion">
+                                            <div class="list-group">
+                                                <a class="list-group-item price-padding" href="#">Mini</a>
+                                                <a class="list-group-item price-padding" href="#">UNI-1</a>
+                                                <a class="list-group-item price-padding" href="#">UNI-2</a>
+                                                <a class="list-group-item price-padding" href="#">MGS</a>
+                                            </div>
+                                        </div>
+                                        <a class="list-group-item" href="price_vert.html">Вертикальные жалюзи</a>
+                                        <a class="list-group-item" href="price_goriz.html">Горизонтальные жалюзи</a>
+                                        <a class="list-group-item" href="price_dop.html">Дополнительная комплектация</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
-        <main class="py-4">
-          @yield('content')
+        <main class="row justify-content-end mt-5">
+            <div class="col-md-10 px-5 py-5">
+                @yield('content')
+            </div>
         </main>
     </div>
     {{--    <div id="app">--}}

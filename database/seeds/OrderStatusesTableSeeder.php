@@ -13,12 +13,13 @@ class OrderStatusesTableSeeder extends Seeder
     public function run()
     {
         DB::table('order_statuses')->insert([
-            ['name' => 'Черновик',],
-            ['name' => 'Проверяется администратором',],
-            ['name' => 'Приостановлен',],
-            ['name' => 'В работе',],
-            ['name' => 'Готов',],
-            ['name' => 'Отгружен',],
+            ['label' => 'Черновик', 'color' => 'table-default'],
+            ['label' => 'Ожидает проверку', 'color' => 'table-secondary'],
+            ['label' => 'Приостановлен', 'color' => 'table-danger'],
+            ['label' => 'В работе', 'color' => 'table-info'],
+            ['label' => 'Готов', 'color' => 'table-primary'],
+            ['label' => 'Ожидает отгрузку', 'color' => 'table-warning'],
+            ['label' => 'Отгружен', 'color' => 'table-success'],
         ]);
     }
 }

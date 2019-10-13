@@ -11,7 +11,7 @@
 |
 */
 
-Route::redirect('/', '/cabinet')->middleware('redirectfrommain');
+Route::redirect('/', '/cabinet')->middleware('islogged', 'redirectfrommain');
 
 
 Auth::routes(['register' => false]);
@@ -19,11 +19,14 @@ Auth::routes(['register' => false]);
 Route::get('/home', 'HomeController@index')->name('home');
 
 
-Route::prefix('admin')->middleware('isadmin')->group(function () {
+Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
     Route::view('/', 'admin.home')->name('admin');
+    Route::view('rollstorage', 'admin.storage.roll')->name('rollstorage');
+    Route::resource('customers', 'UserController');
+    Route::resource('orders', 'OrderController');
 });
 
-Route::prefix('cabinet')->middleware('iscustomer')->group(function () {
+Route::prefix('cabinet')->middleware('islogged', 'iscustomer')->group(function () {
     Route::get('/', function () {
         echo 'Кабинет';
     })->name('cabinet');

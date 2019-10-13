@@ -15,8 +15,13 @@ class DatabaseSeeder extends Seeder
             RolesTableSeeder::class,
             UsersTableSeeder::class,
             OrderStatusesTableSeeder::class,
+            ProductTypesTableSeeder::class,
+            ComplectationTypesTableSeeder::class,
+            FurnColorsTableSeeder::class,
+            MeasurementTypesTableSeeder::class,
+            MountTypesTableSeeder::class,
+            ProductRuleTypesTableSeeder::class,
             OrdersTableSeeder::class,
-            ProductsTableSeeder::class,
         ]);
     }
 }

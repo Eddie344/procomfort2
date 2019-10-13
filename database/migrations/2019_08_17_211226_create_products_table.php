@@ -15,15 +15,26 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('order_id');
 
+            $table->unsignedBigInteger('order_id');
+            $table->foreign('order_id')->references('id')->on('orders');
+
+            $table->unsignedBigInteger('type_id');
+            $table->foreign('type_id')->references('id')->on('product_types');
+
+            $table->unsignedBigInteger('rule_type');
+            $table->foreign('rule_type')->references('id')->on('product_rule_types');
+            $table->float('rule_lenght');
+
+            $table->float('price');
             $table->integer('width');
             $table->integer('height');
-            $table->string('control');
-            $table->integer('price');
+            $table->text('note');
+
+            $table->bigInteger('productable_id');
+            $table->string('productable_type');
 
             $table->timestamps();
-            $table->foreign('order_id')->references('id')->on('orders');
         });
     }
 
