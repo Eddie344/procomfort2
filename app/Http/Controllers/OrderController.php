@@ -35,9 +35,9 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store()
+    public function store(Request $request)
     {
-        Order::create(Request::all());
+        Order::create($request->all());
         return redirect('admin/orders');
     }
 
