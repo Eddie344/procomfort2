@@ -22,8 +22,8 @@ class CreateOrdersTable extends Migration
 
             $table->unsignedBigInteger('product_type');
             $table->unsignedBigInteger('status_id')->default('1');
-            $table->text('admin_msg');
-            $table->text('diller_msg');
+            $table->text('admin_msg')->nullable();
+            $table->text('diller_msg')->nullable();
 
             $table->softDeletes();
             $table->timestamps();
