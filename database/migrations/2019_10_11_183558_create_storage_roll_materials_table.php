@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStorageMetalTable extends Migration
+class CreateStorageRollMaterialsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class CreateStorageMetalTable extends Migration
      */
     public function up()
     {
-        Schema::create('storage_metal', function (Blueprint $table) {
+        Schema::create('storage_roll_materials', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->float('width');
             $table->float('lenght');
             $table->float('price');
             $table->timestamps();
@@ -28,6 +29,6 @@ class CreateStorageMetalTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('storage_metal');
+        Schema::dropIfExists('storage_roll_materials');
     }
 }

@@ -24,7 +24,7 @@
                         <dd class="col-sm-7">{{$user->phone}}</dd>
 
                         <dt class="col-sm-5">Реквизиты:</dt>
-                        <dd class="col-sm-7">р/с 3602916010009, код 795, УНП 100437065</dd>
+                        <dd class="col-sm-7">{{$user->requisites}}</dd>
                     </dl>
 
                 </div>

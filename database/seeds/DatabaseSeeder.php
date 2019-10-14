@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolesTableSeeder::class,
             UsersTableSeeder::class,
+            ProvidersTableSeeder::class,
             OrderStatusesTableSeeder::class,
             ProductTypesTableSeeder::class,
             ComplectationTypesTableSeeder::class,
@@ -21,7 +22,9 @@ class DatabaseSeeder extends Seeder
             MeasurementTypesTableSeeder::class,
             MountTypesTableSeeder::class,
             ProductRuleTypesTableSeeder::class,
+            PaymentTypesTableSeeder::class,
             OrdersTableSeeder::class,
+            StoragesTypesTableSeeder::class,
         ]);
     }
 }

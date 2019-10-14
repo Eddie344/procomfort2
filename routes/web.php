@@ -24,6 +24,7 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
     Route::view('rollstorage', 'admin.storage.roll')->name('rollstorage');
     Route::resource('customers', 'UserController');
     Route::resource('orders', 'OrderController');
+    Route::resource('storage', 'StorageController');
 });
 
 Route::prefix('cabinet')->middleware('islogged', 'iscustomer')->group(function () {

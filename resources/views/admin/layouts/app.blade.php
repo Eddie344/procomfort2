@@ -71,19 +71,22 @@
                         </div>
 
                         <div class="card">
-                            <a href="#" class="card-header" id="heading3" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                            <a href="{{ route('storage.index') }}" class="card-header">
                                 <span><i class="fa fa-th-list"></i>Склад</span>
                             </a>
-                            <div id="collapse3" class="collapse" aria-labelledby="heading3" data-parent="#sidebar-accordion">
-                                <div class="list-group">
-                                    <a class="list-group-item" href="{{ route('rollstorage') }}">Ткани рулонные</a>
-                                    <a class="list-group-item" href="#">Ткани зебра</a>
-                                    <a class="list-group-item" href="vert_fabric_storage.html">Ткани вертикальные</a>
-                                    <a class="list-group-item" href="goriz_fabric_storage.html">Лента горизонтальная</a>
-                                    <a class="list-group-item" href="metal_storage.html">Металл</a>
-                                    <a class="list-group-item" href="furn_storage.html">Фурнитура</a>
-                                </div>
-                            </div>
+{{--                            <a href="#" class="card-header" id="heading3" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">--}}
+{{--                                <span><i class="fa fa-th-list"></i>Склад</span>--}}
+{{--                            </a>--}}
+{{--                            <div id="collapse3" class="collapse" aria-labelledby="heading3" data-parent="#sidebar-accordion">--}}
+{{--                                <div class="list-group">--}}
+{{--                                    <a class="list-group-item" href="{{ route('rollstorage') }}">Ткани рулонные</a>--}}
+{{--                                    <a class="list-group-item" href="#">Ткани зебра</a>--}}
+{{--                                    <a class="list-group-item" href="vert_fabric_storage.html">Ткани вертикальные</a>--}}
+{{--                                    <a class="list-group-item" href="goriz_fabric_storage.html">Лента горизонтальная</a>--}}
+{{--                                    <a class="list-group-item" href="metal_storage.html">Металл</a>--}}
+{{--                                    <a class="list-group-item" href="furn_storage.html">Фурнитура</a>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
                         </div>
                         <div class="card">
                             <div class="accordion" id="sidebar-prices">

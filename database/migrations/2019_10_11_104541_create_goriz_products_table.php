@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProductsGorizTable extends Migration
+class CreateGorizProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateProductsGorizTable extends Migration
      */
     public function up()
     {
-        Schema::create('products_goriz', function (Blueprint $table) {
+        Schema::create('goriz_products', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
         });
@@ -26,6 +26,6 @@ class CreateProductsGorizTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products_goriz');
+        Schema::dropIfExists('goriz_products');
     }
 }

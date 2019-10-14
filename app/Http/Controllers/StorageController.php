@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
+use App\Models\Storage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class OrderController extends Controller
+class StorageController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +14,8 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::with(['productType', 'status', 'diller', 'paymentType'])->paginate(10);
-        return view('admin.orders.index', compact('orders'));
+        $storages = Storage::with(['provider', 'type'])->paginate(10);
+        return view('admin.storage.index', compact('storages'));
     }
 
     /**
@@ -37,8 +36,8 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        Order::create($request->all());
-        return redirect('admin/orders');
+        Storage::create($request->all());
+        return redirect('admin/storage')->with('status', 'Предмет успешно добавлен в склад!');
     }
 
     /**
@@ -49,8 +48,7 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $order = Order::find($id);
-        return view('admin.orders.show', compact('order'));
+        //
     }
 
     /**
@@ -73,12 +71,7 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $order = Order::find($id);
-        $order->prefix = $request->input('prefix');
-        $order->status_id = $request->input('status_id');
-        $order->admin_msg = $request->input('admin_msg');
-        $order->save();
-        return view('admin.orders.show', compact('order'));
+        //
     }
 
     /**

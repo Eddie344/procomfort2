@@ -40,6 +40,10 @@
                                 {{ Form::label('product_type', 'Вид изделий:') }}
                                 {{ Form::select('product_type', \App\Models\ProductType::pluck('label','id'), null, ['placeholder' => 'Выберите вид изделий...', 'class' => 'form-control', 'required'])}}
                             </div>
+                            <div class="form-group">
+                                {{ Form::label('payment_type_id', 'Тип оплаты:') }}
+                                {{ Form::select('payment_type_id', \App\Models\PaymentType::pluck('label','id'), null, ['placeholder' => 'Выберите тип оплаты...', 'class' => 'form-control', 'required'])}}
+                            </div>
                         </div>
                         <div class="modal-footer">
                             {{ Form::submit('Создать', ['class' => 'btn btn-primary']) }}
@@ -57,6 +61,7 @@
             <th scope="col">Заказчик</th>
             <th scope="col">Префикс заказчика</th>
             <th scope="col">Вид изделий</th>
+            <th scope="col">Тип оплаты</th>
             <th scope="col">Статус</th>
         </tr>
         </thead>
@@ -67,6 +72,7 @@
                 <td><a href="{{ route('customers.show', ['id' => $order->diller->id]) }}">{{ $order->diller->getFullName() }}</a></td>
                 <td>{{ $order->prefix }}</td>
                 <td>{{ $order->productType->label }}</td>
+                <td>{{ $order->paymentType->label }}</td>
                 <td class="{{ $order->status->color }}">{{ $order->status->label }}</td>
             </tr>
         @endforeach

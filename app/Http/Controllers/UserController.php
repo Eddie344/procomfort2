@@ -17,7 +17,7 @@ class UserController extends Controller
     public function store()
     {
         User::create(Request::all());
-        return redirect('admin/customers');
+        return redirect('admin/customers')->with('status', 'Пользователь успешно добавлен!');
     }
     public function show($id)
     {

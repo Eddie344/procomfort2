@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->string('phone');
             $table->string('city');
             $table->integer('balance')->default(0);
+            $table->text('requisites')->nullable();
             $table->rememberToken();
 
             $table->boolean('is_admin')->default(false);

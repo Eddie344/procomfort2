@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStorageVertMaterialTable extends Migration
+class CreateStorageGorizMaterialsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateStorageVertMaterialTable extends Migration
      */
     public function up()
     {
-        Schema::create('storage_vert_material', function (Blueprint $table) {
+        Schema::create('storage_goriz_materials', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->float('lenght');
             $table->float('price');
@@ -28,6 +28,6 @@ class CreateStorageVertMaterialTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('storage_vert_material');
+        Schema::dropIfExists('storage_goriz_materials');
     }
 }

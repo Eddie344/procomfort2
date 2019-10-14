@@ -4,11 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProductType extends Model
+class PaymentType extends Model
 {
     public function order()
     {
-        return $this->hasOne('App\Models\Order');
+        return $this->hasMany('App\Models\Order');
     }
-
 }

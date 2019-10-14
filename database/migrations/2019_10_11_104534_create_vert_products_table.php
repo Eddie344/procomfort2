@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStorageFurnTable extends Migration
+class CreateVertProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreateStorageFurnTable extends Migration
      */
     public function up()
     {
-        Schema::create('storage_furn', function (Blueprint $table) {
+        Schema::create('vert_products', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->float('count');
-            $table->string('unit');
-            $table->float('price');
             $table->timestamps();
         });
     }
@@ -29,6 +26,6 @@ class CreateStorageFurnTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('storage_furn');
+        Schema::dropIfExists('vert_products');
     }
 }

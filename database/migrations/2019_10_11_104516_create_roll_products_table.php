@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProductsRollTable extends Migration
+class CreateRollProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateProductsRollTable extends Migration
      */
     public function up()
     {
-        Schema::create('products_roll', function (Blueprint $table) {
+        Schema::create('roll_products', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('material_id');
-            $table->foreign('material_id')->references('id')->on('storage');
+            $table->foreign('material_id')->references('id')->on('storages');
 
             $table->unsignedBigInteger('complectation_type_id');
             $table->foreign('complectation_type_id')->references('id')->on('complectation_types');
@@ -50,6 +50,6 @@ class CreateProductsRollTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products_roll');
+        Schema::dropIfExists('roll_products');
     }
 }

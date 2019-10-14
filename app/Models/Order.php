@@ -13,7 +13,7 @@ class Order extends Model
      * @var array
      */
     protected $fillable = [
-        'creator_id', 'diller_id', 'product_type', 'prefix',
+        'creator_id', 'diller_id', 'product_type', 'prefix', 'payment_type_id',
     ];
 
 
@@ -35,6 +35,11 @@ class Order extends Model
     public function diller()
     {
         return $this->belongsTo('App\Models\User', 'diller_id', 'id');
+    }
+
+    public function paymentType()
+    {
+        return $this->belongsTo('App\Models\PaymentType', 'payment_type_id', 'id');
     }
 
     public function getCreatedAtAttribute($timestamp) {

@@ -19,6 +19,7 @@ class OrdersTableSeeder extends Seeder
                 'prefix' => 'К201',
                 'product_type' => '2',
                 'status_id' => '4',
+                'payment_type_id' => '1',
             ],
         ]);
         DB::table('orders')->insert([
@@ -28,6 +29,7 @@ class OrdersTableSeeder extends Seeder
                 'prefix' => 'D54',
                 'product_type' => '4',
                 'status_id' => '2',
+                'payment_type_id' => '2',
             ],
         ]);
     }
