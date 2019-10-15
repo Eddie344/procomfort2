@@ -18,6 +18,8 @@ class CreateStorageRollMaterialsTable extends Migration
             $table->float('width');
             $table->float('lenght');
             $table->float('price');
+            $table->bigInteger('storageable_id')->nullable();
+            $table->string('storageable_type')->nullable();
             $table->timestamps();
         });
     }

@@ -20,8 +20,6 @@ class CreateStoragesTable extends Migration
             $table->foreign('provider_id')->references('id')->on('providers');
             $table->unsignedBigInteger('type_id');
             $table->foreign('type_id')->references('id')->on('storages_types');
-            $table->bigInteger('stogageable_id')->nullable();
-            $table->string('storageable_type')->nullable();
             $table->timestamps();
         });
     }

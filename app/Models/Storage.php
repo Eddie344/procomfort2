@@ -24,4 +24,10 @@ class Storage extends Model
     {
         return $this->belongsTo('App\Models\StoragesType', 'type_id', 'id');
     }
+
+    public function storage()
+    {
+        return $this->morphMany('App\Models\RollStorageMaterial', 'storageable');
+    }
+
 }
