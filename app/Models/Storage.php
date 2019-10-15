@@ -15,11 +15,6 @@ class Storage extends Model
         'label', 'type_id', 'provider_id',
     ];
 
-    public function provider()
-    {
-        return $this->belongsTo('App\Models\Provider', 'provider_id', 'id');
-    }
-
     public function type()
     {
         return $this->belongsTo('App\Models\StoragesType', 'type_id', 'id');
@@ -27,7 +22,12 @@ class Storage extends Model
 
     public function storage()
     {
-        return $this->morphMany('App\Models\RollStorageMaterial', 'storageable');
+        return $this->morphMany('App\Models\StorageRollMaterial', 'storageable');
+    }
+
+    public function categoriable()
+    {
+        return $this->morphTo();
     }
 
 }

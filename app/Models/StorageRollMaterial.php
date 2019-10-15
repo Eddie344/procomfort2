@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RollStorageMaterial extends Model
+class StorageRollMaterial extends Model
 {
     public function storageable()
     {

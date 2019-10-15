@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RollStorageMaterial;
+use App\Models\StorageRollMaterial;
 use App\Models\Storage;
 use Illuminate\Http\Request;
 
@@ -15,7 +15,7 @@ class StorageController extends Controller
      */
     public function index()
     {
-        $storages = Storage::with(['provider', 'type'])->paginate(10);
+        $storages = Storage::with('type')->paginate(10);
         return view('admin.storage.index', compact('storages'));
     }
 
@@ -50,11 +50,10 @@ class StorageController extends Controller
     public function show($id)
     {
         $storage = Storage::find($id);
-        dd($storage);
-//        if($storage->storageable_type == 'RollStorageMaterial')
-//        {
-//            return view('admin.storage.roll_show', compact('storage'));
-//        }
+        if($storage->type_id == '1')
+        {
+            return view('admin.storage.roll_show', compact('storage'));
+        }
     }
 
     /**

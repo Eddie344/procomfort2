@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Order;
+use App\Models\Storage;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
@@ -42,6 +43,9 @@ class EventServiceProvider extends ServiceProvider
             if($order->creator_id === "" || empty($order->creator_id)){
                 $order->creator_id  = Auth::id();
             }
+        });
+        Storage::creating(function($storage){
+            $storage->categoriable_type  = $storage->type->category_table;
         });
     }
 }

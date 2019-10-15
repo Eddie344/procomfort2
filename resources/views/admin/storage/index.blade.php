@@ -46,10 +46,6 @@
                                 {{ Form::label('type_id', 'Тип:') }}
                                 {{ Form::select('type_id', \App\Models\StoragesType::pluck('label','id'), null, ['placeholder' => 'Выберите тип...', 'class' => 'form-control', 'required'])}}
                             </div>
-                            <div class="form-group">
-                                {{ Form::label('provider_id', 'Поставщик:') }}
-                                {{ Form::select('provider_id', \App\Models\Provider::pluck('label','id'), null, ['placeholder' => 'Выберите поставщика...', 'class' => 'form-control', 'required'])}}
-                            </div>
                         </div>
                         <div class="modal-footer">
                             {{ Form::submit('Добавить', ['class' => 'btn btn-primary']) }}
@@ -73,7 +69,6 @@
         <tr>
             <th scope="col">Наименование</th>
             <th scope="col">Тип</th>
-            <th scope="col">Поставщик</th>
         </tr>
         </thead>
         <tbody>
@@ -81,7 +76,6 @@
             <tr>
                 <td><a href="{{ route('storage.show', ['id' => $storage->id]) }}">{{ $storage->label }}</a></td>
                 <td>{{ $storage->type->label }}</td>
-                <td>{{ $storage->provider->label }}</td>
             </tr>
         @endforeach
         </tbody>

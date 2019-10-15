@@ -13,12 +13,30 @@ class StoragesTypesTableSeeder extends Seeder
     public function run()
     {
         DB::table('storages_types')->insert([
-            ['label' => 'Ткань рулонная'],
-            ['label' => 'Ткань день-ночь'],
-            ['label' => 'Ткань вертикальная'],
-            ['label' => 'Лента горизонтальная'],
-            ['label' => 'Метал'],
-            ['label' => 'Фурнитура'],
+            [
+                'label' => 'Ткань рулонная',
+                'category_table' => 'RollCategory',
+            ],
+            [
+                'label' => 'Ткань день-ночь',
+                'category_table' => 'ZebraCategory',
+            ],
+            [
+                'label' => 'Ткань вертикальная',
+                'category_table' => 'VertCategory',
+            ],
+            [
+                'label' => 'Лента горизонтальная',
+                'category_table' => 'GorizCategory',
+            ],
+            [
+                'label' => 'Метал',
+                'category_table' => '',
+            ],
+            [
+                'label' => 'Фурнитура',
+                'category_table' => '',
+            ],
         ]);
     }
 }

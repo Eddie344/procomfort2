@@ -6,8 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Provider extends Model
 {
-    public function storage()
-    {
-        return $this->hasMany('App\Models\Storage');
-    }
+//
 }

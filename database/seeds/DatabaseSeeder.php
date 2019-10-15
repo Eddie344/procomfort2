@@ -24,6 +24,9 @@ class DatabaseSeeder extends Seeder
             ProductRuleTypesTableSeeder::class,
             PaymentTypesTableSeeder::class,
             OrdersTableSeeder::class,
+            RollCategoriesTableSeeder::class,
+            VertCategoriesTableSeeder::class,
+            GorizCategoriesTableSeeder::class,
             StoragesTypesTableSeeder::class,
         ]);
     }
