@@ -68,7 +68,8 @@
         <thead>
         <tr>
             <th scope="col">Наименование</th>
-            <th scope="col">Тип</th>
+            <th scope="col">Тип
+            <th scope="col">Действия</th>
         </tr>
         </thead>
         <tbody>
@@ -76,6 +77,27 @@
             <tr>
                 <td><a href="{{ route('storage.show', ['id' => $storage->id]) }}">{{ $storage->label }}</a></td>
                 <td>{{ $storage->type->label }}</td>
+                <td>
+                    <a href="" data-toggle="modal" data-target={{ '#modalDelete'.$storage->id }}><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></a>
+                    <div class="modal fade" id={{ 'modalDelete'.$storage->id }} tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                            <div class="modal-content">
+                                {{ Form::open(['route' => ['storage.destroy' , $storage->id], 'method' => 'delete']) }}
+                                {{ Form::token() }}
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Вы уверены?</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-footer">
+                                    {{ Form::submit('Удалить', ['class' => 'btn btn-danger']) }}
+                                </div>
+                                {{ Form::close() }}
+                            </div>
+                        </div>
+                    </div>
+                </td>
             </tr>
         @endforeach
         </tbody>

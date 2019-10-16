@@ -87,6 +87,7 @@ class StorageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Storage::destroy($id);
+        return redirect('admin/storage')->with('status', 'Предмет успешно удалён!');
     }
 }
