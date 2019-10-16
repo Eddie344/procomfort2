@@ -12,22 +12,22 @@ class Storage extends Model
      * @var array
      */
     protected $fillable = [
-        'label', 'type_id', 'provider_id',
+        'label', 'route',
     ];
 
-    public function type()
-    {
-        return $this->belongsTo('App\Models\StoragesType', 'type_id', 'id');
-    }
-
-    public function storage()
-    {
-        return $this->morphMany('App\Models\StorageRollMaterial', 'storageable');
-    }
-
-    public function categoriable()
-    {
-        return $this->morphTo();
-    }
+//    public function type()
+//    {
+//        return $this->belongsTo('App\Models\StoragesType', 'type_id', 'id');
+//    }
+//
+//    public function storage()
+//    {
+//        return $this->morphMany('App\Models\StorageRollMaterial', 'storageable');
+//    }
+//
+//    public function categoriable()
+//    {
+//        return $this->morphTo();
+//    }
 
 }

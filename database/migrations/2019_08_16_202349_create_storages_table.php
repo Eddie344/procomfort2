@@ -16,11 +16,12 @@ class CreateStoragesTable extends Migration
         Schema::create('storages', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('label');
-            $table->unsignedBigInteger('type_id');
-            $table->foreign('type_id')->references('id')->on('storages_types');
-
-            $table->bigInteger('categoriable_id')->default('1');
-            $table->string('categoriable_type')->nullable();
+            $table->string('route');
+//            $table->unsignedBigInteger('type_id');
+//            $table->foreign('type_id')->references('id')->on('storages_types');
+//
+//            $table->bigInteger('categoriable_id')->default('1');
+//            $table->string('categoriable_type')->nullable();
             $table->timestamps();
         });
     }

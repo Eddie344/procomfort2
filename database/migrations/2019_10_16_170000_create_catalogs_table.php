@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStorageRollMaterialsTable extends Migration
+class CreateCatalogsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,9 @@ class CreateStorageRollMaterialsTable extends Migration
      */
     public function up()
     {
-        Schema::create('storage_roll_materials', function (Blueprint $table) {
+        Schema::create('catalogs', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->float('width');
-            $table->float('lenght');
-            $table->float('price');
-            $table->bigInteger('storageable_id')->nullable();
-            $table->string('storageable_type')->nullable();
+            $table->string('label');
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ class CreateStorageRollMaterialsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('storage_roll_materials');
+        Schema::dropIfExists('catalogs');
     }
 }

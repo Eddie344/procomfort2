@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\StorageRollMaterial;
-use App\Models\Storage;
+use App\Models\RollStorage;
 use Illuminate\Http\Request;
 
-class StorageController extends Controller
+class RollStorageController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +14,8 @@ class StorageController extends Controller
      */
     public function index()
     {
-        $storages = Storage::all();
-        return view('admin.storage.index', compact('storages'));
+        $rolls = RollStorage::all();
+        return view('admin.storage.roll.index', compact('rolls'));
     }
 
     /**
@@ -37,8 +36,8 @@ class StorageController extends Controller
      */
     public function store(Request $request)
     {
-        Storage::create($request->all());
-        return redirect('admin/storage')->with(['status' => 'Предмет успешно добавлен в склад!', 'color' => 'success']);
+        RollStorage::create($request->all());
+        return redirect('admin/storage/roll')->with(['status' => 'Предмет успешно добавлен в склад!', 'color' => 'success']);
     }
 
     /**
@@ -49,11 +48,8 @@ class StorageController extends Controller
      */
     public function show($id)
     {
-        $storage = Storage::find($id);
-        if($storage->type_id == '1')
-        {
-            return view('admin.storage.roll_show', compact('storage'));
-        }
+        $roll = RollStorage::find($id);
+        return view('admin.storage.roll_show', compact('roll'));
     }
 
     /**
@@ -87,7 +83,7 @@ class StorageController extends Controller
      */
     public function destroy($id)
     {
-        Storage::destroy($id);
-        return redirect('admin/storage')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
+        RollStorage::destroy($id);
+        return redirect('admin/storage/roll')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
     }
 }

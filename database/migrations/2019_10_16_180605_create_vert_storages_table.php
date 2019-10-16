@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRollCategoriesTable extends Migration
+class CreateVertStoragesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,13 @@ class CreateRollCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('roll_categories', function (Blueprint $table) {
+        Schema::create('vert_storages', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('label');
+            $table->unsignedBigInteger('catalog_id');
+            $table->foreign('catalog_id')->references('id')->on('catalogs');
+            $table->unsignedBigInteger('category_id');
+            $table->foreign('category_id')->references('id')->on('vert_categories');
             $table->timestamps();
         });
     }
@@ -27,6 +31,6 @@ class CreateRollCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('roll_categories');
+        Schema::dropIfExists('vert_storages');
     }
 }

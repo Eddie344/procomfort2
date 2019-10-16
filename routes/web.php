@@ -24,7 +24,16 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
     Route::view('rollstorage', 'admin.storage.roll')->name('rollstorage');
     Route::resource('customers', 'UserController');
     Route::resource('orders', 'OrderController');
-    Route::resource('storage', 'StorageController');
+    Route::prefix('storage')->group(function () {
+        Route::get('/', 'StorageController@index')->name('storage.index');
+
+        Route::resource('roll', 'RollStorageController');
+        Route::resource('zebra', 'ZebraStorageController');
+        Route::resource('vert', 'VertStorageController');
+        Route::resource('goriz', 'GorizStorageController');
+        Route::resource('metal', 'MetalStorageController');
+        Route::resource('furn', 'FurnStorageController');
+    });
 });
 
 Route::prefix('cabinet')->middleware('islogged', 'iscustomer')->group(function () {

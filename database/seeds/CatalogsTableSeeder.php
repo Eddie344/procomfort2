@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class RollCategoriesTableSeeder extends Seeder
+class CatalogsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,10 +12,9 @@ class RollCategoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('roll_categories')->insert([
-            ['label' => '1'],
-            ['label' => '2'],
-            ['label' => '3']
+        DB::table('catalogs')->insert([
+            ['label' => 'Амиго'],
+            ['label' => 'Межароль'],
         ]);
     }
 }

@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RollCategory extends Model
+class Catalog extends Model
 {
-    public function storage()
+    public function rollStorage()
     {
         return $this->hasMany('App\Models\RollStorage');
     }
