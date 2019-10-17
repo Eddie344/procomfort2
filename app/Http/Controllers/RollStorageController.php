@@ -49,7 +49,7 @@ class RollStorageController extends Controller
     public function show($id)
     {
         $roll = RollStorage::find($id);
-        return view('admin.storage.roll_show', compact('roll'));
+        return view('admin.storage.roll.show', compact('roll'));
     }
 
     /**

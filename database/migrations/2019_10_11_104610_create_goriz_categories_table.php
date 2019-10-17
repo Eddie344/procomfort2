@@ -15,6 +15,7 @@ class CreateGorizCategoriesTable extends Migration
     {
         Schema::create('goriz_categories', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('label');
             $table->timestamps();
         });
     }

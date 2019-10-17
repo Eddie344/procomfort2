@@ -6,5 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class MetalStorage extends Model
 {
-    //
+    protected $fillable = [
+        'label',
+    ];
+
 }

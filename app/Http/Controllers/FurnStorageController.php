@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FurnStorage;
 use Illuminate\Http\Request;
 
 class FurnStorageController extends Controller
@@ -13,7 +14,8 @@ class FurnStorageController extends Controller
      */
     public function index()
     {
-        //
+        $furns = FurnStorage::all();
+        return view('admin.storage.furn.index', compact('furns'));
     }
 
     /**
@@ -34,7 +36,8 @@ class FurnStorageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        FurnStorage::create($request->all());
+        return redirect('admin/storage/furn')->with(['status' => 'Предмет успешно добавлен в склад!', 'color' => 'success']);
     }
 
     /**
@@ -45,7 +48,8 @@ class FurnStorageController extends Controller
      */
     public function show($id)
     {
-        //
+        $furn = FurnStorage::find($id);
+        return view('admin.storage.furn.show', compact('furn'));
     }
 
     /**
@@ -79,6 +83,7 @@ class FurnStorageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        FurnStorage::destroy($id);
+        return redirect('admin/storage/furn')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
     }
 }

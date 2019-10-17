@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\VertStorage;
 use Illuminate\Http\Request;
 
 class VertStorageController extends Controller
@@ -13,7 +14,8 @@ class VertStorageController extends Controller
      */
     public function index()
     {
-        //
+        $verts = VertStorage::all();
+        return view('admin.storage.vert.index', compact('verts'));
     }
 
     /**
@@ -34,7 +36,8 @@ class VertStorageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        VertStorage::create($request->all());
+        return redirect('admin/storage/vert')->with(['status' => 'Предмет успешно добавлен в склад!', 'color' => 'success']);
     }
 
     /**
@@ -45,7 +48,8 @@ class VertStorageController extends Controller
      */
     public function show($id)
     {
-        //
+        $vert = VertStorage::find($id);
+        return view('admin.storage.vert.show', compact('vert'));
     }
 
     /**
@@ -79,6 +83,7 @@ class VertStorageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        VertStorage::destroy($id);
+        return redirect('admin/storage/vert')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
     }
 }

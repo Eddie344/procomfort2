@@ -13,9 +13,9 @@ class GorizCategoriesTableSeeder extends Seeder
     public function run()
     {
         DB::table('goriz_categories')->insert([
-            ['id' => '1'],
-            ['id' => '2'],
-            ['id' => '3']
+            ['label' => '1'],
+            ['label' => '2'],
+            ['label' => '3']
         ]);
     }
 }

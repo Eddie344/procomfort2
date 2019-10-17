@@ -15,6 +15,7 @@ class CreateZebraCategoriesTable extends Migration
     {
         Schema::create('zebra_categories', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('label');
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ZebraStorage;
 use Illuminate\Http\Request;
 
 class ZebraStorageController extends Controller
@@ -13,7 +14,8 @@ class ZebraStorageController extends Controller
      */
     public function index()
     {
-        //
+        $zebras = ZebraStorage::all();
+        return view('admin.storage.zebra.index', compact('zebras'));
     }
 
     /**
@@ -34,7 +36,8 @@ class ZebraStorageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        ZebraStorage::create($request->all());
+        return redirect('admin/storage/zebra')->with(['status' => 'Предмет успешно добавлен в склад!', 'color' => 'success']);
     }
 
     /**
@@ -45,7 +48,8 @@ class ZebraStorageController extends Controller
      */
     public function show($id)
     {
-        //
+        $zebra = ZebraStorage::find($id);
+        return view('admin.storage.zebra.show', compact('zebra'));
     }
 
     /**
@@ -79,6 +83,7 @@ class ZebraStorageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        ZebraStorage::destroy($id);
+        return redirect('admin/storage/zebra')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
     }
 }

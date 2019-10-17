@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GorizStorage;
 use Illuminate\Http\Request;
 
 class GorizStorageController extends Controller
@@ -13,7 +14,8 @@ class GorizStorageController extends Controller
      */
     public function index()
     {
-        //
+        $gorizs = GorizStorage::all();
+        return view('admin.storage.goriz.index', compact('gorizs'));
     }
 
     /**
@@ -34,7 +36,8 @@ class GorizStorageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        GorizStorage::create($request->all());
+        return redirect('admin/storage/goriz')->with(['status' => 'Предмет успешно добавлен в склад!', 'color' => 'success']);
     }
 
     /**
@@ -45,7 +48,8 @@ class GorizStorageController extends Controller
      */
     public function show($id)
     {
-        //
+        $goriz = GorizStorage::find($id);
+        return view('admin.storage.goriz.show', compact('goriz'));
     }
 
     /**
@@ -79,6 +83,7 @@ class GorizStorageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        GorizStorage::destroy($id);
+        return redirect('admin/storage/goriz')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
     }
 }

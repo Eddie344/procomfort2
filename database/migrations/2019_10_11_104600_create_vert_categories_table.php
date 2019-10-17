@@ -15,6 +15,7 @@ class CreateVertCategoriesTable extends Migration
     {
         Schema::create('vert_categories', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('label');
             $table->timestamps();
         });
     }

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MetalStorage;
 use Illuminate\Http\Request;
 
-class MetalController extends Controller
+class MetalStorageController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +14,8 @@ class MetalController extends Controller
      */
     public function index()
     {
-        //
+        $metals = MetalStorage::all();
+        return view('admin.storage.metal.index', compact('metals'));
     }
 
     /**
@@ -34,7 +36,8 @@ class MetalController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        MetalStorage::create($request->all());
+        return redirect('admin/storage/metal')->with(['status' => 'Предмет успешно добавлен в склад!', 'color' => 'success']);
     }
 
     /**
@@ -45,7 +48,8 @@ class MetalController extends Controller
      */
     public function show($id)
     {
-        //
+        $metal = MetalStorage::find($id);
+        return view('admin.storage.metal.show', compact('metal'));
     }
 
     /**
@@ -79,6 +83,7 @@ class MetalController extends Controller
      */
     public function destroy($id)
     {
-        //
+        MetalStorage::destroy($id);
+        return redirect('admin/storage/metal')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
     }
 }
