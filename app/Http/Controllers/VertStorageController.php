@@ -14,7 +14,7 @@ class VertStorageController extends Controller
      */
     public function index()
     {
-        $verts = VertStorage::all();
+        $verts = VertStorage::with(['catalog', 'category'])->paginate('10');
         return view('admin.storage.vert.index', compact('verts'));
     }
 

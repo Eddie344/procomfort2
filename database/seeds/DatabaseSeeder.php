@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             ProvidersTableSeeder::class,
             CatalogsTableSeeder::class,
+            RollPicturesTableSeeder::class,
             RollCategoriesTableSeeder::class,
             ZebraCategoriesTableSeeder::class,
             VertCategoriesTableSeeder::class,
@@ -32,6 +33,8 @@ class DatabaseSeeder extends Seeder
             PaymentTypesTableSeeder::class,
             OrdersTableSeeder::class,
             StoragesTypesTableSeeder::class,
+            PartStatusesTableSeeder::class,
+            RollPartsStoragesTableSeeder::class,
         ]);
     }
 }

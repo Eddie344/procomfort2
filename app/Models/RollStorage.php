@@ -19,4 +19,9 @@ class RollStorage extends Model
     {
         return $this->belongsTo('App\Models\RollCategory', 'category_id', 'id');
     }
+
+    public function picture()
+    {
+        return $this->belongsTo('App\Models\RollPicture', 'picture_id', 'id');
+    }
 }

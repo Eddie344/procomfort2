@@ -74,6 +74,7 @@
             <th scope="col">Наименование</th>
             <th scope="col">Каталог</th>
             <th scope="col">Категория</th>
+            <th scope="col">Направление рисунка</th>
             <th scope="col">Действия</th>
         </tr>
         </thead>
@@ -83,6 +84,7 @@
                 <td><a href="{{ route('roll.show', ['id' => $roll->id]) }}">{{ $roll->label }}</a></td>
                 <td>{{ $roll->catalog->label }}</td>
                 <td>{{ $roll->category->id }}</td>
+                <td>{{ $roll->picture->label }}</td>
                 <td>
                     <a href="" data-toggle="modal" data-target={{ '#modalDelete'.$roll->id }}><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></a>
                     <div class="modal fade" id={{ 'modalDelete'.$roll->id }} tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -108,4 +110,5 @@
         @endforeach
         </tbody>
     </table>
+    {{ $rolls->links() }}
 @endsection

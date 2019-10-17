@@ -14,7 +14,7 @@ class ZebraStorageController extends Controller
      */
     public function index()
     {
-        $zebras = ZebraStorage::all();
+        $zebras = ZebraStorage::with(['catalog', 'category'])->paginate('10');
         return view('admin.storage.zebra.index', compact('zebras'));
     }
 

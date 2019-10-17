@@ -17,11 +17,13 @@ class RollStoragesTableSeeder extends Seeder
                 'label' => 'L-0800',
                 'catalog_id' => '1',
                 'category_id' => '1',
+                'picture_id' => '1',
             ],
             [
                 'label' => 'L-0564',
                 'catalog_id' => '2',
                 'category_id' => '3',
+                'picture_id' => '2',
             ],
         ]);
     }

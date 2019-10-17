@@ -14,7 +14,7 @@ class GorizStorageController extends Controller
      */
     public function index()
     {
-        $gorizs = GorizStorage::all();
+        $gorizs = GorizStorage::with(['catalog', 'category'])->paginate('10');
         return view('admin.storage.goriz.index', compact('gorizs'));
     }
 

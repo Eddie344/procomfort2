@@ -96,4 +96,5 @@
         @endforeach
         </tbody>
     </table>
+    {{ $metals->links() }}
 @endsection

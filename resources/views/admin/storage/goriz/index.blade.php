@@ -108,4 +108,5 @@
         @endforeach
         </tbody>
     </table>
+    {{ $gorizs->links() }}
 @endsection

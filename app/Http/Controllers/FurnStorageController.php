@@ -14,7 +14,7 @@ class FurnStorageController extends Controller
      */
     public function index()
     {
-        $furns = FurnStorage::all();
+        $furns = FurnStorage::paginate(10);
         return view('admin.storage.furn.index', compact('furns'));
     }
 

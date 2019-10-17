@@ -108,4 +108,5 @@
         @endforeach
         </tbody>
     </table>
+    {{ $zebras->links() }}
 @endsection

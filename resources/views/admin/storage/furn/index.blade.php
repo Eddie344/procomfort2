@@ -102,4 +102,5 @@
         @endforeach
         </tbody>
     </table>
+    {{ $furns->links() }}
 @endsection

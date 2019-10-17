@@ -108,4 +108,5 @@
         @endforeach
         </tbody>
     </table>
+    {{ $verts->links() }}
 @endsection

@@ -20,6 +20,8 @@ class CreateRollStoragesTable extends Migration
             $table->foreign('catalog_id')->references('id')->on('catalogs');
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('roll_categories');
+            $table->unsignedBigInteger('picture_id');
+            $table->foreign('picture_id')->references('id')->on('roll_pictures');
             $table->timestamps();
         });
     }
