@@ -24,14 +24,7 @@
 
                     </dl>
                     <button type="button" class="btn btn-primary my-1" data-toggle="modal" data-target="#order_edit">
-                        Изменить информацию
-                    </button>
-                    <button type="button" class="btn btn-success my-1" data-toggle="modal" data-target="#add-part">
-                        Добавить партию
-                    </button>
-
-                    <button type="button" class="btn btn-secondary my-1" data-toggle="modal" data-target="#add-fragment">
-                        Добавить фрагмент
+                        Изменить
                     </button>
 
                     <!-- Modal -->
@@ -70,39 +63,6 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-primary">Сохранить</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Modal-1 -->
-                    <div class="modal fade" id="add-part" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLongTitle">Добавление партии</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Поставщик">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Цена">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Длина">
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                        <label class="form-check-label" for="defaultCheck1">
-                                            <small>Сложить с существующей партией, если цена одинакова</small>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary">Добавить</button>
                                 </div>
                             </div>
                         </div>
@@ -169,31 +129,89 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-12">
+            <div class="card mt-4">
+                <div class="card-header">Партии и остатки</div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Ширина</th>
+                            <th scope="col">Длина</th>
+                            <th scope="col">Цена</th>
+                            <th scope="col">Поставщик</th>
+                            <th scope="col">Статус</th>
+                            <th scope="col">Действия</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach ($parts as $part)
+                            <tr>
+                                <td>{{ $part->width }}</td>
+                                <td>{{ $part->lenght }}</td>
+                                <td>{{ $part->price }}</td>
+                                <td>{{ $part->provider->label }}</td>
+                                <td class="table-{{ $part->status->color }}">{{ $part->status->label }}</td>
+                                <td><a href="#" data-toggle="modal" data-target="#minus">Списать</a></td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-success my-1" data-toggle="modal" data-target="#add-part">
+                        Добавить
+                    </button>
+                    <!-- Добавить -->
+                    <div class="modal fade" id="add-part" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Добавление партии</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                {{ Form::open(['action' => 'RollPartsStorageController@store']) }}
+                                {{ Form::token() }}
+                                {{ Form::hidden('roll_storage_id', $roll->id ) }}
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        {{ Form::label('status_id', 'Тип предмета:') }}
+                                        {{ Form::select('status_id', ['Рулон' => '1', 'Фрагмент'=> '3'], null, ['placeholder' => 'Выберите тип предмета...', 'class' => 'form-control', 'required'])}}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ Form::label('width', 'Ширина:') }}
+                                        {{ Form::number('width', null, ['class' => 'form-control', 'required']) }}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ Form::label('lenght', 'Длина:') }}
+                                        {{ Form::number('lenght', null, ['class' => 'form-control', 'required']) }}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ Form::label('price', 'Цена:') }}
+                                        {{ Form::number('price', null, ['class' => 'form-control', 'required']) }}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ Form::label('provider_id', 'Поставщик:') }}
+                                        {{ Form::select('provider_id', \App\Models\Provider::pluck('label','id'), null, ['placeholder' => 'Выберите поставщика...', 'class' => 'form-control', 'required'])}}
+                                    </div>
+{{--                                    <div class="form-check">--}}
+{{--                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">--}}
+{{--                                        <label class="form-check-label" for="defaultCheck1">--}}
+{{--                                            <small>Сложить с существующей партией, если цена одинакова</small>--}}
+{{--                                        </label>--}}
+{{--                                    </div>--}}
+                                </div>
+                                <div class="modal-footer">
+                                    {{ Form::submit('Добавить', ['class' => 'btn btn-primary']) }}
+                                </div>
+                                {{ Form::close() }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th scope="col">Ширина</th>
-            <th scope="col">Длина</th>
-            <th scope="col">Цена</th>
-            <th scope="col">Поставщик</th>
-            <th scope="col">Статус</th>
-            <th scope="col">Действия</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach ($parts as $part)
-        <tr>
-            <td>{{ $part->width }}</td>
-            <td>{{ $part->lenght }}</td>
-            <td>{{ $part->price }}</td>
-            <td>{{ $part->provider->label }}</td>
-            <td class="table-{{ $part->status->color }}">{{ $part->status->label }}</td>
-            <td><a href="#" data-toggle="modal" data-target="#minus">Списать</a></td>
-        </tr>
-        @endforeach
-        </tbody>
-    </table>
 
     <div class="mt-5 mb-3">
         <div class="operations mb-2 d-flex flex-row align-items-center justify-content-between">
