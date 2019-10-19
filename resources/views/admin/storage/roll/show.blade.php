@@ -12,9 +12,20 @@
                     Общая информация
                 </div>
                 <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success alert-dismissible col-md-12 fade show" role="alert">
+                            {{ session('status') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
                     <dl class="row">
                         <dt class="col-sm-6">Наименование:</dt>
                         <dd class="col-sm-6"><h4>{{ $roll->label }}</h4></dd>
+
+                        <dt class="col-sm-6">Каталог:</dt>
+                        <dd class="col-sm-6">{{ $roll->catalog->label }}</dd>
 
                         <dt class="col-sm-6">Категория:</dt>
                         <dd class="col-sm-6">{{ $roll->category->label }}</dd>
@@ -37,92 +48,30 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
+                                {{ Form::open(['route' => ['roll.update', $roll->id], 'method' => 'put']) }}
+                                {{ Form::token() }}
                                 <div class="modal-body">
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Наименование:</label>
-                                        <input type="text" class="form-control" id="exampleFormControlInput1" value="L-0880">
+                                        {{ Form::label('label', 'Наименование:') }}
+                                        {{ Form::text('label', $roll->label, ['class' => 'form-control', 'required']) }}
                                     </div>
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Категория:</label>
-                                        <select class="form-control" id="exampleFormControlSelect1">
-                                            <option selected>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                        </select>
+                                        {{ Form::label('catalog_id', 'Каталог:') }}
+                                        {{ Form::select('catalog_id', \App\Models\Catalog::pluck('label','id'), $roll->catalog_id, ['placeholder' => 'Выберите каталог...', 'class' => 'form-control', 'required'])}}
                                     </div>
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Направление рисунка:</label>
-                                        <select class="form-control" id="exampleFormControlSelect1">
-                                            <option>Вертикальное</option>
-                                            <option selected>Горизонтальное</option>
-                                            <option>Любое</option>
-                                        </select>
+                                        {{ Form::label('category_id', 'Категория:') }}
+                                        {{ Form::select('category_id', \App\Models\RollCategory::pluck('label', 'id'), $roll->category_id, ['placeholder' => 'Выберите категорию...', 'class' => 'form-control', 'required'])}}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ Form::label('picture_id', 'Направление рисунка:') }}
+                                        {{ Form::select('picture_id', \App\Models\RollPicture::pluck('label', 'id'), $roll->picture_id, ['placeholder' => 'Выберите направление рисунка...', 'class' => 'form-control', 'required'])}}
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary">Сохранить</button>
+                                    {{ Form::submit('Сохранить', ['class' => 'btn btn-primary']) }}
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Modal-2 -->
-                    <div class="modal fade" id="add-fragment" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLongTitle">Добавление фрагмента</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Поставщик">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Цена">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Ширина">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Длина">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary">Добавить</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Modal-3 -->
-                    <div class="modal fade" id="minus" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLongTitle">Списание остатка</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Ширина">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Длина">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Причина">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary">Списать</button>
-                                </div>
+                                {{ Form::close() }}
                             </div>
                         </div>
                     </div>
@@ -133,7 +82,15 @@
             <div class="card mt-4">
                 <div class="card-header">Партии и остатки</div>
                 <div class="card-body">
-                    <table class="table table-hover">
+                    @if (session('part_status'))
+                        <div class="alert alert-{{ session('part_color') }} alert-dismissible col-md-6 fade show" role="alert">
+                            {{ session('part_status') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+                    <table class="table table-striped">
                         <thead>
                         <tr>
                             <th scope="col">Ширина</th>
@@ -152,7 +109,36 @@
                                 <td>{{ $part->price }}</td>
                                 <td>{{ $part->provider->label }}</td>
                                 <td class="table-{{ $part->status->color }}">{{ $part->status->label }}</td>
-                                <td><a href="#" data-toggle="modal" data-target="#minus">Списать</a></td>
+                                <td><a href="#" data-toggle="modal" data-target="#minus_{{ $part->id }}"><i class="fa fa-arrow-down text-danger"></i></a></td>
+                                <!-- Списать -->
+                                <div class="modal fade" id="minus_{{ $part->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Списание остатка</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            {{ Form::open(['route' => ['roll_part.update', $part->id]]) }}
+                                            {{ Form::token() }}
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    {{ Form::label('width', 'Ширина:') }}
+                                                    {{ Form::number('width', $part->width, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
+                                                </div>
+                                                <div class="form-group">
+                                                    {{ Form::label('lenght', 'Длина:') }}
+                                                    {{ Form::number('lenght', $part->lenght, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                {{ Form::submit('Изменить', ['class' => 'btn btn-primary']) }}
+                                            </div>
+                                            {{ Form::close() }}
+                                        </div>
+                                    </div>
+                                </div>
                             </tr>
                         @endforeach
                         </tbody>
@@ -170,25 +156,25 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                {{ Form::open(['action' => 'RollPartsStorageController@store']) }}
+                                {{ Form::open(['route' => 'roll_part.store']) }}
                                 {{ Form::token() }}
-                                {{ Form::hidden('roll_storage_id', $roll->id ) }}
+                                {{ Form::hidden('roll_storage_id', $roll->id) }}
                                 <div class="modal-body">
                                     <div class="form-group">
                                         {{ Form::label('status_id', 'Тип предмета:') }}
-                                        {{ Form::select('status_id', ['Рулон' => '1', 'Фрагмент'=> '3'], null, ['placeholder' => 'Выберите тип предмета...', 'class' => 'form-control', 'required'])}}
+                                        {{ Form::select('status_id', ['3' => 'Рулон', '2'=> 'Фрагмент'], null, ['placeholder' => 'Выберите тип предмета...', 'class' => 'form-control', 'required'])}}
                                     </div>
                                     <div class="form-group">
                                         {{ Form::label('width', 'Ширина:') }}
-                                        {{ Form::number('width', null, ['class' => 'form-control', 'required']) }}
+                                        {{ Form::number('width', null, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
                                     </div>
                                     <div class="form-group">
                                         {{ Form::label('lenght', 'Длина:') }}
-                                        {{ Form::number('lenght', null, ['class' => 'form-control', 'required']) }}
+                                        {{ Form::number('lenght', null, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
                                     </div>
                                     <div class="form-group">
                                         {{ Form::label('price', 'Цена:') }}
-                                        {{ Form::number('price', null, ['class' => 'form-control', 'required']) }}
+                                        {{ Form::number('price', null, ['class' => 'form-control', 'step' => "0.01", 'required']) }}
                                     </div>
                                     <div class="form-group">
                                         {{ Form::label('provider_id', 'Поставщик:') }}

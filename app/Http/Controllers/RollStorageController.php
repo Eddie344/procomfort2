@@ -50,7 +50,7 @@ class RollStorageController extends Controller
     public function show($id)
     {
         $roll = RollStorage::find($id);
-        $parts = RollPartsStorage::with(['status', 'provider'])->where('roll_storage_id', $id)->get();
+        $parts = RollPartsStorage::with(['status', 'provider'])->where('roll_storage_id', $id)->orderBy('status_id')->get();
         return view('admin.storage.roll.show', compact('roll', 'parts'));
     }
 
@@ -74,8 +74,11 @@ class RollStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $roll = RollStorage::find($id);
+        $roll->update($request->all());
+        return redirect(route('roll.show', ['id' => $id]))->with('status', 'Изменения сохранены!');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -86,6 +89,8 @@ class RollStorageController extends Controller
     public function destroy($id)
     {
         RollStorage::destroy($id);
+        $parts = RollPartsStorage::with(['status', 'provider'])->where('roll_storage_id', $id)->orderBy('status_id')->get();
+        RollPartsStorage::destroy($id);
         return redirect('admin/storage/roll')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
     }
 }

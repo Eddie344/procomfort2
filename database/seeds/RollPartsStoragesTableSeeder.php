@@ -19,7 +19,7 @@ class RollPartsStoragesTableSeeder extends Seeder
                 'lenght' => '25',
                 'price' => '3.7',
                 'provider_id' => '1',
-                'part_status_id' => '1',
+                'status_id' => '1',
             ],
             [
                 'roll_storage_id' => '1',
@@ -27,7 +27,7 @@ class RollPartsStoragesTableSeeder extends Seeder
                 'lenght' => '2',
                 'price' => '3.3',
                 'provider_id' => '1',
-                'part_status_id' => '2',
+                'status_id' => '2',
             ],
         ]);
     }

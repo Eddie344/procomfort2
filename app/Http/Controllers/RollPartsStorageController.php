@@ -36,7 +36,7 @@ class RollPartsStorageController extends Controller
     public function store(Request $request)
     {
         RollPartsStorage::create($request->all());
-        return redirect('admin/storage/roll')->with(['status' => 'Предмет успешно добавлен в склад!', 'color' => 'success']);
+        return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Партия успешно добавлена!', 'part_color' => 'success']);
     }
 
     /**
@@ -70,7 +70,9 @@ class RollPartsStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $part = RollPartsStorage::find($id);
+        $part->update($request->all());
+        return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Изменения сохранены!', 'part_color' => 'success']);
     }
 
     /**

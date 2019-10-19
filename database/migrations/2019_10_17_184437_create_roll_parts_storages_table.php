@@ -16,14 +16,14 @@ class CreateRollPartsStoragesTable extends Migration
         Schema::create('roll_parts_storages', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('roll_storage_id');
-            $table->foreign('roll_storage_id')->references('id')->on('roll_storages');
+            $table->foreign('roll_storage_id')->references('id')->on('roll_storages')->onDelete('cascade');
             $table->float('width');
             $table->float('lenght');
             $table->float('price');
             $table->unsignedBigInteger('provider_id');
             $table->foreign('provider_id')->references('id')->on('providers');
-            $table->unsignedBigInteger('part_status_id');
-            $table->foreign('part_status_id')->references('id')->on('part_statuses');
+            $table->unsignedBigInteger('status_id');
+            $table->foreign('status_id')->references('id')->on('part_statuses');
             $table->timestamps();
         });
     }

@@ -50,6 +50,10 @@
                                 {{ Form::label('category_id', 'Категория:') }}
                                 {{ Form::select('category_id', \App\Models\RollCategory::pluck('label', 'id'), null, ['placeholder' => 'Выберите категорию...', 'class' => 'form-control', 'required'])}}
                             </div>
+                            <div class="form-group">
+                                {{ Form::label('picture_id', 'Направление рисунка:') }}
+                                {{ Form::select('picture_id', \App\Models\RollPicture::pluck('label', 'id'), null, ['placeholder' => 'Выберите направление рисунка...', 'class' => 'form-control', 'required'])}}
+                            </div>
                         </div>
                         <div class="modal-footer">
                             {{ Form::submit('Добавить', ['class' => 'btn btn-primary']) }}

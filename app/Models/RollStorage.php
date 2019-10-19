@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class RollStorage extends Model
 {
     protected $fillable = [
-        'label', 'catalog_id', 'category_id'
+        'label', 'catalog_id', 'category_id', 'picture_id'
     ];
 
     public function catalog()

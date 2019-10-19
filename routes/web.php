@@ -27,6 +27,9 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
     Route::prefix('storage')->group(function () {
         Route::get('/', 'StorageController@index')->name('storage.index');
 
+        Route::put('roll/{id}/add_part', 'RollStorageController@storePart');
+        Route::patch('roll/{id}/update_part', 'RollStorageController@updatePart');
+        Route::resource('roll_part', 'RollPartsStorageController');
         Route::resource('roll', 'RollStorageController');
         Route::resource('zebra', 'ZebraStorageController');
         Route::resource('vert', 'VertStorageController');
