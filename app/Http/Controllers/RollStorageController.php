@@ -89,8 +89,6 @@ class RollStorageController extends Controller
     public function destroy($id)
     {
         RollStorage::destroy($id);
-        $parts = RollPartsStorage::with(['status', 'provider'])->where('roll_storage_id', $id)->orderBy('status_id')->get();
-        RollPartsStorage::destroy($id);
         return redirect('admin/storage/roll')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
     }
 }

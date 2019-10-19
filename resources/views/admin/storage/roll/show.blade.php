@@ -109,36 +109,59 @@
                                 <td>{{ $part->price }}</td>
                                 <td>{{ $part->provider->label }}</td>
                                 <td class="table-{{ $part->status->color }}">{{ $part->status->label }}</td>
-                                <td><a href="#" data-toggle="modal" data-target="#minus_{{ $part->id }}"><i class="fa fa-arrow-down text-danger"></i></a></td>
-                                <!-- Списать -->
-                                <div class="modal fade" id="minus_{{ $part->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLongTitle">Списание остатка</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            {{ Form::open(['route' => ['roll_part.update', $part->id]]) }}
-                                            {{ Form::token() }}
-                                            <div class="modal-body">
-                                                <div class="form-group">
-                                                    {{ Form::label('width', 'Ширина:') }}
-                                                    {{ Form::number('width', $part->width, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
+                                <td>
+                                    <a href="#" data-toggle="modal" data-target="#edit_{{ $part->id }}"><i class="fa fa-pencil text-primary"></i></a>
+                                    <!-- Списать -->
+                                    <div class="modal fade" id="edit_{{ $part->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">Списание остатка</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
                                                 </div>
-                                                <div class="form-group">
-                                                    {{ Form::label('lenght', 'Длина:') }}
-                                                    {{ Form::number('lenght', $part->lenght, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
+                                                {{ Form::open(['route' => ['roll_part.update', $part->id], 'method' => 'put']) }}
+                                                {{ Form::token() }}
+                                                {{ Form::hidden('roll_storage_id', $roll->id) }}
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        {{ Form::label('width', 'Ширина:') }}
+                                                        {{ Form::number('width', $part->width, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
+                                                    </div>
+                                                    <div class="form-group">
+                                                        {{ Form::label('lenght', 'Длина:') }}
+                                                        {{ Form::number('lenght', $part->lenght, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
+                                                    </div>
                                                 </div>
+                                                <div class="modal-footer">
+                                                    {{ Form::submit('Изменить', ['class' => 'btn btn-primary']) }}
+                                                </div>
+                                                {{ Form::close() }}
                                             </div>
-                                            <div class="modal-footer">
-                                                {{ Form::submit('Изменить', ['class' => 'btn btn-primary']) }}
-                                            </div>
-                                            {{ Form::close() }}
                                         </div>
                                     </div>
-                                </div>
+                                    <a href="" data-toggle="modal" data-target="#delete_{{ $part->id }}"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></a>
+                                    <div class="modal fade" id="delete_{{ $part->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                            <div class="modal-content">
+                                                {{ Form::open(['route' => ['roll_part.destroy' , $part->id], 'method' => 'delete']) }}
+                                                {{ Form::token() }}
+                                                {{ Form::hidden('roll_storage_id', $roll->id) }}
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">Вы уверены?</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    {{ Form::submit('Удалить', ['class' => 'btn btn-danger']) }}
+                                                </div>
+                                                {{ Form::close() }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
