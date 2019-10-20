@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RollActionsStorage;
 use App\Models\RollPartsStorage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RollPartsStorageController extends Controller
 {
@@ -36,6 +38,14 @@ class RollPartsStorageController extends Controller
     public function store(Request $request)
     {
         RollPartsStorage::create($request->all());
+        $action = new RollActionsStorage;
+        $action -> roll_storage_id = $request->roll_storage_id;
+        $action -> type_id = 1;
+        $action -> user_id = Auth::id();
+        $action -> reason = $request->reason;
+        $action -> width = $request->width;
+        $action -> lenght = $request->lenght;
+        $action->save();
         return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Партия успешно добавлена!', 'part_color' => 'success']);
     }
 
@@ -84,6 +94,14 @@ class RollPartsStorageController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        $action = new RollActionsStorage;
+        $action -> roll_storage_id = $request->roll_storage_id;
+        $action -> type_id = 2;
+        $action -> user_id = Auth::id();
+        $action -> reason = $request->reason;
+        $action -> width = $request->width;
+        $action -> lenght = $request->lenght;
+        $action->save();
         RollPartsStorage::destroy($id);
         return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Предмет успешно удален!', 'part_color' => 'danger']);
     }

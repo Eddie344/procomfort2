@@ -148,11 +148,19 @@
                                                 {{ Form::open(['route' => ['roll_part.destroy' , $part->id], 'method' => 'delete']) }}
                                                 {{ Form::token() }}
                                                 {{ Form::hidden('roll_storage_id', $roll->id) }}
+                                                {{ Form::hidden('width', $part->width) }}
+                                                {{ Form::hidden('lenght', $part->lenght) }}
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLongTitle">Вы уверены?</h5>
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">Удаление</h5>
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        {{ Form::label('reason', 'Укажите причину:') }}
+                                                        {{ Form::text('reason', null, ['class' => 'form-control', 'required']) }}
+                                                    </div>
                                                 </div>
                                                 <div class="modal-footer">
                                                     {{ Form::submit('Удалить', ['class' => 'btn btn-danger']) }}
@@ -203,6 +211,10 @@
                                         {{ Form::label('provider_id', 'Поставщик:') }}
                                         {{ Form::select('provider_id', \App\Models\Provider::pluck('label','id'), null, ['placeholder' => 'Выберите поставщика...', 'class' => 'form-control', 'required'])}}
                                     </div>
+                                    <div class="form-group">
+                                        {{ Form::label('reason', 'Причина:') }}
+                                        {{ Form::text('reason', null, ['class' => 'form-control', 'required']) }}
+                                    </div>
 {{--                                    <div class="form-check">--}}
 {{--                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">--}}
 {{--                                        <label class="form-check-label" for="defaultCheck1">--}}
@@ -241,68 +253,27 @@
         <table class="table table-hover">
             <thead>
             <tr>
-                <th scope="col">#</th>
                 <th scope="col">Действие</th>
-                <th scope="col">Причина</th>
                 <th scope="col">Пользователь</th>
+                <th scope="col">Причина</th>
                 <th scope="col">Ширина</th>
                 <th scope="col">Длина</th>
                 <th scope="col">Дата</th>
-                <th scope="col">Время</th>
             </tr>
             </thead>
             <tbody>
+            @foreach ($actions as $action)
             <tr>
-                <th scope="row">1</th>
-                <td class="table-danger">Списание</td>
-                <td>Заказ №32</td>
-                <td>КФ</td>
-                <td>0,8</td>
-                <td>1,3</td>
-                <td>28.08.19</td>
-                <td>12:50</td>
+                <td class="table-{{ $action->type->color }}">{{ $action->type->label }}</td>
+                <td>{{ $action->user->alias }}</td>
+                <td>{{ $action->reason }}</td>
+                <td>{{ $action->width }}</td>
+                <td>{{ $action->lenght }}</td>
+                <td>{{ $action->created_at }}</td>
             </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td class="table-danger">Списание</td>
-                <td>Заказ №32</td>
-                <td>КФ</td>
-                <td>0,8</td>
-                <td>1,3</td>
-                <td>28.08.19</td>
-                <td>12:50</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td class="table-danger">Списание</td>
-                <td>Заказ №32</td>
-                <td>КФ</td>
-                <td>1,0</td>
-                <td>1,3</td>
-                <td>28.08.19</td>
-                <td>12:50</td>
-            </tr>
-            <tr>
-                <th scope="row">4</th>
-                <td class="table-danger">Списание</td>
-                <td>Брак</td>
-                <td>Сергей</td>
-                <td>0,9</td>
-                <td>1,1</td>
-                <td>28.08.19</td>
-                <td>12:50</td>
-            </tr>
-            <tr>
-                <th scope="row">5</th>
-                <td class="table-success">Пополнение</td>
-                <td>Партия Амиго</td>
-                <td>Саша</td>
-                <td>1,6</td>
-                <td>30</td>
-                <td>28.08.19</td>
-                <td>12:50</td>
-            </tr>
+            @endforeach
             </tbody>
         </table>
+        {{ $actions->links() }}
     </div>
 @endsection

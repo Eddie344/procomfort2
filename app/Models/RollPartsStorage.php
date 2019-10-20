@@ -10,6 +10,11 @@ class RollPartsStorage extends Model
         'status_id', 'width', 'lenght', 'price', 'provider_id', 'roll_storage_id'
     ];
 
+    public function rollStorage()
+    {
+        return $this->belongsTo('App\Models\RollStorage', 'roll_storage_id');
+    }
+
     public function status()
     {
         return $this->belongsTo('App\Models\PartStatus', 'status_id');

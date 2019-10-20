@@ -35,6 +35,8 @@ class DatabaseSeeder extends Seeder
             StoragesTypesTableSeeder::class,
             PartStatusesTableSeeder::class,
             RollPartsStoragesTableSeeder::class,
+            StorageActionTypesTableSeeder::class,
+            RollActionsStoragesTableSeeder::class,
         ]);
     }
 }

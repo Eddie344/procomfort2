@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RollActionsStorage;
 use App\Models\RollPartsStorage;
 use App\Models\RollStorage;
 use Illuminate\Http\Request;
@@ -50,8 +51,9 @@ class RollStorageController extends Controller
     public function show($id)
     {
         $roll = RollStorage::find($id);
-        $parts = RollPartsStorage::with(['status', 'provider'])->where('roll_storage_id', $id)->orderBy('status_id')->get();
-        return view('admin.storage.roll.show', compact('roll', 'parts'));
+        $parts = RollPartsStorage::with(['status', 'provider', 'rollStorage'])->where('roll_storage_id', $id)->orderBy('status_id')->get();
+        $actions = RollActionsStorage::with(['type', 'user', 'rollStorage'])->where('roll_storage_id', $id)->orderBy('created_at', 'DESC')->paginate('10');
+        return view('admin.storage.roll.show', compact('roll', 'parts', 'actions'));
     }
 
     /**
