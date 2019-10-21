@@ -14,11 +14,12 @@ class RollStorageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         $rolls = RollStorage::with(['catalog', 'category', 'picture'])->filter()->paginate('10');
         return view('admin.storage.roll.index', compact('rolls'));
     }
+
 
     /**
      * Show the form for creating a new resource.

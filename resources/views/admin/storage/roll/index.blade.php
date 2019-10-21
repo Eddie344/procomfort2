@@ -2,60 +2,69 @@
 
 @section('content')
     <h2 class="mb-4">Ткани рулонные</h2>
-    <div class="row mb-2">
-        {{ Form::open(['route' => 'roll.index']) }}
-        {{ Form::token() }}
-        <div class="input-group col-md-9">
-            {{ Form::select('catalog_id', \App\Models\Catalog::pluck('label','id'), null, ['placeholder' => 'Выберите каталог...', 'class' => 'form-control'])}}
-            {{ Form::select('category_id', \App\Models\RollCategory::pluck('label','id'), null, ['placeholder' => 'Выберите категорию...', 'class' => 'form-control'])}}
-            {{ Form::select('picture_id', \App\Models\RollPicture::pluck('label','id'), null, ['placeholder' => 'Выберите направление рисунка...', 'class' => 'form-control'])}}
-            <div class="input-group-append mb-3">
-                {{ Form::submit('Применить', ['class' => 'btn btn-primary']) }}
+    <!-- Button trigger modal -->
+    <div class="input-group mb-3">
+        <button type="button" class="btn btn-success mr-3" data-toggle="modal" data-target="#exampleModalCenter">
+            Добавить +
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Добавление пункта</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {{ Form::open(['route' => 'roll.store']) }}
+                    {{ Form::token() }}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            {{ Form::label('label', 'Наименование:') }}
+                            {{ Form::text('label', null, ['class' => 'form-control', 'required']) }}
+                        </div>
+                        <div class="form-group">
+                            {{ Form::label('catalog_id', 'Каталог:') }}
+                            {{ Form::select('catalog_id', \App\Models\Catalog::pluck('label','id'), null, ['placeholder' => 'Выберите каталог...', 'class' => 'form-control', 'required'])}}
+                        </div>
+                        <div class="form-group">
+                            {{ Form::label('category_id', 'Категория:') }}
+                            {{ Form::select('category_id', \App\Models\RollCategory::pluck('label', 'id'), null, ['placeholder' => 'Выберите категорию...', 'class' => 'form-control', 'required'])}}
+                        </div>
+                        <div class="form-group">
+                            {{ Form::label('picture_id', 'Направление рисунка:') }}
+                            {{ Form::select('picture_id', \App\Models\RollPicture::pluck('label', 'id'), null, ['placeholder' => 'Выберите направление рисунка...', 'class' => 'form-control', 'required'])}}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        {{ Form::submit('Добавить', ['class' => 'btn btn-primary']) }}
+                    </div>
+                    {{ Form::close() }}
+                </div>
             </div>
         </div>
-        {{ Form::close() }}
-        <!-- Button trigger modal -->
-        <div class="input-group mb-3 col-md-3">
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModalCenter">
-                Добавить +
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Фильтр
             </button>
-
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLongTitle">Добавление пункта</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        {{ Form::open(['route' => 'roll.store']) }}
-                        {{ Form::token() }}
-                        <div class="modal-body">
-                            <div class="form-group">
-                                {{ Form::label('label', 'Наименование:') }}
-                                {{ Form::text('label', null, ['class' => 'form-control', 'required']) }}
-                            </div>
-                            <div class="form-group">
-                                {{ Form::label('catalog_id', 'Каталог:') }}
-                                {{ Form::select('catalog_id', \App\Models\Catalog::pluck('label','id'), null, ['placeholder' => 'Выберите каталог...', 'class' => 'form-control', 'required'])}}
-                            </div>
-                            <div class="form-group">
-                                {{ Form::label('category_id', 'Категория:') }}
-                                {{ Form::select('category_id', \App\Models\RollCategory::pluck('label', 'id'), null, ['placeholder' => 'Выберите категорию...', 'class' => 'form-control', 'required'])}}
-                            </div>
-                            <div class="form-group">
-                                {{ Form::label('picture_id', 'Направление рисунка:') }}
-                                {{ Form::select('picture_id', \App\Models\RollPicture::pluck('label', 'id'), null, ['placeholder' => 'Выберите направление рисунка...', 'class' => 'form-control', 'required'])}}
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            {{ Form::submit('Добавить', ['class' => 'btn btn-primary']) }}
-                        </div>
-                        {{ Form::close() }}
-                    </div>
+            <div class="dropdown-menu p-3" style="width: 250px" aria-labelledby="dropdownMenuButton">
+                {{ Form::open(['route' => 'roll.index', 'method' => 'get', 'class' => '']) }}
+                <div class="form-group">
+                    {{ Form::label('catalog', 'Каталог:') }}
+                    {{ Form::select('catalog', \App\Models\Catalog::pluck('label','id'), Request::get('catalog'), ['placeholder' => 'Все', 'class' => 'form-control'])}}
                 </div>
+                <div class="form-group">
+                    {{ Form::label('category', 'Категория:') }}
+                    {{ Form::select('category', \App\Models\RollCategory::pluck('label','id'), Request::get('category'), ['placeholder' => 'Все', 'class' => 'form-control'])}}
+                </div>
+                <div class="form-group">
+                    {{ Form::label('picture', 'Направление рисунка:') }}
+                    {{ Form::select('picture', \App\Models\RollPicture::pluck('label','id'), Request::get('picture'), ['placeholder' => 'Все', 'class' => 'form-control'])}}
+                </div>
+                {{ Form::submit('Применить', ['class' => 'btn btn-primary']) }}
+                {{ Form::close() }}
             </div>
         </div>
     </div>

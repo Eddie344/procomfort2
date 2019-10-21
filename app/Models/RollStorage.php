@@ -27,17 +27,17 @@ class RollStorage extends Model
 
     public function scopeFilter($query)
     {
-        if(request('catalog_id'))
+        if(request('catalog'))
         {
-            $query->where('catalog_id', request('catalog_id'));
+            $query->where('catalog_id', request('catalog'));
         }
-        if(request('category_id'))
+        if(request('category'))
         {
-            $query->where('category_id', request('category_id'));
+            $query->where('category_id', request('category'));
         }
-        if(request('picture_id'))
+        if(request('picture'))
         {
-            $query->where('picture_id', request('picture_id'));
+            $query->where('picture_id', request('picture'));
         }
         return $query;
     }
