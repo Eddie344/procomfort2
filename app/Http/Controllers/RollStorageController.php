@@ -14,9 +14,9 @@ class RollStorageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $rolls = RollStorage::with(['catalog', 'category', 'picture'])->paginate('10');
+        $rolls = RollStorage::with(['catalog', 'category', 'picture'])->filter()->paginate('10');
         return view('admin.storage.roll.index', compact('rolls'));
     }
 
@@ -93,4 +93,5 @@ class RollStorageController extends Controller
         RollStorage::destroy($id);
         return redirect('admin/storage/roll')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
     }
+
 }

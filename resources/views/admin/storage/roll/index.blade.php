@@ -3,22 +3,17 @@
 @section('content')
     <h2 class="mb-4">Ткани рулонные</h2>
     <div class="row mb-2">
-        <div class="form-group col-md-3">
-            <select class="form-control" id="exampleFormControlSelect1">
-                <option>Выберите каталог...</option>
-                <option>Амиго</option>
-                <option>Межароль</option>
-                <option>Прокомфорт</option>
-                <option>Амилюкс</option>
-                <option>Гарден</option>
-            </select>
-        </div>
-        <div class="input-group mb-3 col-md-3">
-            <input type="text" class="form-control" placeholder="Поиск ткани" aria-label="Recipient's username" aria-describedby="button-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="button" id="button-addon2"><i class="fa fa-search"></i></button>
+        {{ Form::open(['route' => 'roll.index']) }}
+        {{ Form::token() }}
+        <div class="input-group col-md-9">
+            {{ Form::select('catalog_id', \App\Models\Catalog::pluck('label','id'), null, ['placeholder' => 'Выберите каталог...', 'class' => 'form-control'])}}
+            {{ Form::select('category_id', \App\Models\RollCategory::pluck('label','id'), null, ['placeholder' => 'Выберите категорию...', 'class' => 'form-control'])}}
+            {{ Form::select('picture_id', \App\Models\RollPicture::pluck('label','id'), null, ['placeholder' => 'Выберите направление рисунка...', 'class' => 'form-control'])}}
+            <div class="input-group-append mb-3">
+                {{ Form::submit('Применить', ['class' => 'btn btn-primary']) }}
             </div>
         </div>
+        {{ Form::close() }}
         <!-- Button trigger modal -->
         <div class="input-group mb-3 col-md-3">
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModalCenter">
