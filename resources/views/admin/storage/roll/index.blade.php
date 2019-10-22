@@ -52,6 +52,10 @@
             <div class="dropdown-menu p-3" style="width: 250px" aria-labelledby="dropdownMenuButton">
                 {{ Form::open(['route' => 'roll.index', 'method' => 'get', 'class' => '']) }}
                 <div class="form-group">
+                    {{ Form::label('label', 'Наименование:') }}
+                    {{ Form::text('label', Request::get('label'), ['class' => 'form-control'])}}
+                </div>
+                <div class="form-group">
                     {{ Form::label('catalog', 'Каталог:') }}
                     {{ Form::select('catalog', \App\Models\Catalog::pluck('label','id'), Request::get('catalog'), ['placeholder' => 'Все', 'class' => 'form-control'])}}
                 </div>
