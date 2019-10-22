@@ -239,10 +239,12 @@
             <h4>Операции</h4>
             <form>
                 <div class="input-group">
-                    <input type="text" name="date_period" class="form-control" id="exampleInputPassword1" placeholder="Сортировка по датам">
+                    {{ Form::open(['route' => ['roll.show', $roll->id], 'method' => 'get']) }}
+                    {{ Form::text('date_period', Request::get('date_period'), ['placeholder' => 'Сортировка по датам', 'class' => 'form-control'])}}
                     <div class="input-group-append">
-                        <button class="btn btn-primary" type="button" id="button-addon2">Показать</button>
+                        {{ Form::submit('Показать', ['class' => 'btn btn-primary']) }}
                     </div>
+                    {{ Form::close() }}
                 </div>
             </form>
             <ul class="list-group list-group-horizontal">

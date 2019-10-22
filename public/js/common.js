@@ -4,7 +4,7 @@ $(function() {
 		autoUpdateInput: false,
 		"parentEl": "#date_container",
   		locale: {
-            format: 'DD-MM-YYYY',
+            format: 'DD/MM/YYYY',
             applyLabel: 'Принять',
             cancelLabel: 'Отмена',
             invalidDateLabel: 'Выберите дату',
@@ -14,7 +14,7 @@ $(function() {
         }
 	});
 	$('input[name="date_period"]').on('apply.daterangepicker', function(ev, picker) {
-	  $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+	  $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
 	});
 
 	$('input[name="date_period"]').on('cancel.daterangepicker', function(ev, picker) {
@@ -25,7 +25,7 @@ $(function() {
 	$('input[name="date_single"]').daterangepicker({
 		singleDatePicker: true,
   		locale: {
-            format: 'DD-MM-YYYY',
+            format: 'DD/MM/YYYY',
             applyLabel: 'Принять',
             cancelLabel: 'Отмена',
             invalidDateLabel: 'Выберите дату',
@@ -36,6 +36,7 @@ $(function() {
 	});
 
 });
+
 
 $(document).ready(function() {
 	//Изделие горизонт добавление

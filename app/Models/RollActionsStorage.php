@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
 
 class RollActionsStorage extends Model
@@ -28,5 +29,16 @@ class RollActionsStorage extends Model
 
     public function getCreatedAtAttribute($timestamp) {
         return Carbon::parse($timestamp)->format('d.m.Y H:i');
+    }
+
+    public function scopeFilter($query)
+    {
+        if(request('date_period'))
+        {
+            $dates = explode(' - ', (request('date_period')));
+            $startDate = Carbon::createFromFormat('d/m/Y', $dates[0]);
+            $endDate = Carbon::createFromFormat('d/m/Y', $dates[1]);
+            return $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
     }
 }
