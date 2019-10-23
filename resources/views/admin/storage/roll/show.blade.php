@@ -239,10 +239,10 @@
             <h4>Операции</h4>
             <form>
                 <div class="input-group">
-                    {{ Form::open(['route' => ['roll.show', $roll->id], 'method' => 'get']) }}
+                    {{ Form::open() }}
                     {{ Form::text('date_period', Request::get('date_period'), ['placeholder' => 'Сортировка по датам', 'class' => 'form-control'])}}
                     <div class="input-group-append">
-                        {{ Form::submit('Показать', ['class' => 'btn btn-primary']) }}
+                        {{ Form::submit('Показать', ['class' => 'btn btn-primary', 'id' => 'ajaxSubmit']) }}
                     </div>
                     {{ Form::close() }}
                 </div>
@@ -278,4 +278,27 @@
         </table>
         {{ $actions->links() }}
     </div>
+    <script>
+        jQuery(document).ready(function(){
+            jQuery('#ajaxSubmit').click(function(e){
+                e.preventDefault();
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    }
+                });
+                jQuery.ajax({
+                    url: "{{ action('RollStorageController@getActions', ['id' => $roll->id]) }}",
+                    method: 'post',
+                    data: {
+                        name: jQuery('#name').val(),
+                        type: jQuery('#type').val(),
+                        price: jQuery('#price').val()
+                    },
+                    success: function(result){
+                        console.log(result);
+                    }});
+            });
+        });
+    </script>
 @endsection

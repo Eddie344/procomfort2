@@ -57,6 +57,12 @@ class RollStorageController extends Controller
         return view('admin.storage.roll.show', compact('roll', 'parts', 'actions'));
     }
 
+    public function getActions($id)
+    {
+        $actions = RollActionsStorage::with(['type', 'user', 'rollStorage'])->where('roll_storage_id', $id)->filter()->orderBy('created_at', 'DESC')->paginate('10');
+        return view('admin.storage.roll.show', compact( 'actions'));
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
