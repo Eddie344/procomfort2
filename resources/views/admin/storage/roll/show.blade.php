@@ -97,6 +97,7 @@
                             <th scope="col">Длина</th>
                             <th scope="col">Цена</th>
                             <th scope="col">Поставщик</th>
+                            <th scope="col">Тип</th>
                             <th scope="col">Статус</th>
                             <th scope="col">Действия</th>
                         </tr>
@@ -108,9 +109,10 @@
                                 <td>{{ $part->lenght }}</td>
                                 <td>{{ $part->price }}</td>
                                 <td>{{ $part->provider->label }}</td>
-                                <td class="table-{{ $part->status->color }}">{{ $part->status->label }}</td>
+                                <td>{{ $part->type->label }}</td>
+                                <td><strong class="text-{{ $part->status->color }}">{{ $part->status->label }}</strong></td>
                                 <td>
-                                    <a href="#" data-toggle="modal" data-target="#edit_{{ $part->id }}"><i class="fa fa-pencil text-primary"></i></a>
+                                    <a href="#" data-toggle="modal" data-target="#edit_{{ $part->id }}"><i class="fa fa-arrow-down text-secondary"></i></a>
                                     <!-- Списать -->
                                     <div class="modal fade" id="edit_{{ $part->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
@@ -124,18 +126,24 @@
                                                 {{ Form::open(['route' => ['roll_part.update', $part->id], 'method' => 'put']) }}
                                                 {{ Form::token() }}
                                                 {{ Form::hidden('roll_storage_id', $roll->id) }}
+                                                {{ Form::hidden('price', $part->price) }}
+                                                {{ Form::hidden('provider', $part->provider_id) }}
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         {{ Form::label('width', 'Ширина:') }}
-                                                        {{ Form::number('width', $part->width, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
+                                                        {{ Form::number('width', null, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
                                                     </div>
                                                     <div class="form-group">
                                                         {{ Form::label('lenght', 'Длина:') }}
-                                                        {{ Form::number('lenght', $part->lenght, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
+                                                        {{ Form::number('lenght', null, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
+                                                    </div>
+                                                    <div class="form-group">
+                                                        {{ Form::label('reason', 'Причина:') }}
+                                                        {{ Form::text('reason', null, ['class' => 'form-control', 'required']) }}
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    {{ Form::submit('Изменить', ['class' => 'btn btn-primary']) }}
+                                                    {{ Form::submit('Списать', ['class' => 'btn btn-primary']) }}
                                                 </div>
                                                 {{ Form::close() }}
                                             </div>
@@ -232,73 +240,80 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-12">
+            <div class="card mt-4">
+                <div class="card-header">Операции</div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-9">
+                            <form id="date_container">
+                                <div class="input-group">
+                                    {{ Form::open(['route' => ['roll.index', $roll->id], 'method' => 'get']) }}
+                                    {{ Form::select('type', \App\Models\StorageActionType::pluck('label','id'), Request::get('type'), ['placeholder' => 'Тип действия...', 'class' => 'form-control'])}}
+                                    {{ Form::text('date_period', Request::get('date_period'), ['placeholder' => 'Сортировка по датам', 'class' => 'form-control', 'autocomplete' => 'off'])}}
+                                    <div class="input-group-append">
+                                        {{ Form::submit('Показать', ['class' => 'btn btn-primary']) }}
+                                    </div>
+                                    {{ Form::close() }}
+                                </div>
+                            </form>
+                        </div>
+{{--                        <ul class="list-group list-group-horizontal col-md-6">--}}
+{{--                            <li class="list-group-item list-group-item-success">Приход: <strong>156 м</strong></li>--}}
+{{--                            <li class="list-group-item list-group-item-danger">Расход: <strong>65 м</strong></li>--}}
+{{--                        </ul>--}}
+                    </div>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Действие</th>
+                            <th scope="col">Пользователь</th>
+                            <th scope="col">Причина</th>
+                            <th scope="col">Ширина</th>
+                            <th scope="col">Длина</th>
+                            <th scope="col">Дата</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach ($actions as $action)
+                            <tr>
+                                <td class="table-{{ $action->type->color }}">{{ $action->type->label }}</td>
+                                <td>{{ $action->user->alias }}</td>
+                                <td>{{ $action->reason }}</td>
+                                <td>{{ $action->width }}</td>
+                                <td>{{ $action->lenght }}</td>
+                                <td>{{ $action->created_at }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                    {{ $actions->links() }}
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="mt-5 mb-3">
-        <div class="operations mb-2 d-flex flex-row align-items-center justify-content-between">
-            <h4>Операции</h4>
-            <form>
-                <div class="input-group">
-                    {{ Form::open() }}
-                    {{ Form::text('date_period', Request::get('date_period'), ['placeholder' => 'Сортировка по датам', 'class' => 'form-control'])}}
-                    <div class="input-group-append">
-                        {{ Form::submit('Показать', ['class' => 'btn btn-primary', 'id' => 'ajaxSubmit']) }}
-                    </div>
-                    {{ Form::close() }}
-                </div>
-            </form>
-            <ul class="list-group list-group-horizontal">
-                <li class="list-group-item list-group-item-success">Приход: <strong>156 м</strong></li>
-                <li class="list-group-item list-group-item-danger">Расход: <strong>65 м</strong></li>
-            </ul>
-        </div>
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th scope="col">Действие</th>
-                <th scope="col">Пользователь</th>
-                <th scope="col">Причина</th>
-                <th scope="col">Ширина</th>
-                <th scope="col">Длина</th>
-                <th scope="col">Дата</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach ($actions as $action)
-            <tr>
-                <td class="table-{{ $action->type->color }}">{{ $action->type->label }}</td>
-                <td>{{ $action->user->alias }}</td>
-                <td>{{ $action->reason }}</td>
-                <td>{{ $action->width }}</td>
-                <td>{{ $action->lenght }}</td>
-                <td>{{ $action->created_at }}</td>
-            </tr>
-            @endforeach
-            </tbody>
-        </table>
-        {{ $actions->links() }}
-    </div>
-    <script>
-        jQuery(document).ready(function(){
-            jQuery('#ajaxSubmit').click(function(e){
-                e.preventDefault();
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-                    }
-                });
-                jQuery.ajax({
-                    url: "{{ action('RollStorageController@getActions', ['id' => $roll->id]) }}",
-                    method: 'post',
-                    data: {
-                        name: jQuery('#name').val(),
-                        type: jQuery('#type').val(),
-                        price: jQuery('#price').val()
-                    },
-                    success: function(result){
-                        console.log(result);
-                    }});
-            });
-        });
-    </script>
+{{--    <script>--}}
+{{--        jQuery(document).ready(function(){--}}
+{{--            jQuery('#ajaxSubmit').click(function(e){--}}
+{{--                e.preventDefault();--}}
+{{--                $.ajaxSetup({--}}
+{{--                    headers: {--}}
+{{--                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')--}}
+{{--                    }--}}
+{{--                });--}}
+{{--                jQuery.ajax({--}}
+{{--                    url: "{{ action('RollStorageController@getActions', ['id' => $roll->id]) }}",--}}
+{{--                    method: 'post',--}}
+{{--                    data: {--}}
+{{--                        name: jQuery('#name').val(),--}}
+{{--                        type: jQuery('#type').val(),--}}
+{{--                        price: jQuery('#price').val()--}}
+{{--                    },--}}
+{{--                    success: function(result){--}}
+{{--                        console.log(result);--}}
+{{--                    }});--}}
+{{--            });--}}
+{{--        });--}}
+{{--    </script>--}}
 @endsection

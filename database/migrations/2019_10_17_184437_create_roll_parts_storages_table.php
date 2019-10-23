@@ -24,6 +24,8 @@ class CreateRollPartsStoragesTable extends Migration
             $table->foreign('provider_id')->references('id')->on('providers');
             $table->unsignedBigInteger('status_id');
             $table->foreign('status_id')->references('id')->on('part_statuses');
+            $table->unsignedBigInteger('type_id');
+            $table->foreign('type_id')->references('id')->on('part_types');
             $table->timestamps();
         });
     }

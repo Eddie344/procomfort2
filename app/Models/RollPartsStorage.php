@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class RollPartsStorage extends Model
 {
@@ -20,8 +21,14 @@ class RollPartsStorage extends Model
         return $this->belongsTo('App\Models\PartStatus', 'status_id');
     }
 
+    public function type()
+    {
+        return $this->belongsTo('App\Models\PartType', 'type_id');
+    }
+
     public function provider()
     {
         return $this->belongsTo('App\Models\Provider');
     }
+
 }

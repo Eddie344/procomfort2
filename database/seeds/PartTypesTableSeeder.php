@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class PartStatusesTableSeeder extends Seeder
+class PartTypesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,14 +12,12 @@ class PartStatusesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('part_statuses')->insert([
+        DB::table('part_types')->insert([
             [
-                'label' => 'В работе',
-                'color' => 'primary',
+                'label' => 'Рулон',
             ],
             [
-                'label' => 'Ожидание',
-                'color' => 'warning',
+                'label' => 'Фрагмент',
             ]
         ]);
     }

@@ -1,13 +1,13 @@
 $(function() {
 	//выбор даты периода
 	$('input[name="date_period"]').daterangepicker({
-		autoUpdateInput: false,
+		autoUpdateInput: true,
 		"parentEl": "#date_container",
   		locale: {
             format: 'DD/MM/YYYY',
             applyLabel: 'Принять',
             cancelLabel: 'Отмена',
-            invalidDateLabel: 'Выберите дату',
+            invalidDateLabel: 'Сортировка по датам',
             daysOfWeek: ['Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс', 'Пн'],
             monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
             firstDay: 1
