@@ -1,7 +1,7 @@
 $(function() {
 	//выбор даты периода
 	$('input[name="date_period"]').daterangepicker({
-		autoUpdateInput: true,
+		autoUpdateInput: false,
 		"parentEl": "#date_container",
   		locale: {
             format: 'DD/MM/YYYY',

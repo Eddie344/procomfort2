@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\RollActionStorageService;
+use App\Http\Services\RollPartsStorageService;
 use App\Models\RollActionsStorage;
 use App\Models\RollPartsStorage;
 use Illuminate\Http\Request;
@@ -81,27 +83,9 @@ class RollPartsStorageController extends Controller
     public function update(Request $request, $id)
     {
         $part = RollPartsStorage::find($id);
-        $part->lenght = $part->lenght - $request->lenght;
-        $part->save();
-
-        $roll_plus = new RollPartsStorage;
-        $roll_plus->roll_storage_id = $request->roll_storage_id;
-        $roll_plus->price = $request->price;
-        $roll_plus->provider_id = $request->provider;
-        $roll_plus->status_id = 1;
-        $roll_plus->type_id = 2;
-        $roll_plus->width = $part->width - $request->width;
-        $roll_plus->lenght = $request->lenght;
-        $roll_plus->save();
-
-        $action = new RollActionsStorage;
-        $action -> roll_storage_id = $request->roll_storage_id;
-        $action -> type_id = 2;
-        $action -> user_id = Auth::id();
-        $action -> reason = $request->reason;
-        $action -> width = $request->width;
-        $action -> lenght = $request->lenght;
-        $action->save();
+        RollPartsStorageService::cutPart($request, $part);
+        RollPartsStorageService::createPiece($request, $part->width);
+        RollActionStorageService::createAction($request);
         return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Изменения сохранены!', 'part_color' => 'success']);
     }
 
