@@ -37,8 +37,7 @@ class StorageController extends Controller
      */
     public function store(Request $request)
     {
-        Storage::create($request->all());
-        return redirect('admin/storage')->with(['status' => 'Предмет успешно добавлен в склад!', 'color' => 'success']);
+        //
     }
 
     /**
@@ -49,11 +48,7 @@ class StorageController extends Controller
      */
     public function show($id)
     {
-        $storage = Storage::find($id);
-        if($storage->type_id == '1')
-        {
-            return view('admin.storage.roll_show', compact('storage'));
-        }
+        //
     }
 
     /**
@@ -87,7 +82,6 @@ class StorageController extends Controller
      */
     public function destroy($id)
     {
-        Storage::destroy($id);
-        return redirect('admin/storage')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
+        //
     }
 }
