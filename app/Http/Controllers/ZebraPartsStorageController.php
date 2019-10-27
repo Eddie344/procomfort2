@@ -40,15 +40,15 @@ class ZebraPartsStorageController extends Controller
     public function store(Request $request)
     {
         ZebraPartsStorage::create($request->all());
-        $action = new ZebraPartsStorage;
-        $action -> roll_storage_id = $request->roll_storage_id;
+        $action = new ZebraActionsStorage;
+        $action -> zebra_storage_id = $request->zebra_storage_id;
         $action -> type_id = 1;
         $action -> user_id = Auth::id();
         $action -> reason = $request->reason;
         $action -> width = $request->width;
         $action -> lenght = $request->lenght;
         $action->save();
-        return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Партия успешно добавлена!', 'part_color' => 'success']);
+        return redirect(route('zebra.show', ['id' => $request->zebra_storage_id]))->with(['part_status' => 'Партия успешно добавлена!', 'part_color' => 'success']);
     }
 
     /**
@@ -86,7 +86,7 @@ class ZebraPartsStorageController extends Controller
         ZebraPartsStorageService::cutPart($request, $part);
         ZebraPartsStorageService::createPiece($request, $part->width);
         ZebraActionStorageService::createAction($request);
-        return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Изменения сохранены!', 'part_color' => 'success']);
+        return redirect(route('zebra.show', ['id' => $request->zebra_storage_id]))->with(['part_status' => 'Изменения сохранены!', 'part_color' => 'success']);
     }
 
     /**
@@ -99,14 +99,14 @@ class ZebraPartsStorageController extends Controller
     public function destroy(Request $request, $id)
     {
         $action = new ZebraActionsStorage;
-        $action -> roll_storage_id = $request->roll_storage_id;
-        $action -> type_id = 2;
+        $action -> zebra_storage_id = $request->zebra_storage_id;
+        $action -> type_id = $request->type_id;
         $action -> user_id = Auth::id();
         $action -> reason = $request->reason;
         $action -> width = $request->width;
         $action -> lenght = $request->lenght;
         $action->save();
         ZebraPartsStorage::destroy($id);
-        return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Предмет успешно удален!', 'part_color' => 'danger']);
+        return redirect(route('zebra.show', ['id' => $request->zebra_storage_id]))->with(['part_status' => 'Предмет успешно удален!', 'part_color' => 'danger']);
     }
 }

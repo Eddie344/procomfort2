@@ -87,7 +87,7 @@
                                     <a class="list-group-item" href="{{ route('zebra.index') }}">Ткани день-ночь</a>
                                     <a class="list-group-item" href="{{ route('vert.index') }}">Ткани вертикальные</a>
                                     <a class="list-group-item" href="{{ route('goriz.index') }}">Лента горизонтальная</a>
-                                    <a class="list-group-item" href="{{ route('metal.index') }}">Металл</a>
+                                    <a class="list-group-item" href="{{ route('metal.index') }}">Метал</a>
                                     <a class="list-group-item" href="{{ route('furn.index') }}">Фурнитура</a>
                                 </div>
                             </div>

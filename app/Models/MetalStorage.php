@@ -10,4 +10,13 @@ class MetalStorage extends Model
         'label',
     ];
 
+    public function scopeFilter($query)
+    {
+        if(request('label'))
+        {
+            $query->where('label', 'LIKE', '%'.request('label').'%');
+        }
+        return $query;
+    }
+
 }

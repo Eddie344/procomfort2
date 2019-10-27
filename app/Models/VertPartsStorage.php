@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ZebraPartsStorage extends Model
+class VertPartsStorage extends Model
 {
     protected $fillable = [
-        'status_id', 'type_id', 'width', 'lenght', 'price', 'provider_id', 'zebra_storage_id'
+        'status_id', 'lenght', 'price', 'provider_id', 'vert_storage_id'
     ];
 
-    public function zebraStorage()
+    public function vertStorage()
     {
-        return $this->belongsTo('App\Models\ZebraStorage', 'zebra_storage_id');
+        return $this->belongsTo('App\Models\VertStorage', 'vert_storage_id');
     }
 
     public function status()

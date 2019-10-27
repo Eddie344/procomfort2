@@ -10,4 +10,17 @@ class FurnStorage extends Model
         'label', 'unit',
     ];
 
+    public function scopeFilter($query)
+    {
+        if(request('label'))
+        {
+            $query->where('label', 'LIKE', '%'.request('label').'%');
+        }
+        if(request('unit'))
+        {
+            $query->where('unit', request('unit'));
+        }
+        return $query;
+    }
+
 }

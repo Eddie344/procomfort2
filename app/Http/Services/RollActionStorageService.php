@@ -14,7 +14,7 @@ class RollActionStorageService
     {
         $action = new RollActionsStorage;
         $action -> roll_storage_id = $request->roll_storage_id;
-        $action -> type_id = 2;
+        $action -> type_id = $request->type_id;
         $action -> user_id = Auth::id();
         $action -> reason = $request->reason;
         $action -> width = $request->width;

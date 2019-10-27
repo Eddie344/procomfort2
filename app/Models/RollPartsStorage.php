@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class RollPartsStorage extends Model
 {
     protected $fillable = [
-        'status_id', 'width', 'lenght', 'price', 'provider_id', 'roll_storage_id'
+        'status_id', 'type_id', 'width', 'lenght', 'price', 'provider_id', 'roll_storage_id'
     ];
 
     public function rollStorage()

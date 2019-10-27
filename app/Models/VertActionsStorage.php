@@ -5,15 +5,15 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class ZebraActionsStorage extends Model
+class VertActionsStorage extends Model
 {
     protected $fillable = [
-        'type_id', 'user_id', 'reason', 'width', 'lenght'
+        'type_id', 'user_id', 'reason', 'lenght'
     ];
 
-    public function zebraStorage()
+    public function vertStorage()
     {
-        return $this->belongsTo('App\Models\ZebraStorage', 'zebra_storage_id');
+        return $this->belongsTo('App\Models\VertStorage', 'vert_storage_id');
     }
 
     public function type()
@@ -47,6 +47,6 @@ class ZebraActionsStorage extends Model
 
     public function scopeIndex($query, $id)
     {
-        return $query->with(['type', 'user', 'zebraStorage'])->where('zebra_storage_id', $id)->orderBy('created_at', 'DESC');
+        return $query->with(['type', 'user', 'vertStorage'])->where('vert_storage_id', $id)->orderBy('created_at', 'DESC');
     }
 }

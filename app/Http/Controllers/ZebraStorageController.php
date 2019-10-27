@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ZebraActionsStorage;
+use App\Models\ZebraPartsStorage;
 use App\Models\ZebraStorage;
 use Illuminate\Http\Request;
 
@@ -49,7 +51,9 @@ class ZebraStorageController extends Controller
     public function show($id)
     {
         $zebra = ZebraStorage::find($id);
-        return view('admin.storage.zebra.show', compact('zebra'));
+        $parts = ZebraPartsStorage::with(['type', 'status', 'provider', 'zebraStorage'])->where('zebra_storage_id', $id)->orderBy('type_id')->get();
+        $actions = ZebraActionsStorage::index($id)->filter()->paginate('10');
+        return view('admin.storage.zebra.show', compact('zebra', 'parts', 'actions'));
     }
 
     /**
@@ -72,7 +76,9 @@ class ZebraStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $zebra = ZebraStorage::find($id);
+        $zebra->update($request->all());
+        return redirect(route('zebra.show', ['id' => $id]))->with('status', 'Изменения сохранены!');
     }
 
     /**

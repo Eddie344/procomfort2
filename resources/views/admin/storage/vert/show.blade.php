@@ -22,13 +22,13 @@
                     @endif
                     <dl class="row">
                         <dt class="col-sm-6">Наименование:</dt>
-                        <dd class="col-sm-6"><h4>{{ $zebra->label }}</h4></dd>
+                        <dd class="col-sm-6"><h4>{{ $vert->label }}</h4></dd>
 
                         <dt class="col-sm-6">Каталог:</dt>
-                        <dd class="col-sm-6">{{ $zebra->catalog->label }}</dd>
+                        <dd class="col-sm-6">{{ $vert->catalog->label }}</dd>
 
                         <dt class="col-sm-6">Категория:</dt>
-                        <dd class="col-sm-6">{{ $zebra->category->label }}</dd>
+                        <dd class="col-sm-6">{{ $vert->category->label }}</dd>
 
                     </dl>
                     <button type="button" class="btn btn-primary my-1" data-toggle="modal" data-target="#order_edit">
@@ -45,20 +45,20 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                {{ Form::open(['route' => ['zebra.update', $zebra->id], 'method' => 'put']) }}
+                                {{ Form::open(['route' => ['vert.update', $vert->id], 'method' => 'put']) }}
                                 {{ Form::token() }}
                                 <div class="modal-body">
                                     <div class="form-group">
                                         {{ Form::label('label', 'Наименование:') }}
-                                        {{ Form::text('label', $zebra->label, ['class' => 'form-control', 'required']) }}
+                                        {{ Form::text('label', $vert->label, ['class' => 'form-control', 'required']) }}
                                     </div>
                                     <div class="form-group">
                                         {{ Form::label('catalog_id', 'Каталог:') }}
-                                        {{ Form::select('catalog_id', \App\Models\Catalog::pluck('label','id'), $zebra->catalog_id, ['placeholder' => 'Выберите каталог...', 'class' => 'form-control', 'required'])}}
+                                        {{ Form::select('catalog_id', \App\Models\Catalog::pluck('label','id'), $vert->catalog_id, ['placeholder' => 'Выберите каталог...', 'class' => 'form-control', 'required'])}}
                                     </div>
                                     <div class="form-group">
                                         {{ Form::label('category_id', 'Категория:') }}
-                                        {{ Form::select('category_id', \App\Models\ZebraCategory::pluck('label', 'id'), $zebra->category_id, ['placeholder' => 'Выберите категорию...', 'class' => 'form-control', 'required'])}}
+                                        {{ Form::select('category_id', \App\Models\RollCategory::pluck('label', 'id'), $vert->category_id, ['placeholder' => 'Выберите категорию...', 'class' => 'form-control', 'required'])}}
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -86,11 +86,9 @@
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th scope="col">Ширина</th>
                             <th scope="col">Длина</th>
                             <th scope="col">Цена</th>
                             <th scope="col">Поставщик</th>
-                            <th scope="col">Тип</th>
                             <th scope="col">Статус</th>
                             <th scope="col">Действия</th>
                         </tr>
@@ -98,11 +96,9 @@
                         <tbody>
                         @foreach ($parts as $part)
                             <tr>
-                                <td>{{ $part->width }}</td>
                                 <td>{{ $part->lenght }}</td>
                                 <td>{{ $part->price }}</td>
                                 <td>{{ $part->provider->label }}</td>
-                                <td>{{ $part->type->label }}</td>
                                 <td><strong class="text-{{ $part->status->color }}">{{ $part->status->label }}</strong></td>
                                 <td>
                                     <a href="#" data-toggle="modal" data-target="#edit_{{ $part->id }}"><i class="fa fa-arrow-down text-secondary"></i></a>
@@ -116,17 +112,13 @@
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
                                                 </div>
-                                                {{ Form::open(['route' => ['zebra_part.update', $part->id], 'method' => 'put']) }}
+                                                {{ Form::open(['route' => ['vert_part.update', $part->id], 'method' => 'put']) }}
                                                 {{ Form::token() }}
-                                                {{ Form::hidden('zebra_storage_id', $zebra->id) }}
+                                                {{ Form::hidden('vert_storage_id', $vert->id) }}
                                                 {{ Form::hidden('price', $part->price) }}
                                                 {{ Form::hidden('provider', $part->provider_id) }}
                                                 {{ Form::hidden('type_id', 2) }}
                                                 <div class="modal-body">
-                                                    <div class="form-group">
-                                                        {{ Form::label('width', 'Ширина:') }}
-                                                        {{ Form::number('width', null, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
-                                                    </div>
                                                     <div class="form-group">
                                                         {{ Form::label('lenght', 'Длина:') }}
                                                         {{ Form::number('lenght', null, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
@@ -147,10 +139,9 @@
                                     <div class="modal fade" id="delete_{{ $part->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
                                             <div class="modal-content">
-                                                {{ Form::open(['route' => ['zebra_part.destroy' , $part->id], 'method' => 'delete']) }}
+                                                {{ Form::open(['route' => ['vert_part.destroy' , $part->id], 'method' => 'delete']) }}
                                                 {{ Form::token() }}
-                                                {{ Form::hidden('zebra_storage_id', $zebra->id) }}
-                                                {{ Form::hidden('width', $part->width) }}
+                                                {{ Form::hidden('vert_storage_id', $vert->id) }}
                                                 {{ Form::hidden('lenght', $part->lenght) }}
                                                 {{ Form::hidden('type_id', 2) }}
                                                 <div class="modal-header">
@@ -190,18 +181,10 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                {{ Form::open(['route' => 'zebra_part.store']) }}
+                                {{ Form::open(['route' => 'vert_part.store']) }}
                                 {{ Form::token() }}
-                                {{ Form::hidden('zebra_storage_id', $zebra->id) }}
+                                {{ Form::hidden('vert_storage_id', $vert->id) }}
                                 <div class="modal-body">
-                                    <div class="form-group">
-                                        {{ Form::label('type_id', 'Тип предмета:') }}
-                                        {{ Form::select('type_id', \App\Models\PartType::pluck('label','id'), null, ['placeholder' => 'Выберите тип предмета...', 'class' => 'form-control', 'required'])}}
-                                    </div>
-                                    <div class="form-group">
-                                        {{ Form::label('width', 'Ширина:') }}
-                                        {{ Form::number('width', null, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
-                                    </div>
                                     <div class="form-group">
                                         {{ Form::label('lenght', 'Длина:') }}
                                         {{ Form::number('lenght', null, ['class' => 'form-control', 'step' => "0.001", 'required']) }}
@@ -247,7 +230,7 @@
                         <div class="col-md-9">
                             <form id="date_container">
                                 <div class="input-group">
-                                    {{ Form::open(['route' => ['zebra.index', $zebra->id], 'method' => 'get']) }}
+                                    {{ Form::open(['route' => ['vert.index', $vert->id], 'method' => 'get']) }}
                                     {{ Form::select('type', \App\Models\StorageActionType::pluck('label','id'), Request::get('type'), ['placeholder' => 'Тип действия...', 'class' => 'form-control'])}}
                                     {{ Form::text('date_period', Request::get('date_period'), ['placeholder' => 'Сортировка по датам', 'class' => 'form-control', 'autocomplete' => 'off'])}}
                                     <div class="input-group-append">
@@ -268,7 +251,6 @@
                             <th scope="col">Действие</th>
                             <th scope="col">Пользователь</th>
                             <th scope="col">Причина</th>
-                            <th scope="col">Ширина</th>
                             <th scope="col">Длина</th>
                             <th scope="col">Дата</th>
                         </tr>
@@ -279,7 +261,6 @@
                                 <td class="table-{{ $action->type->color }}">{{ $action->type->label }}</td>
                                 <td>{{ $action->user->alias }}</td>
                                 <td>{{ $action->reason }}</td>
-                                <td>{{ $action->width }}</td>
                                 <td>{{ $action->lenght }}</td>
                                 <td>{{ $action->created_at }}</td>
                             </tr>

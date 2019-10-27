@@ -12,7 +12,7 @@ class ZebraPartsStorageService
     public static function createPiece(Request $request, $partWidth)
     {
         $roll = new ZebraPartsStorage;
-        $roll->roll_storage_id = $request->roll_storage_id;
+        $roll->zebra_storage_id = $request->zebra_storage_id;
         $roll->price = $request->price;
         $roll->provider_id = $request->provider;
         $roll->status_id = 1;

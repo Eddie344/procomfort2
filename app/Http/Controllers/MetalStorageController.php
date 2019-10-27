@@ -14,7 +14,7 @@ class MetalStorageController extends Controller
      */
     public function index()
     {
-        $metals = MetalStorage::paginate(10);
+        $metals = MetalStorage::filter()->paginate(10);
         return view('admin.storage.metal.index', compact('metals'));
     }
 

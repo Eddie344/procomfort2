@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\VertActionsStorage;
+use App\Models\VertPartsStorage;
 use App\Models\VertStorage;
 use Illuminate\Http\Request;
 
@@ -14,7 +16,7 @@ class VertStorageController extends Controller
      */
     public function index()
     {
-        $verts = VertStorage::with(['catalog', 'category'])->paginate('10');
+        $verts = VertStorage::with(['catalog', 'category'])->filter()->paginate('10');
         return view('admin.storage.vert.index', compact('verts'));
     }
 
@@ -49,7 +51,9 @@ class VertStorageController extends Controller
     public function show($id)
     {
         $vert = VertStorage::find($id);
-        return view('admin.storage.vert.show', compact('vert'));
+        $parts = VertPartsStorage::with(['type', 'status', 'provider', 'vertStorage'])->where('vert_storage_id', $id)->get();
+        $actions = VertActionsStorage::index($id)->filter()->paginate('10');
+        return view('admin.storage.vert.show', compact('vert', 'parts', 'actions'));
     }
 
     /**

@@ -128,6 +128,7 @@
                                                 {{ Form::hidden('roll_storage_id', $roll->id) }}
                                                 {{ Form::hidden('price', $part->price) }}
                                                 {{ Form::hidden('provider', $part->provider_id) }}
+                                                {{ Form::hidden('type_id', 2) }}
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         {{ Form::label('width', 'Ширина:') }}
@@ -158,6 +159,7 @@
                                                 {{ Form::hidden('roll_storage_id', $roll->id) }}
                                                 {{ Form::hidden('width', $part->width) }}
                                                 {{ Form::hidden('lenght', $part->lenght) }}
+                                                {{ Form::hidden('type_id', 2) }}
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="exampleModalLongTitle">Удаление</h5>
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -200,8 +202,8 @@
                                 {{ Form::hidden('roll_storage_id', $roll->id) }}
                                 <div class="modal-body">
                                     <div class="form-group">
-                                        {{ Form::label('status_id', 'Тип предмета:') }}
-                                        {{ Form::select('status_id', ['3' => 'Рулон', '2'=> 'Фрагмент'], null, ['placeholder' => 'Выберите тип предмета...', 'class' => 'form-control', 'required'])}}
+                                        {{ Form::label('type_id', 'Тип предмета:') }}
+                                        {{ Form::select('type_id', \App\Models\PartType::pluck('label','id'), null, ['placeholder' => 'Выберите тип предмета...', 'class' => 'form-control', 'required'])}}
                                     </div>
                                     <div class="form-group">
                                         {{ Form::label('width', 'Ширина:') }}
@@ -222,6 +224,10 @@
                                     <div class="form-group">
                                         {{ Form::label('reason', 'Причина:') }}
                                         {{ Form::text('reason', null, ['class' => 'form-control', 'required']) }}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ Form::label('status_id', 'Статус:') }}
+                                        {{ Form::select('status_id', \App\Models\PartStatus::pluck('label','id'), null, ['placeholder' => 'Выберите статус предмета...', 'class' => 'form-control', 'required'])}}
                                     </div>
 {{--                                    <div class="form-check">--}}
 {{--                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">--}}

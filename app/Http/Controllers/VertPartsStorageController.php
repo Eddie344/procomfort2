@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\RollActionStorageService;
-use App\Http\Services\RollPartsStorageService;
-use App\Models\RollActionsStorage;
-use App\Models\RollPartsStorage;
+use App\Http\Services\VertActionsStorageService;
+use App\Http\Services\VertPartsStorageService;
+use App\Models\VertActionsStorage;
+use App\Models\VertPartsStorage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class RollPartsStorageController extends Controller
+class VertPartsStorageController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -39,16 +39,15 @@ class RollPartsStorageController extends Controller
      */
     public function store(Request $request)
     {
-        RollPartsStorage::create($request->all());
-        $action = new RollActionsStorage;
-        $action -> roll_storage_id = $request->roll_storage_id;
+        VertPartsStorage::create($request->all());
+        $action = new VertActionsStorage;
+        $action -> vert_storage_id = $request->vert_storage_id;
         $action -> type_id = 1;
         $action -> user_id = Auth::id();
         $action -> reason = $request->reason;
-        $action -> width = $request->width;
         $action -> lenght = $request->lenght;
         $action->save();
-        return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Партия успешно добавлена!', 'part_color' => 'success']);
+        return redirect(route('vert.show', ['id' => $request->vert_storage_id]))->with(['part_status' => 'Партия успешно добавлена!', 'part_color' => 'success']);
     }
 
     /**
@@ -82,31 +81,28 @@ class RollPartsStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $part = RollPartsStorage::find($id);
-        RollPartsStorageService::cutPart($request, $part);
-        RollPartsStorageService::createPiece($request, $part->width);
-        RollActionStorageService::createAction($request);
-        return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Изменения сохранены!', 'part_color' => 'success']);
+        $part = VertPartsStorage::find($id);
+        VertPartsStorageService::cutPart($request, $part);
+        VertActionsStorageService::createAction($request);
+        return redirect(route('vert.show', ['id' => $request->vert_storage_id]))->with(['part_status' => 'Изменения сохранены!', 'part_color' => 'success']);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, $id)
     {
-        $action = new RollActionsStorage;
-        $action -> roll_storage_id = $request->roll_storage_id;
+        $action = new VertActionsStorage;
+        $action -> vert_storage_id = $request->vert_storage_id;
         $action -> type_id = $request->type_id;
         $action -> user_id = Auth::id();
         $action -> reason = $request->reason;
-        $action -> width = $request->width;
         $action -> lenght = $request->lenght;
         $action->save();
-        RollPartsStorage::destroy($id);
-        return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Предмет успешно удален!', 'part_color' => 'danger']);
+        VertPartsStorage::destroy($id);
+        return redirect(route('vert.show', ['id' => $request->vert_storage_id]))->with(['part_status' => 'Предмет успешно удален!', 'part_color' => 'danger']);
     }
 }
