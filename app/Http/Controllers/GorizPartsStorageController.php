@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\RollActionsStorageService;
-use App\Http\Services\RollPartsStorageService;
-use App\Models\RollActionsStorage;
-use App\Models\RollPartsStorage;
+use App\Http\Services\GorizActionsStorageService;
+use App\Http\Services\GorizPartsStorageService;
+use App\Models\GorizActionsStorage;
+use App\Models\GorizPartsStorage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class RollPartsStorageController extends Controller
+class GorizPartsStorageController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -39,16 +39,15 @@ class RollPartsStorageController extends Controller
      */
     public function store(Request $request)
     {
-        RollPartsStorage::create($request->all());
-        $action = new RollActionsStorage;
-        $action -> roll_storage_id = $request->roll_storage_id;
+        GorizPartsStorage::create($request->all());
+        $action = new GorizActionsStorage;
+        $action -> goriz_storage_id = $request->goriz_storage_id;
         $action -> type_id = 1;
         $action -> user_id = Auth::id();
         $action -> reason = $request->reason;
-        $action -> width = $request->width;
         $action -> lenght = $request->lenght;
         $action->save();
-        return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Партия успешно добавлена!', 'part_color' => 'success']);
+        return redirect(route('goriz.show', ['id' => $request->goriz_storage_id]))->with(['part_status' => 'Партия успешно добавлена!', 'part_color' => 'success']);
     }
 
     /**
@@ -82,31 +81,28 @@ class RollPartsStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $part = RollPartsStorage::find($id);
-        RollPartsStorageService::cutPart($request, $part);
-        RollPartsStorageService::createPiece($request, $part->width);
-        RollActionsStorageService::createAction($request);
-        return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Изменения сохранены!', 'part_color' => 'success']);
+        $part = GorizPartsStorage::find($id);
+        GorizPartsStorageService::cutPart($request, $part);
+        GorizActionsStorageService::createAction($request);
+        return redirect(route('goriz.show', ['id' => $request->goriz_storage_id]))->with(['part_status' => 'Изменения сохранены!', 'part_color' => 'success']);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, $id)
     {
-        $action = new RollActionsStorage;
-        $action -> roll_storage_id = $request->roll_storage_id;
+        $action = new GorizActionsStorage;
+        $action -> goriz_storage_id = $request->goriz_storage_id;
         $action -> type_id = $request->type_id;
         $action -> user_id = Auth::id();
         $action -> reason = $request->reason;
-        $action -> width = $request->width;
         $action -> lenght = $request->lenght;
         $action->save();
-        RollPartsStorage::destroy($id);
-        return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Предмет успешно удален!', 'part_color' => 'danger']);
+        GorizPartsStorage::destroy($id);
+        return redirect(route('goriz.show', ['id' => $request->goriz_storage_id]))->with(['part_status' => 'Предмет успешно удален!', 'part_color' => 'danger']);
     }
 }

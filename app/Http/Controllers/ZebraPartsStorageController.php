@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\ZebraActionStorageService;
+use App\Http\Services\ZebraActionsStorageService;
 use App\Http\Services\ZebraPartsStorageService;
 use App\Models\ZebraActionsStorage;
 use App\Models\ZebraPartsStorage;
@@ -85,7 +85,7 @@ class ZebraPartsStorageController extends Controller
         $part = ZebraPartsStorage::find($id);
         ZebraPartsStorageService::cutPart($request, $part);
         ZebraPartsStorageService::createPiece($request, $part->width);
-        ZebraActionStorageService::createAction($request);
+        ZebraActionsStorageService::createAction($request);
         return redirect(route('zebra.show', ['id' => $request->zebra_storage_id]))->with(['part_status' => 'Изменения сохранены!', 'part_color' => 'success']);
     }
 

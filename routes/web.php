@@ -36,8 +36,13 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         Route::resource('vert_part', 'VertPartsStorageController');
         Route::resource('vert', 'VertStorageController');
 
+        Route::resource('goriz_part', 'GorizPartsStorageController');
         Route::resource('goriz', 'GorizStorageController');
+
+        Route::resource('metal_part', 'MetalPartsStorageController');
         Route::resource('metal', 'MetalStorageController');
+
+        Route::resource('furn_part', 'FurnPartsStorageController');
         Route::resource('furn', 'FurnStorageController');
     });
 });

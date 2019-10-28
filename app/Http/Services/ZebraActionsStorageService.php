@@ -4,16 +4,16 @@
 namespace App\Http\Services;
 
 
-use App\Models\RollActionsStorage;
+use App\Models\ZebraActionsStorage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class RollActionStorageService
+class ZebraActionsStorageService
 {
     public static function createAction(Request $request)
     {
-        $action = new RollActionsStorage;
-        $action -> roll_storage_id = $request->roll_storage_id;
+        $action = new ZebraActionsStorage;
+        $action -> zebra_storage_id = $request->zebra_storage_id;
         $action -> type_id = $request->type_id;
         $action -> user_id = Auth::id();
         $action -> reason = $request->reason;

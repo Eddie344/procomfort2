@@ -22,13 +22,13 @@
                     @endif
                     <dl class="row">
                         <dt class="col-sm-6">Наименование:</dt>
-                        <dd class="col-sm-6"><h4>{{ $vert->label }}</h4></dd>
+                        <dd class="col-sm-6"><h4>{{ $goriz->label }}</h4></dd>
 
                         <dt class="col-sm-6">Каталог:</dt>
-                        <dd class="col-sm-6">{{ $vert->catalog->label }}</dd>
+                        <dd class="col-sm-6">{{ $goriz->catalog->label }}</dd>
 
                         <dt class="col-sm-6">Категория:</dt>
-                        <dd class="col-sm-6">{{ $vert->category->label }}</dd>
+                        <dd class="col-sm-6">{{ $goriz->category->label }}</dd>
 
                     </dl>
                     <button type="button" class="btn btn-primary my-1" data-toggle="modal" data-target="#order_edit">
@@ -45,20 +45,20 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                {{ Form::open(['route' => ['vert.update', $vert->id], 'method' => 'put']) }}
+                                {{ Form::open(['route' => ['goriz.update', $goriz->id], 'method' => 'put']) }}
                                 {{ Form::token() }}
                                 <div class="modal-body">
                                     <div class="form-group">
                                         {{ Form::label('label', 'Наименование:') }}
-                                        {{ Form::text('label', $vert->label, ['class' => 'form-control', 'required']) }}
+                                        {{ Form::text('label', $goriz->label, ['class' => 'form-control', 'required']) }}
                                     </div>
                                     <div class="form-group">
                                         {{ Form::label('catalog_id', 'Каталог:') }}
-                                        {{ Form::select('catalog_id', \App\Models\Catalog::pluck('label','id'), $vert->catalog_id, ['placeholder' => 'Выберите каталог...', 'class' => 'form-control', 'required'])}}
+                                        {{ Form::select('catalog_id', \App\Models\Catalog::pluck('label','id'), $goriz->catalog_id, ['placeholder' => 'Выберите каталог...', 'class' => 'form-control', 'required'])}}
                                     </div>
                                     <div class="form-group">
                                         {{ Form::label('category_id', 'Категория:') }}
-                                        {{ Form::select('category_id', \App\Models\VertCategory::pluck('label', 'id'), $vert->category_id, ['placeholder' => 'Выберите категорию...', 'class' => 'form-control', 'required'])}}
+                                        {{ Form::select('category_id', \App\Models\GorizCategory::pluck('label', 'id'), $goriz->category_id, ['placeholder' => 'Выберите категорию...', 'class' => 'form-control', 'required'])}}
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -112,9 +112,9 @@
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
                                                 </div>
-                                                {{ Form::open(['route' => ['vert_part.update', $part->id], 'method' => 'put']) }}
+                                                {{ Form::open(['route' => ['goriz_part.update', $part->id], 'method' => 'put']) }}
                                                 {{ Form::token() }}
-                                                {{ Form::hidden('vert_storage_id', $vert->id) }}
+                                                {{ Form::hidden('goriz_storage_id', $goriz->id) }}
                                                 {{ Form::hidden('price', $part->price) }}
                                                 {{ Form::hidden('provider', $part->provider_id) }}
                                                 {{ Form::hidden('type_id', 2) }}
@@ -139,9 +139,9 @@
                                     <div class="modal fade" id="delete_{{ $part->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
                                             <div class="modal-content">
-                                                {{ Form::open(['route' => ['vert_part.destroy' , $part->id], 'method' => 'delete']) }}
+                                                {{ Form::open(['route' => ['goriz_part.destroy' , $part->id], 'method' => 'delete']) }}
                                                 {{ Form::token() }}
-                                                {{ Form::hidden('vert_storage_id', $vert->id) }}
+                                                {{ Form::hidden('goriz_storage_id', $goriz->id) }}
                                                 {{ Form::hidden('lenght', $part->lenght) }}
                                                 {{ Form::hidden('type_id', 2) }}
                                                 <div class="modal-header">
@@ -181,9 +181,9 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                {{ Form::open(['route' => 'vert_part.store']) }}
+                                {{ Form::open(['route' => 'goriz_part.store']) }}
                                 {{ Form::token() }}
-                                {{ Form::hidden('vert_storage_id', $vert->id) }}
+                                {{ Form::hidden('goriz_storage_id', $goriz->id) }}
                                 <div class="modal-body">
                                     <div class="form-group">
                                         {{ Form::label('lenght', 'Длина:') }}
@@ -230,7 +230,7 @@
                         <div class="col-md-9">
                             <form id="date_container">
                                 <div class="input-group">
-                                    {{ Form::open(['route' => ['vert.index', $vert->id], 'method' => 'get']) }}
+                                    {{ Form::open(['route' => ['goriz.index', $goriz->id], 'method' => 'get']) }}
                                     {{ Form::select('type', \App\Models\StorageActionType::pluck('label','id'), Request::get('type'), ['placeholder' => 'Тип действия...', 'class' => 'form-control'])}}
                                     {{ Form::text('date_period', Request::get('date_period'), ['placeholder' => 'Сортировка по датам', 'class' => 'form-control', 'autocomplete' => 'off'])}}
                                     <div class="input-group-append">

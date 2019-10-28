@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GorizActionsStorage;
+use App\Models\GorizPartsStorage;
 use App\Models\GorizStorage;
 use Illuminate\Http\Request;
 
@@ -49,7 +51,9 @@ class GorizStorageController extends Controller
     public function show($id)
     {
         $goriz = GorizStorage::find($id);
-        return view('admin.storage.goriz.show', compact('goriz'));
+        $parts = GorizPartsStorage::with(['type', 'status', 'provider', 'gorizStorage'])->where('goriz_storage_id', $id)->get();
+        $actions = GorizActionsStorage::index($id)->filter()->paginate('10');
+        return view('admin.storage.goriz.show', compact('goriz', 'parts', 'actions'));
     }
 
     /**
