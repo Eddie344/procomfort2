@@ -17,9 +17,9 @@ class CreateZebraPartsStoragesTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('zebra_storage_id');
             $table->foreign('zebra_storage_id')->references('id')->on('zebra_storages')->onDelete('cascade');
-            $table->float('width');
-            $table->float('lenght');
-            $table->float('price');
+            $table->float('width', 8, 2);
+            $table->float('lenght', 8, 2);
+            $table->float('price', 8, 2);
             $table->unsignedBigInteger('provider_id');
             $table->foreign('provider_id')->references('id')->on('providers');
             $table->unsignedBigInteger('status_id');

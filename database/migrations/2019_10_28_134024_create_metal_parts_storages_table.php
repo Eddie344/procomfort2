@@ -17,8 +17,8 @@ class CreateMetalPartsStoragesTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('metal_storage_id');
             $table->foreign('metal_storage_id')->references('id')->on('metal_storages')->onDelete('cascade');
-            $table->float('lenght');
-            $table->float('price');
+            $table->float('lenght', 8, 2);
+            $table->float('price', 8, 2);
             $table->unsignedBigInteger('provider_id');
             $table->foreign('provider_id')->references('id')->on('providers');
             $table->unsignedBigInteger('status_id');

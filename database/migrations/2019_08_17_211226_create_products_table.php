@@ -26,9 +26,9 @@ class CreateProductsTable extends Migration
             $table->foreign('rule_type')->references('id')->on('product_rule_types');
             $table->float('rule_lenght');
 
-            $table->float('price');
-            $table->integer('width');
-            $table->integer('height');
+            $table->float('price', 8, 2);
+            $table->float('width', 8, 2);
+            $table->float('height', 8, 2);
             $table->text('note');
 
             $table->bigInteger('productable_id');

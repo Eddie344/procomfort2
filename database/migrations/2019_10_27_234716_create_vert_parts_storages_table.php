@@ -17,8 +17,8 @@ class CreateVertPartsStoragesTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('vert_storage_id');
             $table->foreign('vert_storage_id')->references('id')->on('vert_storages')->onDelete('cascade');
-            $table->float('lenght');
-            $table->float('price');
+            $table->float('lenght', 8, 2);
+            $table->float('price', 8, 2);
             $table->unsignedBigInteger('provider_id');
             $table->foreign('provider_id')->references('id')->on('providers');
             $table->unsignedBigInteger('status_id');

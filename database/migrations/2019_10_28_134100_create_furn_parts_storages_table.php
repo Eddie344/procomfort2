@@ -17,8 +17,8 @@ class CreateFurnPartsStoragesTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('furn_storage_id');
             $table->foreign('furn_storage_id')->references('id')->on('furn_storages')->onDelete('cascade');
-            $table->float('count');
-            $table->float('price');
+            $table->float('count', 8, 2);
+            $table->float('price', 8, 2);
             $table->unsignedBigInteger('provider_id');
             $table->foreign('provider_id')->references('id')->on('providers');
             $table->unsignedBigInteger('status_id');
