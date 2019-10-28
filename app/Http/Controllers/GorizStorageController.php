@@ -76,7 +76,9 @@ class GorizStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $goriz = GorizStorage::find($id);
+        $goriz->update($request->all());
+        return redirect(route('goriz.show', ['id' => $id]))->with('status', 'Изменения сохранены!');
     }
 
     /**

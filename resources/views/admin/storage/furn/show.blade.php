@@ -25,7 +25,7 @@
                         <dd class="col-sm-6"><h4>{{ $furn->label }}</h4></dd>
 
                         <dt class="col-sm-6">Единица измерения:</dt>
-                        <dd class="col-sm-6"><h4>{{ $furn->unit }}</h4></dd>
+                        <dd class="col-sm-6">{{ $furn->unit }}</dd>
 
                     </dl>
                     <button type="button" class="btn btn-primary my-1" data-toggle="modal" data-target="#order_edit">
@@ -42,7 +42,7 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                {{ Form::open(['route' => ['metal.update', $metal->id], 'method' => 'put']) }}
+                                {{ Form::open(['route' => ['furn.update', $furn->id], 'method' => 'put']) }}
                                 {{ Form::token() }}
                                 <div class="modal-body">
                                     <div class="form-group">
@@ -89,7 +89,7 @@
                         <tbody>
                         @foreach ($parts as $part)
                             <tr>
-                                <td>{{ $part->lenght }}{{ $furn->unit }}</td>
+                                <td>{{ $part->count }} {{ $furn->unit }}</td>
                                 <td>{{ $part->price }}</td>
                                 <td>{{ $part->provider->label }}</td>
                                 <td><strong class="text-{{ $part->status->color }}">{{ $part->status->label }}</strong></td>
@@ -135,7 +135,7 @@
                                                 {{ Form::open(['route' => ['furn_part.destroy' , $part->id], 'method' => 'delete']) }}
                                                 {{ Form::token() }}
                                                 {{ Form::hidden('furn_storage_id', $furn->id) }}
-                                                {{ Form::hidden('count', $part->lenght) }}
+                                                {{ Form::hidden('count', $part->count) }}
                                                 {{ Form::hidden('type_id', 2) }}
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="exampleModalLongTitle">Удаление</h5>
@@ -176,7 +176,7 @@
                                 </div>
                                 {{ Form::open(['route' => 'furn_part.store']) }}
                                 {{ Form::token() }}
-                                {{ Form::hidden('furn_storage_id', $goriz->id) }}
+                                {{ Form::hidden('furn_storage_id', $furn->id) }}
                                 <div class="modal-body">
                                     <div class="form-group">
                                         {{ Form::label('count', "Количество ($furn->unit):") }}
@@ -244,7 +244,7 @@
                             <th scope="col">Действие</th>
                             <th scope="col">Пользователь</th>
                             <th scope="col">Причина</th>
-                            <th scope="col">Длина</th>
+                            <th scope="col">Количетво</th>
                             <th scope="col">Дата</th>
                         </tr>
                         </thead>
@@ -254,7 +254,7 @@
                                 <td class="table-{{ $action->type->color }}">{{ $action->type->label }}</td>
                                 <td>{{ $action->user->alias }}</td>
                                 <td>{{ $action->reason }}</td>
-                                <td>{{ $action->count }}</td>
+                                <td>{{ $action->count }} {{ $furn->unit }}</td>
                                 <td>{{ $action->created_at }}</td>
                             </tr>
                         @endforeach

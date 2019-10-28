@@ -44,7 +44,7 @@
                                 <div class="modal-body">
                                     <div class="form-group">
                                         {{ Form::label('label', 'Наименование:') }}
-                                        {{ Form::text('label', $goriz->label, ['class' => 'form-control', 'required']) }}
+                                        {{ Form::text('label', $metal->label, ['class' => 'form-control', 'required']) }}
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -169,7 +169,7 @@
                                 </div>
                                 {{ Form::open(['route' => 'metal_part.store']) }}
                                 {{ Form::token() }}
-                                {{ Form::hidden('metal_storage_id', $goriz->id) }}
+                                {{ Form::hidden('metal_storage_id', $metal->id) }}
                                 <div class="modal-body">
                                     <div class="form-group">
                                         {{ Form::label('lenght', 'Длина:') }}

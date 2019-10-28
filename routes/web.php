@@ -28,22 +28,22 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         Route::get('/', 'StorageController@index')->name('storage.index');
 
         Route::resource('roll_part', 'RollPartsStorageController');
-        Route::resource('roll', 'RollStorageController');
+        Route::resource('roll', 'RollStorageController')->except(['create', 'edit']);
 
-        Route::resource('zebra_part', 'ZebraPartsStorageController');
-        Route::resource('zebra', 'ZebraStorageController');
+        Route::resource('zebra_part', 'ZebraPartsStorageController')->only(['store', 'update', 'destroy']);
+        Route::resource('zebra', 'ZebraStorageController')->except(['create', 'edit']);
 
-        Route::resource('vert_part', 'VertPartsStorageController');
-        Route::resource('vert', 'VertStorageController');
+        Route::resource('vert_part', 'VertPartsStorageController')->only(['store', 'update', 'destroy']);
+        Route::resource('vert', 'VertStorageController')->except(['create', 'edit']);
 
-        Route::resource('goriz_part', 'GorizPartsStorageController');
-        Route::resource('goriz', 'GorizStorageController');
+        Route::resource('goriz_part', 'GorizPartsStorageController')->only(['store', 'update', 'destroy']);
+        Route::resource('goriz', 'GorizStorageController')->except(['create', 'edit']);
 
-        Route::resource('metal_part', 'MetalPartsStorageController');
-        Route::resource('metal', 'MetalStorageController');
+        Route::resource('metal_part', 'MetalPartsStorageController')->only(['store', 'update', 'destroy']);
+        Route::resource('metal', 'MetalStorageController')->except(['create', 'edit']);
 
-        Route::resource('furn_part', 'FurnPartsStorageController');
-        Route::resource('furn', 'FurnStorageController');
+        Route::resource('furn_part', 'FurnPartsStorageController')->only(['store', 'update', 'destroy']);
+        Route::resource('furn', 'FurnStorageController')->except(['create', 'edit']);
     });
 });
 

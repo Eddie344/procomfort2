@@ -76,7 +76,9 @@ class VertStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $vert = VertStorage::find($id);
+        $vert->update($request->all());
+        return redirect(route('vert.show', ['id' => $id]))->with('status', 'Изменения сохранены!');
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FurnActionsStorage;
+use App\Models\FurnPartsStorage;
 use App\Models\FurnStorage;
 use Illuminate\Http\Request;
 
@@ -49,7 +51,9 @@ class FurnStorageController extends Controller
     public function show($id)
     {
         $furn = FurnStorage::find($id);
-        return view('admin.storage.furn.show', compact('furn'));
+        $parts = FurnPartsStorage::with(['type', 'status', 'provider', 'furnStorage'])->where('furn_storage_id', $id)->get();
+        $actions = FurnActionsStorage::index($id)->filter()->paginate('10');
+        return view('admin.storage.furn.show', compact('furn', 'parts', 'actions'));
     }
 
     /**
@@ -72,7 +76,9 @@ class FurnStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $furn = FurnStorage::find($id);
+        $furn->update($request->all());
+        return redirect(route('furn.show', ['id' => $id]))->with('status', 'Изменения сохранены!');
     }
 
     /**

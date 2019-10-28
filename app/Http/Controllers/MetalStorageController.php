@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MetalActionsStorage;
+use App\Models\MetalPartsStorage;
 use App\Models\MetalStorage;
 use Illuminate\Http\Request;
 
@@ -49,7 +51,9 @@ class MetalStorageController extends Controller
     public function show($id)
     {
         $metal = MetalStorage::find($id);
-        return view('admin.storage.metal.show', compact('metal'));
+        $parts = MetalPartsStorage::with(['type', 'status', 'provider', 'metalStorage'])->where('metal_storage_id', $id)->get();
+        $actions = MetalActionsStorage::index($id)->filter()->paginate('10');
+        return view('admin.storage.metal.show', compact('metal', 'parts', 'actions'));
     }
 
     /**
@@ -72,7 +76,9 @@ class MetalStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $metal = MetalStorage::find($id);
+        $metal->update($request->all());
+        return redirect(route('metal.show', ['id' => $id]))->with('status', 'Изменения сохранены!');
     }
 
     /**
