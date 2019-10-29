@@ -45,6 +45,9 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         Route::resource('furn_part', 'FurnPartsStorageController')->only(['store', 'update', 'destroy']);
         Route::resource('furn', 'FurnStorageController')->except(['create', 'edit']);
     });
+    Route::prefix('price')->group(function () {
+        Route::view('/', 'admin.prices.roll.index')->name('price.index');
+    });
 });
 
 Route::prefix('cabinet')->middleware('islogged', 'iscustomer')->group(function () {

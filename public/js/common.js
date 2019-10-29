@@ -34,11 +34,25 @@ $(function() {
             firstDay: 1
         }
 	});
-
 });
 
 
 $(document).ready(function() {
+    //Bootstrap submenu
+    $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
+        if (!$(this).next().hasClass('show')) {
+            $(this).parents('.dropdown-menu').first().find('.show').removeClass('show');
+        }
+        var $subMenu = $(this).next('.dropdown-menu');
+        $subMenu.toggleClass('show');
+
+
+        $(this).parents('li.nav-item.dropdown.show').on('hidden.bs.dropdown', function(e) {
+            $('.dropdown-submenu .show').removeClass('show');
+        });
+        return false;
+    });
+
 	//Изделие горизонт добавление
 	$('#goriz_rascvetka').bind('change',function(){
 	 	var value = $(this).val();

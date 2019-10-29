@@ -36,10 +36,10 @@
             </a>
 
             <div class="dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle user-dropdown" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-user"></i>{{ Auth::user()->name }}
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <div class="dropdown-menu user-dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="#"><i class="fa fa-cog"></i>Настройки</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{{ route('logout') }}"
@@ -104,7 +104,7 @@
                                         </a>
                                         <div id="collapse5" class="collapse" aria-labelledby="heading5" data-parent="#sidebar-accordion">
                                             <div class="list-group">
-                                                <a class="list-group-item price-padding" href="price_roll_mini.html">Mini</a>
+                                                <a class="list-group-item price-padding" href="{{ route('price.index') }}">Mini</a>
                                                 <a class="list-group-item price-padding" href="#">UNI-1</a>
                                                 <a class="list-group-item price-padding" href="#">UNI-2</a>
                                                 <a class="list-group-item price-padding" href="#">D-25</a>
