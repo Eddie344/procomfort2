@@ -2,7 +2,7 @@
 
 @section('content')
     <h2 class="mb-4">Прайсы</h2>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -14,44 +14,23 @@
                         Рулонные шторы
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        @foreach($roll_constructions as $roll_construction)
                         <li class="dropdown-submenu">
-                            <a class="dropdown-item dropdown-toggle" href="#">Mini</a>
+                            <a class="dropdown-item dropdown-toggle" href="#">{{ $roll_construction->label }}</a>
                             <ul class="dropdown-menu">
+                                @foreach($catalogs as $catalog)
                                 <li class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle" href="#">Амиго</a>
+                                    <a class="dropdown-item dropdown-toggle" href="#">{{ $catalog->label }}</a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Категория 1</a></li>
-                                        <li><a class="dropdown-item" href="#">Категория 2</a></li>
+                                        @foreach($roll_categories as $roll_category)
+                                            <li><a class="dropdown-item" href="#">Категория {{ $roll_category->label }}</a></li>
+                                        @endforeach
                                     </ul>
                                 </li>
-                                <li class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle" href="#">Second subsubmenu</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Subsubmenu action</a></li>
-                                        <li><a class="dropdown-item" href="#">Another subsubmenu action</a></li>
-                                    </ul>
-                                </li>
+                                @endforeach
                             </ul>
                         </li>
-                        <li class="dropdown-submenu">
-                            <a class="dropdown-item dropdown-toggle" href="#">UNI-1</a>
-                            <ul class="dropdown-menu">
-                                <li class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle" href="#">Амиго</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Категория 1</a></li>
-                                        <li><a class="dropdown-item" href="#">Категория 2</a></li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle" href="#">Межароль</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Категория 1</a></li>
-                                        <li><a class="dropdown-item" href="#">Категория 2</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
+                        @endforeach
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -59,29 +38,23 @@
                         День-ночь
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        @foreach($zebra_constructions as $zebra_construction)
                         <li class="dropdown-submenu">
-                            <a class="dropdown-item dropdown-toggle" href="#">Submenu</a>
+                            <a class="dropdown-item dropdown-toggle" href="#">{{ $zebra_construction->label }}</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Submenu action</a></li>
-                                <li><a class="dropdown-item" href="#">Another submenu action</a></li>
+                                @foreach($catalogs as $catalog)
                                 <li class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle" href="#">Subsubmenu</a>
+                                    <a class="dropdown-item dropdown-toggle" href="#">{{ $catalog->label }}</a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Subsubmenu action</a></li>
-                                        <li><a class="dropdown-item" href="#">Another subsubmenu action</a></li>
+                                        @foreach($zebra_categories as $zebra_category)
+                                        <li><a class="dropdown-item" href="#">Категория {{ $zebra_category->label }}</a></li>
+                                        @endforeach
                                     </ul>
                                 </li>
-                                <li class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle" href="#">Second subsubmenu</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Subsubmenu action</a></li>
-                                        <li><a class="dropdown-item" href="#">Another subsubmenu action</a></li>
-                                    </ul>
-                                </li>
+                                @endforeach
                             </ul>
                         </li>
+                        @endforeach
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
