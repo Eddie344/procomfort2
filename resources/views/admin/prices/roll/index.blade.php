@@ -16,17 +16,9 @@
             <th scope="row" colspan="11">Ширина</th>
         </tr>
         <tr>
-            <th scope="col">0.5</th>
-            <th scope="col">0.6</th>
-            <th scope="col">0.7</th>
-            <th scope="col">0.8</th>
-            <th scope="col">0.9</th>
-            <th scope="col">1.0</th>
-            <th scope="col">1.1</th>
-            <th scope="col">1.2</th>
-            <th scope="col">1.3</th>
-            <th scope="col">1.4</th>
-            <th scope="col">1.5</th>
+            @foreach($widths as $width)
+                <th scope="col">{{ $width->width }}</th>
+            @endforeach
         </tr>
         </thead>
         <tbody>

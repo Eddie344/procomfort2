@@ -2,7 +2,7 @@
 
 @section('content')
     <h2 class="mb-4">Прайсы</h2>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -23,7 +23,7 @@
                                     <a class="dropdown-item dropdown-toggle" href="#">{{ $catalog->label }}</a>
                                     <ul class="dropdown-menu">
                                         @foreach($roll_categories as $roll_category)
-                                            <li><a class="dropdown-item" href="#">Категория {{ $roll_category->label }}</a></li>
+                                            <li><a class="dropdown-item" href="{{ route('roll.index', ['construction_id' => $roll_construction->id, 'catalog_id' => $catalog->id, 'category_id' => $roll_category->id]) }}">Категория {{ $roll_category->label }}</a></li>
                                         @endforeach
                                     </ul>
                                 </li>

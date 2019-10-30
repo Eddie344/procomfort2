@@ -6,5 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class RollPrice extends Model
 {
-    //
+    public function scopeFilter($query)
+    {
+        if(request('construction_id'))
+        {
+            $query->where('construction_id', request('construction_id'));
+        }
+        if(request('catalog_id'))
+        {
+            $query->where('catalog_id', request('catalog_id'));
+        }
+        if(request('category_id'))
+        {
+            $query->where('category_id', request('category_id'));
+        }
+        return $query;
+    }
 }

@@ -38,6 +38,11 @@ class DatabaseSeeder extends Seeder
             RollPartsStoragesTableSeeder::class,
             StorageActionTypesTableSeeder::class,
             RollActionsStoragesTableSeeder::class,
+            RollConstructionsTableSeeder::class,
+            ZebraConstructionsTableSeeder::class,
+            RollPriceWidthsSeeder::class,
+            RollPriceHeightsSeeder::class,
+            RollPricesTableSeeder::class,
         ]);
     }
 }

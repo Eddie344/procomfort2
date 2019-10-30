@@ -47,6 +47,7 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
     });
     Route::prefix('price')->group(function () {
         Route::view('/', 'admin.prices.roll.index')->name('price.index');
+        Route::resource('roll', 'RollPriceController')->except(['create', 'edit']);
     });
 });
 
