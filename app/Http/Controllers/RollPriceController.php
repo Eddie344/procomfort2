@@ -16,10 +16,11 @@ class RollPriceController extends Controller
      */
     public function index()
     {
-        $prices = RollPrice::filter()->get();
+        $prices = RollPrice::filter()->get()->keyBy('width_id')->map->keyBy('height_id');
+        dd($prices);
         $widths = RollPriceWidth::all();
         $heights = RollPriceHeight::all();
-        return view('admin.prices.roll.index', compact('prices', 'widths', 'heights'));
+        //return view('admin.prices.roll.index', compact('prices', 'widths', 'heights'));
     }
 
     /**
