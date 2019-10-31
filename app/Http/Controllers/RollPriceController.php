@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RollPrice;
-use App\Models\RollPriceHeight;
-use App\Models\RollPriceWidth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class RollPriceController extends Controller
 {
@@ -18,8 +15,8 @@ class RollPriceController extends Controller
     public function index()
     {
         $prices = RollPrice::filter()->get()->groupBy(['width', 'height'])->toArray();
-        dd($prices);
-        //return view('admin.prices.roll.index', compact('prices', 'widths', 'heights'));
+        $widths = array_keys($prices);
+        return view('admin.prices.roll.index', compact('prices', 'widths'));
     }
 
     /**

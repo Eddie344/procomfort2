@@ -17,7 +17,7 @@
         </tr>
         <tr>
             @foreach($widths as $width)
-                <th scope="col">{{ $width->width }}</th>
+                <th scope="col">{{ $width }}</th>
             @endforeach
         </tr>
         </thead>
