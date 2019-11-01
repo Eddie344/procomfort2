@@ -16,16 +16,17 @@
             <th scope="row" colspan="11">Ширина</th>
         </tr>
         <tr>
-            @foreach($widths as $width)
-                <th scope="col">{{ $width }}</th>
+            @foreach($widths as $key => $value)
+                        <th scope="col">{{ $key }}</th>
             @endforeach
         </tr>
         </thead>
         <tbody>
-            @foreach($prices as $price)
+            @foreach($heights as $key1 => $value1)
                 <tr>
-                    @foreach($price as $key => $value)
-                        <td>{{ $value }}</td>
+                    <td>{{ $key1 }}</td>
+                    @foreach($value1 as $value2)
+                        <td>{{ $value2['price'] }}</td>
                     @endforeach
                 </tr>
             @endforeach

@@ -14,10 +14,11 @@ class RollPriceController extends Controller
      */
     public function index()
     {
-        $prices = RollPrice::filter()->get()->groupBy('height')->map->keyBy('width')->toArray();
+        $prices = RollPrice::filter()->get();
+        $heights = $prices->groupBy('height')->map->keyBy('width')->toArray();
+        $widths = $prices->groupBy('width')->map->keyBy('height')->toArray();
         //dd($prices);
-        $widths = array_keys($prices);
-        return view('admin.prices.roll.index', compact('prices', 'widths'));
+        return view('admin.prices.roll.index', compact('heights', 'widths'));
     }
 
     /**
