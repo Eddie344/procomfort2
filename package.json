@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "@onekiloparsec/vue-xeditable": "^1.2.2"
+        "@onekiloparsec/vue-xeditable": "^1.2.2",
+        "vue-xeditable": "^1.1.2"
     }
 }

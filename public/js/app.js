@@ -1752,16 +1752,48 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['heightdata', 'widthdata'],
   name: "PriceTableComponent",
-  mounted: function mounted() {
-    this.update();
+  props: ['heightdata', 'widthdata'],
+  data: function data() {
+    return {
+      heights: this.heightdata,
+      newRow: '',
+      newColumn: ''
+    };
+  },
+  mounted: function mounted() {//this.update()
   },
   methods: {
     update: function update() {
       console.log(this.heightdata);
-    }
+    },
+    addRow: function addRow() {
+      // var row = this.heights[this.heights.length - 1];
+      // Vue.set(this.heights, row);
+      var rowLength = JSON.parse(JSON.stringify(this.heights[1]));
+      var rowCopy = JSON.parse(JSON.stringify(this.heights[1]));
+      console.log(rowCopy); //var rowCopy = this.heights[this.heights.length - 1];
+
+      Vue.set(this.heights, rowCopy);
+    },
+    addColumn: function addColumn() {}
   }
 });
 
@@ -37120,47 +37152,171 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "table",
-    { staticClass: "table table-bordered", attrs: { id: "mtable" } },
-    [
-      _c("thead", [
-        _vm._m(0),
+  return _c("div", [
+    _c("div", { staticClass: "row" }, [
+      _c(
+        "form",
+        {
+          staticClass: "input-group mb-3 col-md-4",
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.addRow($event)
+            }
+          }
+        },
+        [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.newRow,
+                expression: "newRow"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { type: "number", placeholder: "Введите длину" },
+            domProps: { value: _vm.newRow },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.newRow = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _vm._m(0)
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "form",
+        {
+          staticClass: "input-group mb-3 col-md-4",
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.addColumn($event)
+            }
+          }
+        },
+        [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.newColumn,
+                expression: "newColumn"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { type: "number", placeholder: "Введите ширину" },
+            domProps: { value: _vm.newColumn },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.newColumn = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _vm._m(1)
+        ]
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "table",
+      { staticClass: "table table-bordered", attrs: { id: "mtable" } },
+      [
+        _c("thead", [
+          _vm._m(2),
+          _vm._v(" "),
+          _c(
+            "tr",
+            _vm._l(_vm.widthdata, function(width) {
+              return _c("th", { attrs: { scope: "col" } }, [
+                _vm._v(_vm._s(width))
+              ])
+            }),
+            0
+          )
+        ]),
         _vm._v(" "),
         _c(
-          "tr",
-          _vm._l(_vm.widthdata, function(width) {
-            return _c("th", { attrs: { scope: "col" } }, [
-              _vm._v(_vm._s(width))
-            ])
+          "tbody",
+          _vm._l(_vm.heights, function(price1, key) {
+            return _c(
+              "tr",
+              [
+                _c("th", { attrs: { scope: "row" } }, [_vm._v(_vm._s(key))]),
+                _vm._v(" "),
+                _vm._l(price1, function(price2) {
+                  return _c("td", [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: price2.price,
+                          expression: "price2.price"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "number", size: "1" },
+                      domProps: { value: price2.price },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(price2, "price", $event.target.value)
+                        }
+                      }
+                    })
+                  ])
+                })
+              ],
+              2
+            )
           }),
           0
         )
-      ]),
-      _vm._v(" "),
-      _c(
-        "tbody",
-        _vm._l(_vm.heightdata, function(price1, key) {
-          return _c(
-            "tr",
-            [
-              _c("td", [_vm._v(_vm._s(key))]),
-              _vm._v(" "),
-              _vm._l(price1, function(price2) {
-                return _c("td", { attrs: { contenteditable: "" } }, [
-                  _vm._v("\n            " + _vm._s(price2.price) + "\n        ")
-                ])
-              })
-            ],
-            2
-          )
-        }),
-        0
-      )
-    ]
-  )
+      ]
+    )
+  ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-append" }, [
+      _c(
+        "button",
+        { staticClass: "btn btn-success", attrs: { type: "submit" } },
+        [_vm._v("Добавить строку")]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-append" }, [
+      _c(
+        "button",
+        { staticClass: "btn btn-success", attrs: { type: "submit" } },
+        [_vm._v("Добавить колонку")]
+      )
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
