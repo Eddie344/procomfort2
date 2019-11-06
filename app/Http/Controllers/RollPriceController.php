@@ -16,8 +16,8 @@ class RollPriceController extends Controller
     {
         $prices = RollPrice::filter()->get();
         $heights = $prices->groupBy('height')->map->keyBy('width')->toArray();
-        $widths = $prices->groupBy('width')->map->keyBy('height')->toArray();
-        //dd($prices);
+        $widths = $prices->groupBy('width')->map->keyBy('height')->keys()->toArray();
+        //dd($heights);
         return view('admin.prices.roll.index', compact('heights', 'widths'));
     }
 
