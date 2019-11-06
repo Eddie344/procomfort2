@@ -17,14 +17,14 @@
         </tr>
         <tr>
             @foreach($widths as $key => $value)
-                        <th scope="col">{{ $key }}</th>
+                <th scope="col">{{ $key }}</th>
             @endforeach
         </tr>
         </thead>
         <tbody>
             @foreach($heights as $key1 => $value1)
                 <tr>
-                    <td>{{ $key1 }}</td>
+                    <th scope="row">{{ $key1 }}</th>
                     @foreach($value1 as $value2)
                         <td>{{ $value2['price'] }}</td>
                     @endforeach
