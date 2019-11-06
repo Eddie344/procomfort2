@@ -1770,28 +1770,36 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "PriceTableComponent",
-  props: ['heightdata', 'widthdata'],
+  props: {
+    heightdata: Object,
+    widthdata: Array
+  },
   data: function data() {
     return {
-      heights: this.heightdata,
+      heights: [],
       newRow: '',
       newColumn: ''
     };
   },
-  mounted: function mounted() {//this.update()
+  mounted: function mounted() {
+    this.setHeights();
   },
   methods: {
+    setHeights: function setHeights() {
+      console.log(this.heightdata.length); // for (let i = 0; i < this.heightdata.length; i++) {
+      //     console.log(i);
+      // }
+    },
     update: function update() {
       console.log(this.heightdata);
     },
-    addRow: function addRow() {
-      // var row = this.heights[this.heights.length - 1];
+    addRow: function addRow() {// var row = this.heights[this.heights.length - 1];
       // Vue.set(this.heights, row);
-      var rowLength = JSON.parse(JSON.stringify(this.heights[1]));
-      var rowCopy = JSON.parse(JSON.stringify(this.heights[1]));
-      console.log(rowCopy); //var rowCopy = this.heights[this.heights.length - 1];
-
-      Vue.set(this.heights, rowCopy);
+      // var rowLength = JSON.parse(JSON.stringify(this.heights[1]));
+      // var rowCopy = JSON.parse(JSON.stringify(this.heights[1]));
+      // console.log(rowCopy);
+      // //var rowCopy = this.heights[this.heights.length - 1];
+      // Vue.set(this.heights, rowCopy);
     },
     addColumn: function addColumn() {}
   }

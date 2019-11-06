@@ -39,32 +39,38 @@
 <script>
     export default {
         name: "PriceTableComponent",
-        props:[
-            'heightdata',
-            'widthdata',
-        ],
+        props:{
+            heightdata: Object,
+            widthdata: Array,
+        },
         data: function () {
             return {
-                heights: this.heightdata,
+                heights: [],
                 newRow:'',
                 newColumn:'',
             }
         },
         mounted(){
-            //this.update()
+            this.setHeights()
         },
         methods:{
+            setHeights: function() {
+                console.log(this.heightdata.length);
+                // for (let i = 0; i < this.heightdata.length; i++) {
+                //     console.log(i);
+                // }
+            },
             update:function() {
                 console.log(this.heightdata);
             },
             addRow(){
                 // var row = this.heights[this.heights.length - 1];
                 // Vue.set(this.heights, row);
-                var rowLength = JSON.parse(JSON.stringify(this.heights[1]));
-                var rowCopy = JSON.parse(JSON.stringify(this.heights[1]));
-                console.log(rowCopy);
-                //var rowCopy = this.heights[this.heights.length - 1];
-                Vue.set(this.heights, rowCopy);
+                // var rowLength = JSON.parse(JSON.stringify(this.heights[1]));
+                // var rowCopy = JSON.parse(JSON.stringify(this.heights[1]));
+                // console.log(rowCopy);
+                // //var rowCopy = this.heights[this.heights.length - 1];
+                // Vue.set(this.heights, rowCopy);
             },
             addColumn(){
 
