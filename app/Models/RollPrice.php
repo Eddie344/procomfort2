@@ -12,6 +12,9 @@ class RollPrice extends Model
         'price' => 'string',
     ];
 
+    protected $guarded = [];
+
+    public $timestamps = false;
     public function scopeFilter($query)
     {
         if(request('construction_id'))

@@ -24,7 +24,6 @@ class CreateRollPricesTable extends Migration
             $table->float('width',8, 2);
             $table->float('height',8, 2);
             $table->float('price', 8, 2);
-            $table->timestamps();
         });
     }
 

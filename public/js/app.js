@@ -1768,40 +1768,80 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "PriceTableComponent",
   props: {
-    heightdata: Object,
-    widthdata: Array
+    pricedata: Object
   },
   data: function data() {
     return {
-      heights: [],
+      prices: this.pricedata,
+      widths: [],
       newRow: '',
       newColumn: ''
     };
   },
   mounted: function mounted() {
-    this.setHeights();
+    //console.log(this.heights[Object.keys(this.heights).length]);
+    this.getUniqWidths(this.prices);
   },
   methods: {
-    setHeights: function setHeights() {
-      console.log(this.heightdata.length); // for (let i = 0; i < this.heightdata.length; i++) {
-      //     console.log(i);
-      // }
-    },
     update: function update() {
-      console.log(this.heightdata);
+      console.log(this.pricedata);
     },
-    addRow: function addRow() {// var row = this.heights[this.heights.length - 1];
-      // Vue.set(this.heights, row);
-      // var rowLength = JSON.parse(JSON.stringify(this.heights[1]));
-      // var rowCopy = JSON.parse(JSON.stringify(this.heights[1]));
-      // console.log(rowCopy);
-      // //var rowCopy = this.heights[this.heights.length - 1];
-      // Vue.set(this.heights, rowCopy);
+    addRow: function addRow() {
+      if (this.newRow) {
+        this.prices[this.newRow] = {};
+
+        for (var key in this.widths) {
+          this.prices[this.newRow][this.widths[key]] = {
+            catalog_id: 1,
+            category_id: 1,
+            construction_id: 1,
+            height: this.newRow,
+            width: this.widths[key],
+            price: '0'
+          };
+        }
+
+        this.newRow = '';
+      }
     },
-    addColumn: function addColumn() {}
+    addColumn: function addColumn() {
+      if (this.newColumn) {
+        for (var key in this.prices) {
+          this.prices[key][this.newColumn] = {
+            catalog_id: 1,
+            category_id: 1,
+            construction_id: 1,
+            height: key,
+            width: this.newColumn,
+            price: '0'
+          };
+        }
+
+        this.newColumn = '';
+        this.getUniqWidths(this.prices);
+      }
+    },
+    getUniqWidths: function getUniqWidths(obj) {
+      for (var key in obj) {
+        var heights = Object.keys(obj[key]);
+        Object.assign(this.widths, heights);
+      }
+
+      this.widths = JSON.parse(JSON.stringify(this.widths));
+    },
+    save: function save() {
+      axios.put('/admin/price/roll/update', this.prices).then(function (response) {
+        console.log(response);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
   }
 });
 
@@ -37184,7 +37224,11 @@ var render = function() {
               }
             ],
             staticClass: "form-control",
-            attrs: { type: "number", placeholder: "Введите длину" },
+            attrs: {
+              type: "number",
+              placeholder: "Введите длину",
+              required: ""
+            },
             domProps: { value: _vm.newRow },
             on: {
               input: function($event) {
@@ -37222,7 +37266,11 @@ var render = function() {
               }
             ],
             staticClass: "form-control",
-            attrs: { type: "number", placeholder: "Введите ширину" },
+            attrs: {
+              type: "number",
+              placeholder: "Введите ширину",
+              required: ""
+            },
             domProps: { value: _vm.newColumn },
             on: {
               input: function($event) {
@@ -37248,7 +37296,7 @@ var render = function() {
           _vm._v(" "),
           _c(
             "tr",
-            _vm._l(_vm.widthdata, function(width) {
+            _vm._l(_vm.widths, function(width) {
               return _c("th", { attrs: { scope: "col" } }, [
                 _vm._v(_vm._s(width))
               ])
@@ -37259,32 +37307,32 @@ var render = function() {
         _vm._v(" "),
         _c(
           "tbody",
-          _vm._l(_vm.heights, function(price1, key) {
+          _vm._l(_vm.prices, function(h, key) {
             return _c(
               "tr",
               [
                 _c("th", { attrs: { scope: "row" } }, [_vm._v(_vm._s(key))]),
                 _vm._v(" "),
-                _vm._l(price1, function(price2) {
+                _vm._l(h, function(w) {
                   return _c("td", [
                     _c("input", {
                       directives: [
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: price2.price,
-                          expression: "price2.price"
+                          value: w.price,
+                          expression: "w.price"
                         }
                       ],
                       staticClass: "form-control",
-                      attrs: { type: "number", size: "1" },
-                      domProps: { value: price2.price },
+                      attrs: { type: "number", step: "0.01" },
+                      domProps: { value: w.price },
                       on: {
                         input: function($event) {
                           if ($event.target.composing) {
                             return
                           }
-                          _vm.$set(price2, "price", $event.target.value)
+                          _vm.$set(w, "price", $event.target.value)
                         }
                       }
                     })
@@ -37295,6 +37343,25 @@ var render = function() {
             )
           }),
           0
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "form",
+      {
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.save($event)
+          }
+        }
+      },
+      [
+        _c(
+          "button",
+          { staticClass: "btn btn-success", attrs: { type: "submit" } },
+          [_vm._v("Сохранить")]
         )
       ]
     )
@@ -49516,9 +49583,13 @@ webpackContext.id = "./resources/js sync recursive \\.vue$/";
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
   \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -49527,6 +49598,7 @@ webpackContext.id = "./resources/js sync recursive \\.vue$/";
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

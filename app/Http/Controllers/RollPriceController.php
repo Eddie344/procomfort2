@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\RollPrice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class RollPriceController extends Controller
 {
@@ -14,11 +16,9 @@ class RollPriceController extends Controller
      */
     public function index()
     {
-        $prices = RollPrice::filter()->get();
-        $heights = $prices->groupBy('height')->map->keyBy('width')->toArray();
-        $widths = $prices->groupBy('width')->map->keyBy('height')->keys()->toArray();
-        //dd($heights);
-        return view('admin.prices.roll.index', compact('heights', 'widths'));
+        $prices = RollPrice::filter()->get()->groupBy('height')->map->keyBy('width')->except('id');
+        //dd($prices);
+        return view('admin.prices.roll.index', compact('prices'));
     }
 
     /**
@@ -71,9 +71,27 @@ class RollPriceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $array = $request->all();
+        $flattened = collect($array)->flatten(1)->toArray();
+        Arr::except($flattened, ['id']);
+        foreach($flattened as $item)
+        {
+            RollPrice::updateOrCreate([
+                'construction_id' => $item['construction_id'],
+                'catalog_id' => $item['catalog_id'],
+                'category_id' => $item['category_id'],
+                'width' => $item['width'],
+                'height' => $item['height']
+            ],
+            [
+                'price' => $item['price']
+            ]);
+            //DB::table('roll_prices')->updateOrInsert($filtered);
+        }
+        //DB::table('roll_prices')->updateOrInsert($flattened);
+        return response()->json($flattened);
     }
 
     /**
