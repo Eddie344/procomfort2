@@ -1785,8 +1785,8 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    //console.log(this.heights[Object.keys(this.heights).length]);
     this.getUniqWidths(this.prices);
+    this.prices = Object.assign({}, this.prices);
   },
   methods: {
     update: function update() {
@@ -1796,15 +1796,17 @@ __webpack_require__.r(__webpack_exports__);
       if (this.newRow) {
         this.prices[this.newRow] = {};
 
-        for (var key in this.widths) {
-          this.prices[this.newRow][this.widths[key]] = {
-            catalog_id: 1,
-            category_id: 1,
-            construction_id: 1,
-            height: this.newRow,
-            width: this.widths[key],
-            price: '0'
-          };
+        if (this.widths.length) {
+          for (var key in this.widths) {
+            this.prices[this.newRow][this.widths[key]] = {
+              catalog_id: 1,
+              category_id: 1,
+              construction_id: 1,
+              height: this.newRow,
+              width: this.widths[key],
+              price: '0'
+            };
+          }
         }
 
         this.newRow = '';
@@ -1812,8 +1814,10 @@ __webpack_require__.r(__webpack_exports__);
     },
     addColumn: function addColumn() {
       if (this.newColumn) {
+        var floatCol = parseInt(this.newColumn).toFixed(1);
+
         for (var key in this.prices) {
-          this.prices[key][this.newColumn] = {
+          this.prices[key][floatCol] = {
             catalog_id: 1,
             category_id: 1,
             construction_id: 1,
@@ -37226,6 +37230,7 @@ var render = function() {
             staticClass: "form-control",
             attrs: {
               type: "number",
+              step: "0.01",
               placeholder: "Введите длину",
               required: ""
             },
@@ -37244,47 +37249,50 @@ var render = function() {
         ]
       ),
       _vm._v(" "),
-      _c(
-        "form",
-        {
-          staticClass: "input-group mb-3 col-md-4",
-          on: {
-            submit: function($event) {
-              $event.preventDefault()
-              return _vm.addColumn($event)
-            }
-          }
-        },
-        [
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.newColumn,
-                expression: "newColumn"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: {
-              type: "number",
-              placeholder: "Введите ширину",
-              required: ""
-            },
-            domProps: { value: _vm.newColumn },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
+      Object.keys(_vm.prices).length
+        ? _c(
+            "form",
+            {
+              staticClass: "input-group mb-3 col-md-4",
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.addColumn($event)
                 }
-                _vm.newColumn = $event.target.value
               }
-            }
-          }),
-          _vm._v(" "),
-          _vm._m(1)
-        ]
-      )
+            },
+            [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.newColumn,
+                    expression: "newColumn"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: {
+                  type: "number",
+                  step: "0.01",
+                  placeholder: "Введите ширину",
+                  required: ""
+                },
+                domProps: { value: _vm.newColumn },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.newColumn = $event.target.value
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _vm._m(1)
+            ]
+          )
+        : _vm._e()
     ]),
     _vm._v(" "),
     _c(
