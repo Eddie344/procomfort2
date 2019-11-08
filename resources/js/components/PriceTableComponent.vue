@@ -2,12 +2,12 @@
     <div>
         <div class="row">
             <form @submit.prevent="addRow" class="input-group mb-3 col-md-4">
-                <input type="number" step="0.01" class="form-control" placeholder="Введите длину" v-model="newRow" required>
+                <input type="number" step="0.01" class="form-control" placeholder="Введите высоту" v-model="newRow" required>
                 <div class="input-group-append">
                     <button class="btn btn-success" type="submit">Добавить строку</button>
                 </div>
             </form>
-            <form @submit.prevent="addColumn" class="input-group mb-3 col-md-4" v-if="Object.keys(prices).length">
+            <form @submit.prevent="addColumn" class="input-group mb-3 col-md-4">
                 <input type="number" step="0.01" class="form-control" placeholder="Введите ширину" v-model="newColumn" required>
                 <div class="input-group-append">
                     <button class="btn btn-success" type="submit">Добавить колонку</button>
@@ -21,12 +21,12 @@
                 <th scope="row" colspan="11">Ширина</th>
             </tr>
             <tr>
-                <th scope="col"  v-for="width in widths">{{ width }}</th>
+                <th class="price-col"  v-for="width in widths">{{ width }} <button class="btn btn-link text-danger delete-item" v-on:click="deleteColumn(width)">&times;</button></th>
             </tr>
             </thead>
             <tbody>
             <tr v-for="(h, key) in prices">
-                <th scope="row">{{ key }}</th>
+                <th class="price-row">{{ key }} <button class="btn btn-link text-danger delete-item" v-on:click="deleteRow(key)">&times;</button></th>
                 <td v-for="w in h">
                     <input type="number" step="0.01" class="form-control" v-model="w.price">
                 </td>
@@ -55,7 +55,6 @@
         },
         mounted(){
             this.getUniqWidths(this.prices);
-            this.prices = Object.assign({}, this.prices);
         },
         methods:{
             update:function() {
@@ -85,7 +84,7 @@
             addColumn(){
                 if(this.newColumn)
                 {
-                    let floatCol = parseInt(this.newColumn).toFixed(1)
+                    let floatCol = parseInt(this.newColumn).toFixed(1);
                     for(let key in this.prices){
                         this.prices[key][floatCol] = {
                             catalog_id: 1,
@@ -100,7 +99,19 @@
                     this.getUniqWidths(this.prices);
                 }
             },
+            deleteRow(key) {
+                if(Object.keys(this.prices).length > 1){
+                    Vue.delete(this.prices, key);
+                }
+            },
+            deleteColumn(key){
+                for(let row in this.prices) {
+                    Vue.delete(this.prices[row], key);
+                }
+                this.getUniqWidths(this.prices);
+            },
             getUniqWidths(obj){
+                this.widths=[];
                 for (let key in obj) {
                     let heights = Object.keys(obj[key]);
                     Object.assign(this.widths, heights);
@@ -121,6 +132,18 @@
     }
 </script>
 
-<style scoped>
+<style lang="sass" scoped>
+    .price-row,.price-col
+        position: relative
+        &:hover
+            .delete-item
+                display: block
 
+    .delete-item
+        display: none
+        padding: 0
+        font-size: 24px
+        position: absolute
+        top: -2px
+        right: 3px
 </style>

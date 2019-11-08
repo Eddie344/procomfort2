@@ -76,21 +76,18 @@ class RollPriceController extends Controller
         $array = $request->all();
         $flattened = collect($array)->flatten(1)->toArray();
         Arr::except($flattened, ['id']);
+        RollPrice::truncate();
         foreach($flattened as $item)
         {
-            RollPrice::updateOrCreate([
+            RollPrice::create([
                 'construction_id' => $item['construction_id'],
                 'catalog_id' => $item['catalog_id'],
                 'category_id' => $item['category_id'],
                 'width' => $item['width'],
-                'height' => $item['height']
-            ],
-            [
+                'height' => $item['height'],
                 'price' => $item['price']
             ]);
-            //DB::table('roll_prices')->updateOrInsert($filtered);
         }
-        //DB::table('roll_prices')->updateOrInsert($flattened);
         return response()->json($flattened);
     }
 
