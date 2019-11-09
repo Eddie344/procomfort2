@@ -1771,13 +1771,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "PriceTableComponent",
-  props: {
-    pricedata: Object
-  },
+  props: ['pricedata', 'constructions', 'catalogs', 'categories'],
   data: function data() {
     return {
+      //menu
+      construction_selected: '',
+      catalog_selected: '',
+      category_selected: '',
+      //table
       prices: this.pricedata,
       widths: [],
       newRow: '',
@@ -1793,15 +1814,16 @@ __webpack_require__.r(__webpack_exports__);
     },
     addRow: function addRow() {
       if (this.newRow) {
-        this.prices[this.newRow] = {};
+        var floatRow = this.getFloatValue(this.newRow);
+        this.prices[floatRow] = {};
 
         if (this.widths.length) {
           for (var key in this.widths) {
-            this.prices[this.newRow][this.widths[key]] = {
+            this.prices[floatRow][this.widths[key]] = {
               catalog_id: 1,
               category_id: 1,
               construction_id: 1,
-              height: this.newRow,
+              height: floatRow,
               width: this.widths[key],
               price: '0'
             };
@@ -1813,7 +1835,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     addColumn: function addColumn() {
       if (this.newColumn) {
-        var floatCol = parseInt(this.newColumn).toFixed(1);
+        var floatCol = this.getFloatValue(this.newColumn);
 
         for (var key in this.prices) {
           this.prices[key][floatCol] = {
@@ -1821,7 +1843,7 @@ __webpack_require__.r(__webpack_exports__);
             category_id: 1,
             construction_id: 1,
             height: key,
-            width: this.newColumn,
+            width: floatCol,
             price: '0'
           };
         }
@@ -1831,7 +1853,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     deleteRow: function deleteRow(key) {
-      if (Object.keys(this.prices).length > 1) {
+      if (Object.keys(this.prices).length > 1 || !Object.keys(this.widths).length) {
         Vue["delete"](this.prices, key);
       }
     },
@@ -1851,6 +1873,13 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this.widths = JSON.parse(JSON.stringify(this.widths));
+    },
+    getFloatValue: function getFloatValue(val) {
+      if (Number.isInteger(+val)) {
+        return parseInt(val).toFixed(1);
+      } else {
+        return val;
+      }
     },
     save: function save() {
       axios.put('/admin/price/roll/update', this.prices).then(function (response) {
@@ -66704,6 +66733,48 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _c("form", { staticClass: "mb-3" }, [
+      _c("div", { staticClass: "form-row" }, [
+        _c("div", { staticClass: "col" }, [
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.construction_selected,
+                  expression: "construction_selected"
+                }
+              ],
+              staticClass: "form-control",
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.construction_selected = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                }
+              }
+            },
+            _vm._l(_vm.constructions, function(c) {
+              return _c("option", [_vm._v(_vm._s(c.label))])
+            }),
+            0
+          )
+        ]),
+        _vm._v(" "),
+        _vm._m(0)
+      ])
+    ]),
+    _vm._v(" "),
     _c("div", { staticClass: "row" }, [
       _c(
         "form",
@@ -66744,7 +66815,7 @@ var render = function() {
             }
           }),
           _vm._v(" "),
-          _vm._m(0)
+          _vm._m(1)
         ]
       ),
       _vm._v(" "),
@@ -66787,7 +66858,7 @@ var render = function() {
             }
           }),
           _vm._v(" "),
-          _vm._m(1)
+          _vm._m(2)
         ]
       )
     ]),
@@ -66797,7 +66868,7 @@ var render = function() {
       { staticClass: "table table-bordered", attrs: { id: "mtable" } },
       [
         _c("thead", [
-          _vm._m(2),
+          _vm._m(3),
           _vm._v(" "),
           _c(
             "tr",
@@ -66899,6 +66970,31 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col" }, [
+      _c(
+        "select",
+        {
+          staticClass: "form-control",
+          attrs: { id: "exampleFormControlSelect2" }
+        },
+        [
+          _c("option", [_vm._v("1")]),
+          _vm._v(" "),
+          _c("option", [_vm._v("2")]),
+          _vm._v(" "),
+          _c("option", [_vm._v("3")]),
+          _vm._v(" "),
+          _c("option", [_vm._v("4")]),
+          _vm._v(" "),
+          _c("option", [_vm._v("5")])
+        ]
+      )
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

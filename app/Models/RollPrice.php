@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class RollPrice extends Model
 {
     protected $casts = [
-        'width' => 'string',
-        'height' => 'string',
+//        'width' => 'string',
+//        'height' => 'string',
         'price' => 'string',
     ];
 

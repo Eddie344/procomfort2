@@ -9,5 +9,5 @@
             <li class="breadcrumb-item text-black-50">Категория 1</li>
         </ol>
     </nav>
-    <price-table-component :pricedata="{{ json_encode($prices) }}"></price-table-component>
+    <price-table-component :pricedata="{{ json_encode($prices) }}" :constructions="{{ json_encode($roll_constructions) }}" :catalogs="{{ json_encode($catalogs) }}" :categories="{{ json_encode($roll_categories) }}"></price-table-component>
 @endsection

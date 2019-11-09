@@ -1,5 +1,23 @@
 <template>
     <div>
+        <form class="mb-3">
+            <div class="form-row">
+                <div class="col">
+                    <select class="form-control" v-model="construction_selected">
+                        <option v-for="c in constructions">{{ c.label }}</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <select class="form-control" id="exampleFormControlSelect2">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                </div>
+            </div>
+        </form>
         <div class="row">
             <form @submit.prevent="addRow" class="input-group mb-3 col-md-4">
                 <input type="number" step="0.01" class="form-control" placeholder="Введите высоту" v-model="newRow" required>
@@ -42,15 +60,23 @@
 <script>
     export default {
         name: "PriceTableComponent",
-        props:{
-            pricedata: Object,
-        },
+        props:[
+            'pricedata',
+            'constructions',
+            'catalogs',
+            'categories',
+        ],
         data: function () {
             return {
+                //menu
+                construction_selected: '',
+                catalog_selected: '',
+                category_selected : '',
+                //table
                 prices: this.pricedata,
                 widths:[],
-                newRow:'',
-                newColumn:'',
+                newRow: '',
+                newColumn: '',
             }
         },
         mounted(){
@@ -63,16 +89,17 @@
             addRow(){
                 if(this.newRow)
                 {
-                    this.prices[this.newRow] = {};
+                    let floatRow = this.getFloatValue(this.newRow);
+                    this.prices[floatRow] = {};
                     if(this.widths.length)
                     {
                         for(let key in this.widths)
                         {
-                            this.prices[this.newRow][this.widths[key]] = {
+                            this.prices[floatRow][this.widths[key]] = {
                                 catalog_id: 1,
                                 category_id: 1,
                                 construction_id: 1,
-                                height: this.newRow,
+                                height: floatRow,
                                 width: this.widths[key],
                                 price: '0',
                             };
@@ -84,14 +111,14 @@
             addColumn(){
                 if(this.newColumn)
                 {
-                    let floatCol = parseInt(this.newColumn).toFixed(1);
+                    let floatCol = this.getFloatValue(this.newColumn);
                     for(let key in this.prices){
                         this.prices[key][floatCol] = {
                             catalog_id: 1,
                             category_id: 1,
                             construction_id: 1,
                             height: key,
-                            width: this.newColumn,
+                            width: floatCol,
                             price: '0',
                         };
                     }
@@ -100,7 +127,7 @@
                 }
             },
             deleteRow(key) {
-                if(Object.keys(this.prices).length > 1){
+                if(Object.keys(this.prices).length > 1 || !Object.keys(this.widths).length){
                     Vue.delete(this.prices, key);
                 }
             },
@@ -117,6 +144,14 @@
                     Object.assign(this.widths, heights);
                 }
                 this.widths = JSON.parse(JSON.stringify(this.widths));
+            },
+            getFloatValue(val){
+                if(Number.isInteger(+val)){
+                    return parseInt(val).toFixed(1);
+                }
+                else {
+                    return val;
+                }
             },
             save(){
 
