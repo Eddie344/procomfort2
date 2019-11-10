@@ -2,58 +2,64 @@
     <div>
         <form class="mb-3">
             <div class="form-row">
-                <div class="col">
+                <div class="col-sm-3">
                     <select class="form-control" v-model="construction_selected">
-                        <option v-for="c in constructions">{{ c.label }}</option>
+                        <option :value="null" disabled selected>Выберите тип конструкции...</option>
+                        <option v-for="c in constructions" v-bind:value="c.id">{{ c.label }}</option>
                     </select>
                 </div>
-                <div class="col">
-                    <select class="form-control" id="exampleFormControlSelect2">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
+                <div class="col-sm-3" v-if="construction_selected != null">
+                    <select class="form-control" v-model="catalog_selected">
+                        <option :value="null" disabled selected>Выберите каталог...</option>
+                        <option v-for="c in catalogs" v-bind:value="c.id">{{ c.label }}</option>
+                    </select>
+                </div>
+                <div class="col-sm-3" v-if="catalog_selected != null" v-on:change="load">
+                    <select class="form-control" v-model="category_selected">
+                        <option :value="null" disabled selected>Выберите категорию...</option>
+                        <option v-for="c in categories" v-bind:value="c.id">{{ c.label }}</option>
                     </select>
                 </div>
             </div>
         </form>
-        <div class="row">
-            <form @submit.prevent="addRow" class="input-group mb-3 col-md-4">
-                <input type="number" step="0.01" class="form-control" placeholder="Введите высоту" v-model="newRow" required>
-                <div class="input-group-append">
-                    <button class="btn btn-success" type="submit">Добавить строку</button>
-                </div>
-            </form>
-            <form @submit.prevent="addColumn" class="input-group mb-3 col-md-4">
-                <input type="number" step="0.01" class="form-control" placeholder="Введите ширину" v-model="newColumn" required>
-                <div class="input-group-append">
-                    <button class="btn btn-success" type="submit">Добавить колонку</button>
-                </div>
+        <div v-show="category_selected && catalog_selected && construction_selected">
+            <div class="row">
+                <form @submit.prevent="addRow" class="input-group mb-3 col-md-4">
+                    <input type="number" step="0.01" class="form-control" placeholder="Введите высоту" v-model="newRow" required>
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="submit">Добавить строку</button>
+                    </div>
+                </form>
+                <form @submit.prevent="addColumn" class="input-group mb-3 col-md-4">
+                    <input type="number" step="0.01" class="form-control" placeholder="Введите ширину" v-model="newColumn" required>
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="submit">Добавить колонку</button>
+                    </div>
+                </form>
+            </div>
+            <table class="table table-bordered" id="mtable">
+                <thead>
+                <tr>
+                    <th scope="col" rowspan="2">Высота</th>
+                    <th scope="row" colspan="11">Ширина</th>
+                </tr>
+                <tr>
+                    <th class="price-col"  v-for="width in widths">{{ width }} <button class="btn btn-link text-danger delete-item" v-on:click="deleteColumn(width)">&times;</button></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(h, key) in prices">
+                    <th class="price-row">{{ key }} <button class="btn btn-link text-danger delete-item" v-on:click="deleteRow(key)">&times;</button></th>
+                    <td v-for="w in h">
+                        <input type="number" step="0.01" class="form-control" v-model="w.price">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <form @submit.prevent="save">
+                <button class="btn btn-success" type="submit">Сохранить</button>
             </form>
         </div>
-        <table class="table table-bordered" id="mtable">
-            <thead>
-            <tr>
-                <th scope="col" rowspan="2">Высота</th>
-                <th scope="row" colspan="11">Ширина</th>
-            </tr>
-            <tr>
-                <th class="price-col"  v-for="width in widths">{{ width }} <button class="btn btn-link text-danger delete-item" v-on:click="deleteColumn(width)">&times;</button></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="(h, key) in prices">
-                <th class="price-row">{{ key }} <button class="btn btn-link text-danger delete-item" v-on:click="deleteRow(key)">&times;</button></th>
-                <td v-for="w in h">
-                    <input type="number" step="0.01" class="form-control" v-model="w.price">
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <form @submit.prevent="save">
-            <button class="btn btn-success" type="submit">Сохранить</button>
-        </form>
     </div>
 </template>
 
@@ -61,7 +67,6 @@
     export default {
         name: "PriceTableComponent",
         props:[
-            'pricedata',
             'constructions',
             'catalogs',
             'categories',
@@ -69,11 +74,11 @@
         data: function () {
             return {
                 //menu
-                construction_selected: '',
-                catalog_selected: '',
-                category_selected : '',
+                construction_selected: null,
+                catalog_selected: null,
+                category_selected : null,
                 //table
-                prices: this.pricedata,
+                prices: {},
                 widths:[],
                 newRow: '',
                 newColumn: '',
@@ -83,9 +88,6 @@
             this.getUniqWidths(this.prices);
         },
         methods:{
-            update:function() {
-                console.log(this.pricedata);
-            },
             addRow(){
                 if(this.newRow)
                 {
@@ -96,9 +98,9 @@
                         for(let key in this.widths)
                         {
                             this.prices[floatRow][this.widths[key]] = {
-                                catalog_id: 1,
-                                category_id: 1,
-                                construction_id: 1,
+                                catalog_id: this.catalog_selected,
+                                category_id: this.category_selected,
+                                construction_id: this.construction_selected,
                                 height: floatRow,
                                 width: this.widths[key],
                                 price: '0',
@@ -114,9 +116,9 @@
                     let floatCol = this.getFloatValue(this.newColumn);
                     for(let key in this.prices){
                         this.prices[key][floatCol] = {
-                            catalog_id: 1,
-                            category_id: 1,
-                            construction_id: 1,
+                            catalog_id: this.catalog_selected,
+                            category_id: this.category_selected,
+                            construction_id: this.construction_selected,
                             height: key,
                             width: floatCol,
                             price: '0',
@@ -154,13 +156,29 @@
                 }
             },
             save(){
-
                 axios.put('/admin/price/roll/update', this.prices)
                 .then((response) => {
                     console.log(response);
                 })
                 .catch((error) => {
                     console.log(error);
+                });
+            },
+            load(){
+                // axios.get('/admin/price/roll/get?construction_id='
+                //     +this.construction_selected+
+                //     '&catalog_id='
+                //     +this.catalog_selected+
+                //     '&category_id='
+                //     +this.category_selected)
+                axios.post('/admin/price/roll/get', {
+                    construction_id: this.construction_selected,
+                    catalog_id: this.catalog_selected,
+                    category_id: this.category_selected
+                })
+                .then((response) => {
+                    this.prices = response.data;
+                    this.getUniqWidths(this.prices);
                 });
             }
         }

@@ -21,6 +21,18 @@ class RollPriceController extends Controller
         return view('admin.prices.roll.index', compact('prices'));
     }
 
+    public function get(Request $request)
+    {
+        $prices = DB::table('roll_prices')
+            ->where([
+                ['construction_id', '=', $request->construction_id],
+                ['catalog_id', '=', $request->catalog_id],
+                ['category_id', '=', $request->category_id],
+            ])
+            ->get()->groupBy('height')->map->keyBy('width');
+        return response()->json($prices);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

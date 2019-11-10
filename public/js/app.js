@@ -1789,17 +1789,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "PriceTableComponent",
-  props: ['pricedata', 'constructions', 'catalogs', 'categories'],
+  props: ['constructions', 'catalogs', 'categories'],
   data: function data() {
     return {
       //menu
-      construction_selected: '',
-      catalog_selected: '',
-      category_selected: '',
+      construction_selected: null,
+      catalog_selected: null,
+      category_selected: null,
       //table
-      prices: this.pricedata,
+      prices: {},
       widths: [],
       newRow: '',
       newColumn: ''
@@ -1809,9 +1815,6 @@ __webpack_require__.r(__webpack_exports__);
     this.getUniqWidths(this.prices);
   },
   methods: {
-    update: function update() {
-      console.log(this.pricedata);
-    },
     addRow: function addRow() {
       if (this.newRow) {
         var floatRow = this.getFloatValue(this.newRow);
@@ -1820,9 +1823,9 @@ __webpack_require__.r(__webpack_exports__);
         if (this.widths.length) {
           for (var key in this.widths) {
             this.prices[floatRow][this.widths[key]] = {
-              catalog_id: 1,
-              category_id: 1,
-              construction_id: 1,
+              catalog_id: this.catalog_selected,
+              category_id: this.category_selected,
+              construction_id: this.construction_selected,
               height: floatRow,
               width: this.widths[key],
               price: '0'
@@ -1839,9 +1842,9 @@ __webpack_require__.r(__webpack_exports__);
 
         for (var key in this.prices) {
           this.prices[key][floatCol] = {
-            catalog_id: 1,
-            category_id: 1,
-            construction_id: 1,
+            catalog_id: this.catalog_selected,
+            category_id: this.category_selected,
+            construction_id: this.construction_selected,
             height: key,
             width: floatCol,
             price: '0'
@@ -1886,6 +1889,25 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response);
       })["catch"](function (error) {
         console.log(error);
+      });
+    },
+    load: function load() {
+      var _this = this;
+
+      // axios.get('/admin/price/roll/get?construction_id='
+      //     +this.construction_selected+
+      //     '&catalog_id='
+      //     +this.catalog_selected+
+      //     '&category_id='
+      //     +this.category_selected)
+      axios.post('/admin/price/roll/get', {
+        construction_id: this.construction_selected,
+        catalog_id: this.catalog_selected,
+        category_id: this.category_selected
+      }).then(function (response) {
+        _this.prices = response.data;
+
+        _this.getUniqWidths(_this.prices);
       });
     }
   }
@@ -66735,7 +66757,7 @@ var render = function() {
   return _c("div", [
     _c("form", { staticClass: "mb-3" }, [
       _c("div", { staticClass: "form-row" }, [
-        _c("div", { staticClass: "col" }, [
+        _c("div", { staticClass: "col-sm-3" }, [
           _c(
             "select",
             {
@@ -66764,237 +66786,344 @@ var render = function() {
                 }
               }
             },
-            _vm._l(_vm.constructions, function(c) {
-              return _c("option", [_vm._v(_vm._s(c.label))])
-            }),
-            0
+            [
+              _c(
+                "option",
+                {
+                  attrs: { disabled: "", selected: "" },
+                  domProps: { value: null }
+                },
+                [_vm._v("Выберите тип конструкции...")]
+              ),
+              _vm._v(" "),
+              _vm._l(_vm.constructions, function(c) {
+                return _c("option", { domProps: { value: c.id } }, [
+                  _vm._v(_vm._s(c.label))
+                ])
+              })
+            ],
+            2
           )
         ]),
         _vm._v(" "),
-        _vm._m(0)
+        _vm.construction_selected != null
+          ? _c("div", { staticClass: "col-sm-3" }, [
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.catalog_selected,
+                      expression: "catalog_selected"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.catalog_selected = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "option",
+                    {
+                      attrs: { disabled: "", selected: "" },
+                      domProps: { value: null }
+                    },
+                    [_vm._v("Выберите каталог...")]
+                  ),
+                  _vm._v(" "),
+                  _vm._l(_vm.catalogs, function(c) {
+                    return _c("option", { domProps: { value: c.id } }, [
+                      _vm._v(_vm._s(c.label))
+                    ])
+                  })
+                ],
+                2
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.catalog_selected != null
+          ? _c("div", { staticClass: "col-sm-3", on: { change: _vm.load } }, [
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.category_selected,
+                      expression: "category_selected"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.category_selected = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "option",
+                    {
+                      attrs: { disabled: "", selected: "" },
+                      domProps: { value: null }
+                    },
+                    [_vm._v("Выберите категорию...")]
+                  ),
+                  _vm._v(" "),
+                  _vm._l(_vm.categories, function(c) {
+                    return _c("option", { domProps: { value: c.id } }, [
+                      _vm._v(_vm._s(c.label))
+                    ])
+                  })
+                ],
+                2
+              )
+            ])
+          : _vm._e()
       ])
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c(
-        "form",
-        {
-          staticClass: "input-group mb-3 col-md-4",
-          on: {
-            submit: function($event) {
-              $event.preventDefault()
-              return _vm.addRow($event)
-            }
-          }
-        },
-        [
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.newRow,
-                expression: "newRow"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: {
-              type: "number",
-              step: "0.01",
-              placeholder: "Введите высоту",
-              required: ""
-            },
-            domProps: { value: _vm.newRow },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.newRow = $event.target.value
-              }
-            }
-          }),
-          _vm._v(" "),
-          _vm._m(1)
-        ]
-      ),
-      _vm._v(" "),
-      _c(
-        "form",
-        {
-          staticClass: "input-group mb-3 col-md-4",
-          on: {
-            submit: function($event) {
-              $event.preventDefault()
-              return _vm.addColumn($event)
-            }
-          }
-        },
-        [
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.newColumn,
-                expression: "newColumn"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: {
-              type: "number",
-              step: "0.01",
-              placeholder: "Введите ширину",
-              required: ""
-            },
-            domProps: { value: _vm.newColumn },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.newColumn = $event.target.value
-              }
-            }
-          }),
-          _vm._v(" "),
-          _vm._m(2)
-        ]
-      )
-    ]),
-    _vm._v(" "),
     _c(
-      "table",
-      { staticClass: "table table-bordered", attrs: { id: "mtable" } },
+      "div",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value:
+              _vm.category_selected &&
+              _vm.catalog_selected &&
+              _vm.construction_selected,
+            expression:
+              "category_selected && catalog_selected && construction_selected"
+          }
+        ]
+      },
       [
-        _c("thead", [
-          _vm._m(3),
+        _c("div", { staticClass: "row" }, [
+          _c(
+            "form",
+            {
+              staticClass: "input-group mb-3 col-md-4",
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.addRow($event)
+                }
+              }
+            },
+            [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.newRow,
+                    expression: "newRow"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: {
+                  type: "number",
+                  step: "0.01",
+                  placeholder: "Введите высоту",
+                  required: ""
+                },
+                domProps: { value: _vm.newRow },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.newRow = $event.target.value
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _vm._m(0)
+            ]
+          ),
           _vm._v(" "),
           _c(
-            "tr",
-            _vm._l(_vm.widths, function(width) {
-              return _c("th", { staticClass: "price-col" }, [
-                _vm._v(_vm._s(width) + " "),
-                _c(
-                  "button",
+            "form",
+            {
+              staticClass: "input-group mb-3 col-md-4",
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.addColumn($event)
+                }
+              }
+            },
+            [
+              _c("input", {
+                directives: [
                   {
-                    staticClass: "btn btn-link text-danger delete-item",
-                    on: {
-                      click: function($event) {
-                        return _vm.deleteColumn(width)
-                      }
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.newColumn,
+                    expression: "newColumn"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: {
+                  type: "number",
+                  step: "0.01",
+                  placeholder: "Введите ширину",
+                  required: ""
+                },
+                domProps: { value: _vm.newColumn },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
                     }
-                  },
-                  [_vm._v("×")]
-                )
-              ])
-            }),
-            0
+                    _vm.newColumn = $event.target.value
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _vm._m(1)
+            ]
           )
         ]),
         _vm._v(" "),
         _c(
-          "tbody",
-          _vm._l(_vm.prices, function(h, key) {
-            return _c(
-              "tr",
-              [
-                _c("th", { staticClass: "price-row" }, [
-                  _vm._v(_vm._s(key) + " "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-link text-danger delete-item",
-                      on: {
-                        click: function($event) {
-                          return _vm.deleteRow(key)
-                        }
-                      }
-                    },
-                    [_vm._v("×")]
-                  )
-                ]),
-                _vm._v(" "),
-                _vm._l(h, function(w) {
-                  return _c("td", [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: w.price,
-                          expression: "w.price"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      attrs: { type: "number", step: "0.01" },
-                      domProps: { value: w.price },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
+          "table",
+          { staticClass: "table table-bordered", attrs: { id: "mtable" } },
+          [
+            _c("thead", [
+              _vm._m(2),
+              _vm._v(" "),
+              _c(
+                "tr",
+                _vm._l(_vm.widths, function(width) {
+                  return _c("th", { staticClass: "price-col" }, [
+                    _vm._v(_vm._s(width) + " "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-link text-danger delete-item",
+                        on: {
+                          click: function($event) {
+                            return _vm.deleteColumn(width)
                           }
-                          _vm.$set(w, "price", $event.target.value)
                         }
-                      }
-                    })
+                      },
+                      [_vm._v("×")]
+                    )
                   ])
-                })
-              ],
-              2
+                }),
+                0
+              )
+            ]),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.prices, function(h, key) {
+                return _c(
+                  "tr",
+                  [
+                    _c("th", { staticClass: "price-row" }, [
+                      _vm._v(_vm._s(key) + " "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-link text-danger delete-item",
+                          on: {
+                            click: function($event) {
+                              return _vm.deleteRow(key)
+                            }
+                          }
+                        },
+                        [_vm._v("×")]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _vm._l(h, function(w) {
+                      return _c("td", [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: w.price,
+                              expression: "w.price"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "number", step: "0.01" },
+                          domProps: { value: w.price },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(w, "price", $event.target.value)
+                            }
+                          }
+                        })
+                      ])
+                    })
+                  ],
+                  2
+                )
+              }),
+              0
             )
-          }),
-          0
-        )
-      ]
-    ),
-    _vm._v(" "),
-    _c(
-      "form",
-      {
-        on: {
-          submit: function($event) {
-            $event.preventDefault()
-            return _vm.save($event)
-          }
-        }
-      },
-      [
+          ]
+        ),
+        _vm._v(" "),
         _c(
-          "button",
-          { staticClass: "btn btn-success", attrs: { type: "submit" } },
-          [_vm._v("Сохранить")]
+          "form",
+          {
+            on: {
+              submit: function($event) {
+                $event.preventDefault()
+                return _vm.save($event)
+              }
+            }
+          },
+          [
+            _c(
+              "button",
+              { staticClass: "btn btn-success", attrs: { type: "submit" } },
+              [_vm._v("Сохранить")]
+            )
+          ]
         )
       ]
     )
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col" }, [
-      _c(
-        "select",
-        {
-          staticClass: "form-control",
-          attrs: { id: "exampleFormControlSelect2" }
-        },
-        [
-          _c("option", [_vm._v("1")]),
-          _vm._v(" "),
-          _c("option", [_vm._v("2")]),
-          _vm._v(" "),
-          _c("option", [_vm._v("3")]),
-          _vm._v(" "),
-          _c("option", [_vm._v("4")]),
-          _vm._v(" "),
-          _c("option", [_vm._v("5")])
-        ]
-      )
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

@@ -46,8 +46,15 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         Route::resource('furn', 'FurnStorageController')->except(['create', 'edit']);
     });
     Route::prefix('/price')->group(function () {
-        Route::view('/', 'admin.prices.roll.index')->name('price.index');
-        Route::resource('/roll', 'RollPriceController')->except(['create', 'edit']);
+//        Route::get('/', '')
+        Route::view('/', 'admin.prices.nav')->name('price.index');
+        Route::resource('/roll', 'RollPriceController', [
+            'names' => [
+                'index' => 'price.roll.index',
+                'show' => 'price.roll.show',
+            ]
+        ])->except(['create', 'edit']);
+        Route::post('/roll/get', 'RollPriceController@get')->name('price.roll.get');
     });
 });
 
