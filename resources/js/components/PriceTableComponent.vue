@@ -45,7 +45,7 @@
         },
         data: function () {
             return {
-                heights: [],
+                heights: this.heightdata,
                 newRow:'',
                 newColumn:'',
             }
