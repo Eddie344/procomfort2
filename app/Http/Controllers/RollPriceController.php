@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\RollPrice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class RollPriceController extends Controller
 {
@@ -14,11 +16,21 @@ class RollPriceController extends Controller
      */
     public function index()
     {
-        $prices = RollPrice::filter()->get();
-        $heights = $prices->groupBy('height')->map->keyBy('width')->toArray();
-        $widths = $prices->groupBy('width')->map->keyBy('height')->keys()->toArray();
-        //dd($heights);
-        return view('admin.prices.roll.index', compact('heights', 'widths'));
+        $prices = RollPrice::filter()->get()->groupBy('height')->map->keyBy('width');
+        //dd($prices);
+        return view('admin.prices.roll.index', compact('prices'));
+    }
+
+    public function get(Request $request)
+    {
+        $prices = DB::table('roll_prices')
+            ->where([
+                ['construction_id', '=', $request->construction_id],
+                ['catalog_id', '=', $request->catalog_id],
+                ['category_id', '=', $request->category_id],
+            ])
+            ->get()->groupBy('height')->map->keyBy('width');
+        return response()->json($prices);
     }
 
     /**
@@ -71,9 +83,24 @@ class RollPriceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $array = $request->all();
+        $flattened = collect($array)->flatten(1)->toArray();
+        Arr::except($flattened, ['id']);
+        RollPrice::truncate();
+        foreach($flattened as $item)
+        {
+            RollPrice::create([
+                'construction_id' => $item['construction_id'],
+                'catalog_id' => $item['catalog_id'],
+                'category_id' => $item['category_id'],
+                'width' => $item['width'],
+                'height' => $item['height'],
+                'price' => $item['price']
+            ]);
+        }
+        return response()->json($flattened);
     }
 
     /**

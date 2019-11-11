@@ -35,35 +35,8 @@ $(function() {
         }
 	});
 
-	//вставка колонок и строк в таблицу
-    $('#irow').click(function(){
-        if($('#row').val()){
-            $('#mtable tbody').append($("#mtable tbody tr:last").clone());
-            $('#mtable tbody tr:last td:first').html($('#row').val());
-            $('#mtable tbody tr:last td:not(:first)').html($('<a href="" id="price" data-type="text" class="editable editable-click editable-unsaved editable-empty" style="background-color: rgba(0, 0, 0, 0);"></a>'));
-            $('#mtable #price').editable({
-                emptytext: 'Пусто',
-            });
-        }else{alert('Enter Text');}
-    });
-    $('#icol').click(function(){
-        if($('#col').val()){
-            $('#mtable #twidths').append($("<th scope=\"col\">"));
-            $('#mtable #twidths>th:last').html($('#col').val());
-            $('#mtable tbody tr').each(function(){$(this).append($('<td><a href="" id="price" data-type="text" class="editable editable-click editable-unsaved editable-empty" style="background-color: rgba(0, 0, 0, 0);"></a></td>'))});
-            var count = parseInt($('#mtable #colCount').attr("colspan"));
-            $('#mtable #colCount').attr("colspan", count+1);
-            $('#mtable #price').editable({
-                emptytext: 'Пусто',
-            });
-        }else{alert('Enter Text');}
-    });
 
-    //x-editable
-    $.fn.editable.defaults.mode = 'inline';
-    $('#mtable #price').editable({
-        emptytext: 'Пусто',
-    });
+
 });
 
 

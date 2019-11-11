@@ -21,10 +21,9 @@ class CreateRollPricesTable extends Migration
             $table->foreign('catalog_id')->references('id')->on('catalogs');
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('roll_categories');
-            $table->float('width',8, 2);
-            $table->float('height',8, 2);
+            $table->string('width');
+            $table->string('height');
             $table->float('price', 8, 2);
-            $table->timestamps();
         });
     }
 

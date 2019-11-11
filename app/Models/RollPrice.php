@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class RollPrice extends Model
 {
     protected $casts = [
-        'width' => 'string',
-        'height' => 'string',
+//        'width' => 'string',
+//        'height' => 'string',
         'price' => 'string',
     ];
 
+    protected $guarded = [];
+
+    public $timestamps = false;
     public function scopeFilter($query)
     {
         if(request('construction_id'))
