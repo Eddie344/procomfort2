@@ -1816,25 +1816,31 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     addRow: function addRow() {
-      if (this.newRow) {
-        var floatRow = this.getFloatValue(this.newRow);
-        this.prices[floatRow] = {};
+      if (this.newRow) // если введено значение в поле
+        {
+          var floatRow = this.getFloatValue(this.newRow); //создаем float из введенного значения
 
-        if (this.widths.length) {
-          for (var key in this.widths) {
-            this.prices[floatRow][this.widths[key]] = {
-              catalog_id: this.catalog_selected,
-              category_id: this.category_selected,
-              construction_id: this.construction_selected,
-              height: floatRow,
-              width: this.widths[key],
-              price: '0'
-            };
-          }
+          this.prices = {}; //превращаем массив в объект
+
+          this.prices[floatRow] = {}; //добавляем объект с ключом высоты
+
+          if (this.widths.length) //если массив с ширинами содержит значения
+            {
+              for (var key in this.widths) //перебираем массив с ширинами
+              {
+                this.prices[floatRow][this.widths[key]] = {
+                  catalog_id: this.catalog_selected,
+                  category_id: this.category_selected,
+                  construction_id: this.construction_selected,
+                  height: floatRow,
+                  width: this.widths[key],
+                  price: '0'
+                };
+              }
+            }
+
+          this.newRow = '';
         }
-
-        this.newRow = '';
-      }
     },
     addColumn: function addColumn() {
       if (this.newColumn) {
@@ -1885,7 +1891,12 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     save: function save() {
-      axios.put('/admin/price/roll/update', this.prices).then(function (response) {
+      axios.put('/admin/price/roll/update', {
+        prices: this.prices,
+        construction_id: this.construction_selected,
+        catalog_id: this.catalog_selected,
+        category_id: this.category_selected
+      }).then(function (response) {
         console.log(response);
       })["catch"](function (error) {
         console.log(error);
@@ -1894,12 +1905,6 @@ __webpack_require__.r(__webpack_exports__);
     load: function load() {
       var _this = this;
 
-      // axios.get('/admin/price/roll/get?construction_id='
-      //     +this.construction_selected+
-      //     '&catalog_id='
-      //     +this.catalog_selected+
-      //     '&category_id='
-      //     +this.category_selected)
       axios.post('/admin/price/roll/get', {
         construction_id: this.construction_selected,
         catalog_id: this.catalog_selected,

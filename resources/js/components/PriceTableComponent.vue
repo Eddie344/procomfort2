@@ -89,13 +89,14 @@
         },
         methods:{
             addRow(){
-                if(this.newRow)
+                if(this.newRow) // если введено значение в поле
                 {
-                    let floatRow = this.getFloatValue(this.newRow);
-                    this.prices[floatRow] = {};
-                    if(this.widths.length)
+                    let floatRow = this.getFloatValue(this.newRow); //создаем float из введенного значения
+                    this.prices = {}; //превращаем массив в объект
+                    this.prices[floatRow] = {}; //добавляем объект с ключом высоты
+                    if(this.widths.length) //если массив с ширинами содержит значения
                     {
-                        for(let key in this.widths)
+                        for(let key in this.widths) //перебираем массив с ширинами
                         {
                             this.prices[floatRow][this.widths[key]] = {
                                 catalog_id: this.catalog_selected,
@@ -156,7 +157,12 @@
                 }
             },
             save(){
-                axios.put('/admin/price/roll/update', this.prices)
+                axios.put('/admin/price/roll/update', {
+                    prices: this.prices,
+                    construction_id: this.construction_selected,
+                    catalog_id: this.catalog_selected,
+                    category_id: this.category_selected
+                })
                 .then((response) => {
                     console.log(response);
                 })
@@ -165,12 +171,6 @@
                 });
             },
             load(){
-                // axios.get('/admin/price/roll/get?construction_id='
-                //     +this.construction_selected+
-                //     '&catalog_id='
-                //     +this.catalog_selected+
-                //     '&category_id='
-                //     +this.category_selected)
                 axios.post('/admin/price/roll/get', {
                     construction_id: this.construction_selected,
                     catalog_id: this.catalog_selected,

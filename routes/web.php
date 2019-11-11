@@ -46,7 +46,6 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         Route::resource('furn', 'FurnStorageController')->except(['create', 'edit']);
     });
     Route::prefix('/price')->group(function () {
-//        Route::get('/', '')
         Route::view('/', 'admin.prices.nav')->name('price.index');
         Route::resource('/roll', 'RollPriceController', [
             'names' => [
