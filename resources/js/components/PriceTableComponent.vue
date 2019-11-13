@@ -14,15 +14,23 @@
                         <option v-for="c in catalogs" v-bind:value="c.id">{{ c.label }}</option>
                     </select>
                 </div>
-                <div class="col-sm-3" v-if="catalog_selected != null" v-on:change="load">
+                <div class="col-sm-3" v-if="catalog_selected != null">
                     <select class="form-control" v-model="category_selected">
                         <option :value="null" disabled selected>Выберите категорию...</option>
                         <option v-for="c in categories" v-bind:value="c.id">{{ c.label }}</option>
                     </select>
                 </div>
+                <div class="col-sm-3"  v-if="category_selected != null">
+                    <button class="btn btn-info mr-3" type="submit" :disabled="loading" v-on:click="load">
+                        <span v-if="!loading">Загрузить</span>
+                        <div class="spinner-border spinner-border-sm" role="status" v-if="loading">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </button>
+                </div>
             </div>
         </form>
-        <div v-show="category_selected && catalog_selected && construction_selected">
+        <div v-show="tableLoaded">
             <div class="row">
                 <form @submit.prevent="addRow" class="input-group mb-3 col-md-4">
                     <input type="number" step="0.01" class="form-control" placeholder="Введите высоту" v-model="newRow" required>
@@ -38,6 +46,7 @@
                 </form>
             </div>
             <table class="table table-bordered" id="mtable">
+                <caption v-show="!Object.keys(prices).length">Таблица пуста. Сначала добавьте высоту</caption>
                 <thead>
                 <tr>
                     <th scope="col" rowspan="2">Высота</th>
@@ -57,7 +66,15 @@
                 </tbody>
             </table>
             <form @submit.prevent="save">
-                <button class="btn btn-success" type="submit">Сохранить</button>
+                <div class="d-flex">
+                    <button class="btn btn-info mr-3" type="submit" :disabled="alertSaved">
+                        <span v-if="!alertSaved">Сохранить</span>
+                        <span v-if="alertSaved">Изменения сохранены</span>
+                        <div class="spinner-border spinner-border-sm" role="status" v-if="btnLoading">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </button>
+                </div>
             </form>
         </div>
     </div>
@@ -82,6 +99,10 @@
                 widths:[],
                 newRow: '',
                 newColumn: '',
+                loading: false,
+                btnLoading: false,
+                alertSaved: false,
+                tableLoaded: false,
             }
         },
         mounted(){
@@ -92,20 +113,22 @@
                 if(this.newRow) // если введено значение в поле
                 {
                     let floatRow = this.getFloatValue(this.newRow); //создаем float из введенного значения
-                    //this.prices = {}; //превращаем массив в объект
-                    this.prices[floatRow] = {}; //добавляем объект с ключом высоты
-                    if(this.widths.length) //если массив с ширинами содержит значения
+                    if(!this.prices.hasOwnProperty(floatRow)) // если высоты нет в массиве цена
                     {
-                        for(let key in this.widths) //перебираем массив с ширинами
+                        this.prices[floatRow] = {}; //добавляем объект с ключом высоты
+                        if(this.widths.length) //если массив с ширинами содержит значения
                         {
-                            this.prices[floatRow][this.widths[key]] = {
-                                catalog_id: this.catalog_selected,
-                                category_id: this.category_selected,
-                                construction_id: this.construction_selected,
-                                height: floatRow,
-                                width: this.widths[key],
-                                price: '0',
-                            };
+                            for(let key in this.widths) //перебираем массив с ширинами
+                            {
+                                this.prices[floatRow][this.widths[key]] = {
+                                    catalog_id: this.catalog_selected,
+                                    category_id: this.category_selected,
+                                    construction_id: this.construction_selected,
+                                    height: floatRow,
+                                    width: this.widths[key],
+                                    price: '0',
+                                };
+                            }
                         }
                     }
                     this.newRow = '';
@@ -115,15 +138,18 @@
                 if(this.newColumn)
                 {
                     let floatCol = this.getFloatValue(this.newColumn);
-                    for(let key in this.prices){
-                        this.prices[key][floatCol] = {
-                            catalog_id: this.catalog_selected,
-                            category_id: this.category_selected,
-                            construction_id: this.construction_selected,
-                            height: key,
-                            width: floatCol,
-                            price: '0',
-                        };
+                    if(!this.widths.includes(floatCol)) // если ширины нет в массиве ширин
+                    {
+                        for (let key in this.prices) {
+                            this.prices[key][floatCol] = {
+                                catalog_id: this.catalog_selected,
+                                category_id: this.category_selected,
+                                construction_id: this.construction_selected,
+                                height: key,
+                                width: floatCol,
+                                price: '0',
+                            };
+                        }
                     }
                     this.newColumn = '';
                     this.getUniqWidths(this.prices);
@@ -157,17 +183,21 @@
                 }
             },
             save(){
+                this.btnLoading = true;
                 axios.put('/admin/price/roll/update', {
                     prices: this.prices
                 })
                 .then((response) => {
-                    console.log(response.data);
+                    this.btnLoading = false;
+                    this.alertSaved = true;
+                    setTimeout(() => this.alertSaved = false, 3000);
                 })
                 .catch((error) => {
                     console.log(error);
                 });
             },
             load(){
+                this.loading = true;
                 axios.post('/admin/price/roll/get', {
                     construction_id: this.construction_selected,
                     catalog_id: this.catalog_selected,
@@ -182,6 +212,8 @@
                         this.prices = {};
                     }
                     this.getUniqWidths(this.prices);
+                    this.loading = false;
+                    this.tableLoaded = true;
                 });
             }
         }
