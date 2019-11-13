@@ -1819,8 +1819,7 @@ __webpack_require__.r(__webpack_exports__);
       if (this.newRow) // если введено значение в поле
         {
           var floatRow = this.getFloatValue(this.newRow); //создаем float из введенного значения
-
-          this.prices = {}; //превращаем массив в объект
+          //this.prices = {}; //превращаем массив в объект
 
           this.prices[floatRow] = {}; //добавляем объект с ключом высоты
 
@@ -1892,12 +1891,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     save: function save() {
       axios.put('/admin/price/roll/update', {
-        prices: this.prices,
-        construction_id: this.construction_selected,
-        catalog_id: this.catalog_selected,
-        category_id: this.category_selected
+        prices: this.prices
       }).then(function (response) {
-        console.log(response);
+        console.log(response.data);
       })["catch"](function (error) {
         console.log(error);
       });
@@ -1910,7 +1906,13 @@ __webpack_require__.r(__webpack_exports__);
         catalog_id: this.catalog_selected,
         category_id: this.category_selected
       }).then(function (response) {
-        _this.prices = response.data;
+        console.log(response.data);
+
+        if (Object.keys(response.data).length !== 0) {
+          _this.prices = response.data;
+        } else {
+          _this.prices = {};
+        }
 
         _this.getUniqWidths(_this.prices);
       });

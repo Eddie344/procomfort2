@@ -92,7 +92,7 @@
                 if(this.newRow) // если введено значение в поле
                 {
                     let floatRow = this.getFloatValue(this.newRow); //создаем float из введенного значения
-                    this.prices = {}; //превращаем массив в объект
+                    //this.prices = {}; //превращаем массив в объект
                     this.prices[floatRow] = {}; //добавляем объект с ключом высоты
                     if(this.widths.length) //если массив с ширинами содержит значения
                     {
@@ -158,13 +158,10 @@
             },
             save(){
                 axios.put('/admin/price/roll/update', {
-                    prices: this.prices,
-                    construction_id: this.construction_selected,
-                    catalog_id: this.catalog_selected,
-                    category_id: this.category_selected
+                    prices: this.prices
                 })
                 .then((response) => {
-                    console.log(response);
+                    console.log(response.data);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -177,7 +174,13 @@
                     category_id: this.category_selected
                 })
                 .then((response) => {
-                    this.prices = response.data;
+                    console.log(response.data);
+                    if(Object.keys(response.data).length !== 0){
+                        this.prices = response.data;
+                    }
+                    else {
+                        this.prices = {};
+                    }
                     this.getUniqWidths(this.prices);
                 });
             }
