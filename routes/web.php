@@ -47,13 +47,39 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
     });
     Route::prefix('/price')->group(function () {
         Route::view('/', 'admin.prices.nav')->name('price.index');
-        Route::resource('/roll', 'RollPriceController', [
+        //Рулонные
+        Route::apiResource('/roll', 'RollPriceController', [
             'names' => [
                 'index' => 'price.roll.index',
                 'show' => 'price.roll.show',
             ]
-        ])->except(['create', 'edit']);
+        ]);
         Route::post('/roll/get', 'RollPriceController@get')->name('price.roll.get');
+        //Зебра
+        Route::apiResource('/zebra', 'ZebraPriceController', [
+            'names' => [
+                'index' => 'price.zebra.index',
+                'show' => 'price.zebra.show',
+            ]
+        ]);
+        Route::post('/zebra/get', 'ZebraPriceController@get')->name('price.zebra.get');
+    });
+    Route::prefix('/other')->group(function () {
+        Route::prefix('/constructions')->group(function () {
+            Route::apiResource('/roll', 'RollConstructionController');
+            Route::post('/roll/get', 'RollConstructionController@get')->name('other.constructions.roll.get');
+            Route::apiResource('/zebra', 'ZebraConstructionController');
+            Route::post('/zebra/get', 'ZebraConstructionController@get')->name('other.constructions.zebra.get');
+        });
+        Route::prefix('/categories')->group(function () {
+            Route::apiResource('/roll', 'RollCategoryController');
+            Route::post('/roll/get', 'RollCategoryController@get')->name('other.categories.roll.get');
+            Route::apiResource('/zebra', 'ZebraCategoryController');
+            Route::post('/zebra/get', 'ZebraCategoryController@get')->name('other.categories.zebra.get');
+        });
+        Route::apiResource('/catalogs', 'CatalogController');
+        Route::post('/catalogs/get', 'CatalogController@get')->name('other.catalogs.get');
+
     });
 });
 

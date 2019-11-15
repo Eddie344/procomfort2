@@ -130,6 +130,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="card">
+                            <a href="#" class="card-header" id="heading3" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                                <span><i class="fa fa-th-list"></i>Изделия</span>
+                            </a>
+                            <div id="collapse3" class="collapse" aria-labelledby="heading3" data-parent="#sidebar-accordion">
+                                <div class="list-group">
+                                    <a class="list-group-item" href="{{ route('zebra.index') }}">Типы конструкций</a>
+                                    <a class="list-group-item" href="{{ route('vert.index') }}">Категории материалов</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

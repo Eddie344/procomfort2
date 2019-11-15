@@ -8,19 +8,19 @@
                         <option v-for="c in constructions" v-bind:value="c.id">{{ c.label }}</option>
                     </select>
                 </div>
-                <div class="col-sm-3" v-if="construction_selected != null">
+                <div class="col-sm-3">
                     <select class="form-control" v-model="catalog_selected">
                         <option :value="null" disabled selected>Выберите каталог...</option>
                         <option v-for="c in catalogs" v-bind:value="c.id">{{ c.label }}</option>
                     </select>
                 </div>
-                <div class="col-sm-3" v-if="catalog_selected != null">
+                <div class="col-sm-3">
                     <select class="form-control" v-model="category_selected">
                         <option :value="null" disabled selected>Выберите категорию...</option>
                         <option v-for="c in categories" v-bind:value="c.id">{{ c.label }}</option>
                     </select>
                 </div>
-                <div class="col-sm-3"  v-if="category_selected != null">
+                <div class="col-sm-3"  v-if="category_selected && construction_selected && catalog_selected">
                     <button class="btn btn-info mr-3" type="submit" :disabled="loading" v-on:click="load">
                         <span v-if="!loading">Загрузить</span>
                         <div class="spinner-border spinner-border-sm" role="status" v-if="loading">
@@ -84,9 +84,7 @@
     export default {
         name: "PriceTableComponent",
         props:[
-            'constructions',
-            'catalogs',
-            'categories',
+            'type'
         ],
         data: function () {
             return {
@@ -94,6 +92,9 @@
                 construction_selected: null,
                 catalog_selected: null,
                 category_selected : null,
+                constructions: {},
+                catalogs: [],
+                categories: [],
                 //table
                 prices: {},
                 widths:[],
@@ -107,6 +108,9 @@
         },
         mounted(){
             this.getUniqWidths(this.prices);
+            this.getConstructions();
+            this.getCatalogs();
+            this.getCategories();
         },
         methods:{
             addRow(){
@@ -184,10 +188,14 @@
             },
             save(){
                 this.btnLoading = true;
-                axios.put('/admin/price/roll/update', {
-                    prices: this.prices
+                axios.put('/admin/price/'+this.type+'/update', {
+                    prices: this.prices,
+                    construction_id: this.construction_selected,
+                    catalog_id: this.catalog_selected,
+                    category_id: this.category_selected,
                 })
                 .then((response) => {
+                    console.log(response.data);
                     this.btnLoading = false;
                     this.alertSaved = true;
                     setTimeout(() => this.alertSaved = false, 3000);
@@ -198,13 +206,12 @@
             },
             load(){
                 this.loading = true;
-                axios.post('/admin/price/roll/get', {
+                axios.post('/admin/price/'+this.type+'/get', {
                     construction_id: this.construction_selected,
                     catalog_id: this.catalog_selected,
                     category_id: this.category_selected
                 })
                 .then((response) => {
-                    console.log(response.data);
                     if(Object.keys(response.data).length !== 0){
                         this.prices = response.data;
                     }
@@ -215,7 +222,26 @@
                     this.loading = false;
                     this.tableLoaded = true;
                 });
+            },
+            getConstructions(){
+                axios.post('/admin/other/constructions/'+this.type+'/get')
+                    .then((response) => {
+                        this.constructions = response.data;
+                    });
+            },
+            getCategories(){
+                axios.post('/admin/other/categories/'+this.type+'/get')
+                    .then((response) => {
+                        this.categories = response.data;
+                    });
+            },
+            getCatalogs(){
+                axios.post('/admin/other/catalogs/get')
+                    .then((response) => {
+                        this.catalogs = response.data;
+                    });
             }
+
         }
     }
 </script>

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RollPrice;
+use App\Models\ZebraPrice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
-class RollPriceController extends Controller
+class ZebraPriceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,13 +16,14 @@ class RollPriceController extends Controller
      */
     public function index()
     {
-        $prices = RollPrice::filter()->get()->groupBy('height')->map->keyBy('width');
-        return view('admin.prices.roll.index', compact('prices'));
+        $prices = ZebraPrice::filter()->get()->groupBy('height')->map->keyBy('width');
+        //dd($prices);
+        return view('admin.prices.zebra.index', compact('prices'));
     }
 
     public function get(Request $request)
     {
-        $prices = DB::table('roll_prices')
+        $prices = DB::table('zebra_prices')
             ->where([
                 ['construction_id', '=', $request->construction_id],
                 ['catalog_id', '=', $request->catalog_id],
@@ -87,12 +88,12 @@ class RollPriceController extends Controller
         $array = $request->prices;
         $flattened = collect($array)->flatten(1)->toArray();
         Arr::except($flattened, ['id']);
-        RollPrice::where([
+        ZebraPrice::where([
             'construction_id' => $request->construction_id,
             'catalog_id' => $request->catalog_id,
             'category_id' => $request->category_id,
         ])->delete();
-        RollPrice::insert($flattened);
+        ZebraPrice::insert($flattened);
         return response('OK');
     }
 

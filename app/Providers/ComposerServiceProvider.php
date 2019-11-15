@@ -23,17 +23,6 @@ class ComposerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        view()->composer(
-            ['admin.prices.roll.index'],
-            'App\Http\ViewComposers\ConstructionComposer'
-        );
-        view()->composer(
-            ['admin.prices.roll.index'],
-            'App\Http\ViewComposers\CatalogComposer'
-        );
-        view()->composer(
-            ['admin.prices.roll.index'],
-            'App\Http\ViewComposers\CategoryComposer'
-        );
+        //
     }
 }

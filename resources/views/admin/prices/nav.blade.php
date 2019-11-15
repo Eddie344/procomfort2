@@ -10,16 +10,16 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('price.roll.index')}}">Рулонные шторы</a>
+                    <a class="nav-link {{ request()->is('*/price/roll') ? 'active' : '' }}" href="{{ route('price.roll.index') }}">Рулонные шторы</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link" href="{{ route('zebra.index')}}">День-ночь</a>
+                    <a class="nav-link {{ request()->is('*/price/zebra') ? 'active' : '' }}" href="{{ route('price.zebra.index')}}">День-ночь</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link" href="{{ route('goriz.index')}}">Горизонтальные жалюзи</a>
+                    <a class="nav-link {{ request()->is('*/price/goriz') ? 'active' : '' }}" href="{{ route('price.zebra.index')}}">Горизонтальные жалюзи</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link" href="{{ route('vert.index')}}">Вертикальные жалюзи</a>
+                    <a class="nav-link {{ request()->is('*/price/vert') ? 'active' : '' }}" href="{{ route('price.zebra.index')}}">Вертикальные жалюзи</a>
                 </li>
 
             </ul>

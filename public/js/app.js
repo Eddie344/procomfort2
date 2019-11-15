@@ -1814,13 +1814,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "PriceTableComponent",
-  props: ['constructions', 'catalogs', 'categories'],
+  props: ['type'],
   data: function data() {
     return {
       //menu
       construction_selected: null,
       catalog_selected: null,
       category_selected: null,
+      constructions: {},
+      catalogs: [],
+      categories: [],
       //table
       prices: {},
       widths: [],
@@ -1834,6 +1837,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.getUniqWidths(this.prices);
+    this.getConstructions();
+    this.getCatalogs();
+    this.getCategories();
   },
   methods: {
     addRow: function addRow() {
@@ -1919,9 +1925,13 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.btnLoading = true;
-      axios.put('/admin/price/roll/update', {
-        prices: this.prices
+      axios.put('/admin/price/' + this.type + '/update', {
+        prices: this.prices,
+        construction_id: this.construction_selected,
+        catalog_id: this.catalog_selected,
+        category_id: this.category_selected
       }).then(function (response) {
+        console.log(response.data);
         _this.btnLoading = false;
         _this.alertSaved = true;
         setTimeout(function () {
@@ -1935,13 +1945,11 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       this.loading = true;
-      axios.post('/admin/price/roll/get', {
+      axios.post('/admin/price/' + this.type + '/get', {
         construction_id: this.construction_selected,
         catalog_id: this.catalog_selected,
         category_id: this.category_selected
       }).then(function (response) {
-        console.log(response.data);
-
         if (Object.keys(response.data).length !== 0) {
           _this2.prices = response.data;
         } else {
@@ -1952,6 +1960,27 @@ __webpack_require__.r(__webpack_exports__);
 
         _this2.loading = false;
         _this2.tableLoaded = true;
+      });
+    },
+    getConstructions: function getConstructions() {
+      var _this3 = this;
+
+      axios.post('/admin/other/constructions/' + this.type + '/get').then(function (response) {
+        _this3.constructions = response.data;
+      });
+    },
+    getCategories: function getCategories() {
+      var _this4 = this;
+
+      axios.post('/admin/other/categories/' + this.type + '/get').then(function (response) {
+        _this4.categories = response.data;
+      });
+    },
+    getCatalogs: function getCatalogs() {
+      var _this5 = this;
+
+      axios.post('/admin/other/catalogs/get').then(function (response) {
+        _this5.catalogs = response.data;
       });
     }
   }
@@ -38009,109 +38038,107 @@ var render = function() {
           )
         ]),
         _vm._v(" "),
-        _vm.construction_selected != null
-          ? _c("div", { staticClass: "col-sm-3" }, [
-              _c(
-                "select",
+        _c("div", { staticClass: "col-sm-3" }, [
+          _c(
+            "select",
+            {
+              directives: [
                 {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.catalog_selected,
-                      expression: "catalog_selected"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  on: {
-                    change: function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.catalog_selected = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    }
-                  }
-                },
-                [
-                  _c(
-                    "option",
-                    {
-                      attrs: { disabled: "", selected: "" },
-                      domProps: { value: null }
-                    },
-                    [_vm._v("Выберите каталог...")]
-                  ),
-                  _vm._v(" "),
-                  _vm._l(_vm.catalogs, function(c) {
-                    return _c("option", { domProps: { value: c.id } }, [
-                      _vm._v(_vm._s(c.label))
-                    ])
-                  })
-                ],
-                2
-              )
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.catalog_selected != null
-          ? _c("div", { staticClass: "col-sm-3" }, [
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.catalog_selected,
+                  expression: "catalog_selected"
+                }
+              ],
+              staticClass: "form-control",
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.catalog_selected = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                }
+              }
+            },
+            [
               _c(
-                "select",
+                "option",
                 {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.category_selected,
-                      expression: "category_selected"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  on: {
-                    change: function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.category_selected = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    }
-                  }
+                  attrs: { disabled: "", selected: "" },
+                  domProps: { value: null }
                 },
-                [
-                  _c(
-                    "option",
-                    {
-                      attrs: { disabled: "", selected: "" },
-                      domProps: { value: null }
-                    },
-                    [_vm._v("Выберите категорию...")]
-                  ),
-                  _vm._v(" "),
-                  _vm._l(_vm.categories, function(c) {
-                    return _c("option", { domProps: { value: c.id } }, [
-                      _vm._v(_vm._s(c.label))
-                    ])
-                  })
-                ],
-                2
-              )
-            ])
-          : _vm._e(),
+                [_vm._v("Выберите каталог...")]
+              ),
+              _vm._v(" "),
+              _vm._l(_vm.catalogs, function(c) {
+                return _c("option", { domProps: { value: c.id } }, [
+                  _vm._v(_vm._s(c.label))
+                ])
+              })
+            ],
+            2
+          )
+        ]),
         _vm._v(" "),
-        _vm.category_selected != null
+        _c("div", { staticClass: "col-sm-3" }, [
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.category_selected,
+                  expression: "category_selected"
+                }
+              ],
+              staticClass: "form-control",
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.category_selected = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                }
+              }
+            },
+            [
+              _c(
+                "option",
+                {
+                  attrs: { disabled: "", selected: "" },
+                  domProps: { value: null }
+                },
+                [_vm._v("Выберите категорию...")]
+              ),
+              _vm._v(" "),
+              _vm._l(_vm.categories, function(c) {
+                return _c("option", { domProps: { value: c.id } }, [
+                  _vm._v(_vm._s(c.label))
+                ])
+              })
+            ],
+            2
+          )
+        ]),
+        _vm._v(" "),
+        _vm.category_selected &&
+        _vm.construction_selected &&
+        _vm.catalog_selected
           ? _c("div", { staticClass: "col-sm-3" }, [
               _c(
                 "button",
