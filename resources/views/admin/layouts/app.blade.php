@@ -100,41 +100,20 @@
                                 </a>
                                 <div id="collapse4" class="collapse" aria-labelledby="heading4" data-parent="#sidebar-prices">
                                     <div class="list-group">
-                                        <a href="#" class="list-group-item" id="heading5" data-toggle="collapse" data-target="#collapse5" aria-expanded="true" aria-controls="collapse5">
-                                            Рулонные шторы
-                                        </a>
-                                        <div id="collapse5" class="collapse" aria-labelledby="heading5" data-parent="#sidebar-accordion">
-                                            <div class="list-group">
-                                                <a class="list-group-item price-padding" href="{{ route('price.index') }}">Mini</a>
-                                                <a class="list-group-item price-padding" href="#">UNI-1</a>
-                                                <a class="list-group-item price-padding" href="#">UNI-2</a>
-                                                <a class="list-group-item price-padding" href="#">D-25</a>
-                                            </div>
-                                        </div>
-
-                                        <a href="#" class="list-group-item" id="heading6" data-toggle="collapse" data-target="#collapse6" aria-expanded="true" aria-controls="collapse6">
-                                            Зебра
-                                        </a>
-                                        <div id="collapse6" class="collapse" aria-labelledby="heading6" data-parent="#sidebar-accordion">
-                                            <div class="list-group">
-                                                <a class="list-group-item price-padding" href="#">Mini</a>
-                                                <a class="list-group-item price-padding" href="#">UNI-1</a>
-                                                <a class="list-group-item price-padding" href="#">UNI-2</a>
-                                                <a class="list-group-item price-padding" href="#">MGS</a>
-                                            </div>
-                                        </div>
-                                        <a class="list-group-item" href="price_vert.html">Вертикальные жалюзи</a>
-                                        <a class="list-group-item" href="price_goriz.html">Горизонтальные жалюзи</a>
-                                        <a class="list-group-item" href="price_dop.html">Дополнительная комплектация</a>
+                                        <a class="list-group-item" href="{{ route('price.roll.index') }}">Рулонные шторы</a>
+                                        <a class="list-group-item" href="{{ route('price.zebra.index') }}">День-ночь</a>
+                                        <a class="list-group-item" href="{{ route('price.vert.index') }}">Вертикальные жалюзи</a>
+                                        <a class="list-group-item" href="{{ route('price.goriz.index') }}">Горизонтальные жалюзи</a>
+                                        <a class="list-group-item" href="{{ route('price.add.index') }}">Дополнительная комплектация</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="card">
-                            <a href="#" class="card-header" id="heading3" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                            <a href="#" class="card-header" id="heading5" data-toggle="collapse" data-target="#collapse5" aria-expanded="true" aria-controls="collapse5">
                                 <span><i class="fa fa-th-list"></i>Изделия</span>
                             </a>
-                            <div id="collapse3" class="collapse" aria-labelledby="heading3" data-parent="#sidebar-accordion">
+                            <div id="collapse5" class="collapse" aria-labelledby="heading5" data-parent="#sidebar-accordion">
                                 <div class="list-group">
                                     <a class="list-group-item" href="{{ route('zebra.index') }}">Типы конструкций</a>
                                     <a class="list-group-item" href="{{ route('vert.index') }}">Категории материалов</a>

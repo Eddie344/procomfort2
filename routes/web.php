@@ -63,6 +63,30 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
             ]
         ]);
         Route::post('/zebra/get', 'ZebraPriceController@get')->name('price.zebra.get');
+        //Вертикалка
+        Route::apiResource('/vert', 'VertPriceController', [
+            'names' => [
+                'index' => 'price.vert.index',
+                'show' => 'price.vert.show',
+            ]
+        ]);
+        Route::post('/vert/get', 'VertPriceController@get')->name('price.vert.get');
+        //Вертикалка
+        Route::apiResource('/goriz', 'GorizPriceController', [
+            'names' => [
+                'index' => 'price.goriz.index',
+                'show' => 'price.goriz.show',
+            ]
+        ]);
+        Route::post('/goriz/get', 'GorizPriceController@get')->name('price.goriz.get');
+        //Доп. комплектация
+        Route::apiResource('/add', 'AddPriceController', [
+            'names' => [
+                'index' => 'price.add.index',
+                'show' => 'price.add.show',
+            ]
+        ]);
+        Route::post('/add/get', 'AddPriceController@get')->name('price.add.get');
     });
     Route::prefix('/other')->group(function () {
         Route::prefix('/constructions')->group(function () {
@@ -76,6 +100,10 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
             Route::post('/roll/get', 'RollCategoryController@get')->name('other.categories.roll.get');
             Route::apiResource('/zebra', 'ZebraCategoryController');
             Route::post('/zebra/get', 'ZebraCategoryController@get')->name('other.categories.zebra.get');
+            Route::apiResource('/vert', 'VertCategoryController');
+            Route::post('/vert/get', 'VertCategoryController@get')->name('other.categories.vert.get');
+            Route::apiResource('/goriz', 'GorizCategoryController');
+            Route::post('/goriz/get', 'GorizCategoryController@get')->name('other.categories.goriz.get');
         });
         Route::apiResource('/catalogs', 'CatalogController');
         Route::post('/catalogs/get', 'CatalogController@get')->name('other.catalogs.get');

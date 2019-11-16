@@ -16,10 +16,13 @@
                     <a class="nav-link {{ request()->is('*/price/zebra') ? 'active' : '' }}" href="{{ route('price.zebra.index')}}">День-ночь</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link {{ request()->is('*/price/goriz') ? 'active' : '' }}" href="{{ route('price.zebra.index')}}">Горизонтальные жалюзи</a>
+                    <a class="nav-link {{ request()->is('*/price/goriz') ? 'active' : '' }}" href="{{ route('price.goriz.index')}}">Горизонтальные жалюзи</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link {{ request()->is('*/price/vert') ? 'active' : '' }}" href="{{ route('price.zebra.index')}}">Вертикальные жалюзи</a>
+                    <a class="nav-link {{ request()->is('*/price/vert') ? 'active' : '' }}" href="{{ route('price.vert.index')}}">Вертикальные жалюзи</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link {{ request()->is('*/price/add') ? 'active' : '' }}" href="{{ route('price.add.index')}}">Дополнительная комплектация</a>
                 </li>
 
             </ul>
