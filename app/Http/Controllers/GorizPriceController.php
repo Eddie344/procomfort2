@@ -13,7 +13,7 @@ class GorizPriceController extends Controller
      */
     public function index()
     {
-        //
+        return view('admin.prices.goriz.index');
     }
 
     /**

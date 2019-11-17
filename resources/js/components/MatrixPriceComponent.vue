@@ -82,7 +82,7 @@
 
 <script>
     export default {
-        name: "PriceTableComponent",
+        name: "MatrixPriceComponent",
         props:[
             'type'
         ],

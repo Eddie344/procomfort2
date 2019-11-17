@@ -1,5 +1,5 @@
 @extends('admin.prices.nav')
 
 @section('prices')
-    <simple-price-component type="roll"></simple-price-component>
+    <simple-price-component type="vert"></simple-price-component>
 @endsection
