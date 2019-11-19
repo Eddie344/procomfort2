@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class GorizPriceController extends Controller
 {
@@ -14,6 +15,16 @@ class GorizPriceController extends Controller
     public function index()
     {
         return view('admin.prices.goriz.index');
+    }
+
+    public function get(Request $request)
+    {
+        $prices = DB::table('goriz_prices')
+            ->where([
+                ['catalog_id', '=', $request->catalog_id],
+            ])
+            ->get()->sortBy('category_id');
+        return response()->json($prices);
     }
 
     /**

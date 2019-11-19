@@ -14,11 +14,9 @@ class CreateAddPricesTable extends Migration
     public function up()
     {
         Schema::create('add_prices', function (Blueprint $table) {
-            Schema::create('vert_prices', function (Blueprint $table) {
-                $table->bigIncrements('id');
-                $table->string('label');
-                $table->float('price', 8, 2);
-            });
+            $table->bigIncrements('id');
+            $table->string('label');
+            $table->float('price', 8, 2);
         });
     }
 

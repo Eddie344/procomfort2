@@ -1,81 +1,97 @@
 <template>
     <div>
-        <form class="mb-3">
-            <div class="form-row">
-                <div class="col-sm-3">
-                    <select class="form-control" v-model="catalog_selected">
-                        <option :value="null" disabled selected>Выберите каталог...</option>
-                        <option v-for="c in catalogs" v-bind:value="c.id">{{ c.label }}</option>
-                    </select>
-                </div>
-                <div class="col-sm-3"  v-if="catalog_selected">
-                    <button class="btn btn-info mr-3" type="submit" :disabled="loading" v-on:click="load">
-                        <span v-if="!loading">Загрузить</span>
-                        <div class="spinner-border spinner-border-sm" role="status" v-if="loading">
-                            <span class="sr-only">Loading...</span>
+        <b-form inline class="mb-3">
+            <b-form-select class="mr-3" v-model="catalog_selected" @change="load">
+                <option :value="null" disabled selected>Выберите каталог...</option>
+                <option v-for="c in catalogs" v-bind:value="c.id">{{ c.label }}</option>
+            </b-form-select>
+            <b-spinner class="mr-3" small label="Loading..." variant="info" v-if="loading"></b-spinner>
+            <b-button class="mr-3" variant="success" v-b-modal.modal-add-price v-if="tableLoaded && !loading"><strong>+</strong></b-button>
+
+            <b-modal id="modal-add-price" title="Добавление цены">
+                <p class="my-4">Hello from modal!</p>
+            </b-modal>
+        </b-form>
+<!--        <div class="mb-3 form-inline">-->
+<!--            <select class="form-control" v-model="catalog_selected" v-on:change="load">-->
+<!--                <option :value="null" disabled selected>Выберите каталог...</option>-->
+<!--                <option v-for="c in catalogs" v-bind:value="c.id">{{ c.label }}</option>-->
+<!--            </select>-->
+<!--            <div class="spinner-border spinner-border-sm ml-3" role="status" v-if="loading">-->
+<!--                <span class="sr-only">Loading...</span>-->
+<!--            </div>-->
+<!--            <b-button variant="success" pill v-b-modal.modal-add-price v-if="tableLoaded"><strong>+</strong></b-button>-->
+
+<!--            <b-modal id="modal-add-price" title="Добавление цены">-->
+<!--                <p class="my-4">Hello from modal!</p>-->
+<!--            </b-modal>-->
+<!--        </div>-->
+        <!-- Add modal -->
+        <div class="modal fade" id="add-part" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                <div class="modal-content">
+                    <form @submit.prevent="addPrice">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Добавление цены</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                    </button>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="new-category">Категория:</label>
+                                <input type="text" class="form-control" id="new-category" required v-model="new_price.category_id">
+                            </div>
+                            <div class="form-group">
+                                <label for="new-price">Цена:</label>
+                                <input type="number" class="form-control" id="new-price" required v-model="new_price.price">
+                            </div>
+                            <div class="form-group" v-if="errors.length">
+                                <ul class="alert alert-danger" role="alert">
+                                    <li v-for="error in errors">{{ error }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" type="submit">Добавить</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </form>
-<!--        <div v-show="tableLoaded">-->
-<!--            <div class="row">-->
-<!--                <form class="form-inline">-->
-<!--                    <div class="form-group mb-2">-->
-<!--                        <label for="staticEmail2" class="sr-only">Email</label>-->
-<!--                        <input type="text" readonly class="form-control-plaintext" id="staticEmail2" value="email@example.com">-->
-<!--                    </div>-->
-<!--                    <div class="form-group mx-sm-3 mb-2">-->
-<!--                        <label for="inputPassword2" class="sr-only">Password</label>-->
-<!--                        <input type="password" class="form-control" id="inputPassword2" placeholder="Password">-->
-<!--                    </div>-->
-<!--                    <button type="submit" class="btn btn-primary mb-2">Confirm identity</button>-->
-<!--                </form>-->
-<!--                <form @submit.prevent="addRow" class="input-group mb-3 col-md-4">-->
-<!--                    <input type="number" step="0.01" class="form-control" placeholder="Введите высоту" v-model="newRow" required>-->
-<!--                    <div class="input-group-append">-->
-<!--                        <button class="btn btn-success" type="submit">Добавить строку</button>-->
-<!--                    </div>-->
-<!--                </form>-->
-<!--                <form @submit.prevent="addColumn" class="input-group mb-3 col-md-4">-->
-<!--                    <input type="number" step="0.01" class="form-control" placeholder="Введите ширину" v-model="newColumn" required>-->
-<!--                    <div class="input-group-append">-->
-<!--                        <button class="btn btn-success" type="submit">Добавить колонку</button>-->
-<!--                    </div>-->
-<!--                </form>-->
-<!--            </div>-->
-<!--            <table class="table table-bordered" id="mtable">-->
-<!--                <caption v-show="!Object.keys(prices).length">Таблица пуста. Сначала добавьте высоту</caption>-->
-<!--                <thead>-->
-<!--                <tr>-->
-<!--                    <th scope="col" rowspan="2">Высота</th>-->
-<!--                    <th scope="row" colspan="11">Ширина</th>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <th class="price-col"  v-for="width in widths">{{ width }} <button class="btn btn-link text-danger delete-item" v-on:click="deleteColumn(width)">&times;</button></th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr v-for="(h, key) in prices">-->
-<!--                    <th class="price-row">{{ key }} <button class="btn btn-link text-danger delete-item" v-on:click="deleteRow(key)">&times;</button></th>-->
-<!--                    <td v-for="w in h">-->
-<!--                        <input type="number" step="0.01" class="form-control" v-model="w.price">-->
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--            <form @submit.prevent="save">-->
-<!--                <div class="d-flex">-->
-<!--                    <button class="btn btn-info mr-3" type="submit" :disabled="alertSaved">-->
-<!--                        <span v-if="!alertSaved">Сохранить</span>-->
-<!--                        <span v-if="alertSaved">Изменения сохранены</span>-->
-<!--                        <div class="spinner-border spinner-border-sm" role="status" v-if="btnLoading">-->
-<!--                            <span class="sr-only">Loading...</span>-->
-<!--                        </div>-->
-<!--                    </button>-->
-<!--                </div>-->
-<!--            </form>-->
-<!--        </div>-->
+        </div>
+        <div v-show="tableLoaded">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Категория</th>
+                        <th scope="col">Цена за м<sup>2</sup></th>
+                        <th scope="col">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(price, index) in prices">
+                    <th scope="row">{{ price.category_id }}</th>
+                    <td>{{ price.price }}</td>
+                    <td><a href="" data-toggle="modal" data-target="#modalDelete"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></a></td>
+                    <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Вы уверены?</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" v-on:click="deletePrice(index)">Удалить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
@@ -89,6 +105,11 @@
             return {
                 catalog_selected: null,
                 catalogs: [],
+                prices: [],
+                loading: false,
+                tableLoaded: false,
+                new_price: {},
+                errors: [],
             }
         },
         mounted(){
@@ -100,7 +121,25 @@
                     .then((response) => {
                         this.catalogs = response.data;
                     });
-            }
+            },
+            load(){
+                this.loading = true;
+                axios.post('/admin/price/'+this.type+'/get', {
+                    catalog_id: this.catalog_selected,
+                })
+                    .then((response) => {
+                        this.prices = response.data;
+                        this.loading = false;
+                        this.tableLoaded = true;
+                    });
+            },
+            addPrice(){
+                this.prices.push(this.new_price);
+                this.new_price = {};
+            },
+            deletePrice(index){
+                this.$delete(this.prices, index);
+            },
         },
     }
 </script>

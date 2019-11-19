@@ -7,10 +7,10 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
-import axios from 'axios';
-//import BootstrapVue from 'bootstrap-vue'
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-//Vue.use(BootstrapVue);
+Vue.use(BootstrapVue);
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
