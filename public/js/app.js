@@ -2059,41 +2059,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "SimplePriceComponent",
   props: ['type'],
@@ -2105,7 +2070,11 @@ __webpack_require__.r(__webpack_exports__);
       loading: false,
       tableLoaded: false,
       new_price: {},
-      errors: []
+      errors: [],
+      dismissSecs: 2,
+      dismissCountDown: 0,
+      alertColor: null,
+      alertText: null
     };
   },
   mounted: function mounted() {
@@ -2134,9 +2103,20 @@ __webpack_require__.r(__webpack_exports__);
     addPrice: function addPrice() {
       this.prices.push(this.new_price);
       this.new_price = {};
+      this.$refs['modalAddPrice'].hide();
+      this.showAlert('success', 'Цена успешно добавлена');
     },
     deletePrice: function deletePrice(index) {
       this.$delete(this.prices, index);
+      this.showAlert('danger', 'Цена успешно удалена');
+    },
+    countDownChanged: function countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
+    },
+    showAlert: function showAlert(color, text) {
+      this.alertColor = color;
+      this.alertText = text;
+      this.dismissCountDown = this.dismissSecs;
     }
   }
 });
@@ -67578,8 +67558,8 @@ var render = function() {
                   directives: [
                     {
                       name: "b-modal",
-                      rawName: "v-b-modal.modal-add-price",
-                      modifiers: { "modal-add-price": true }
+                      rawName: "v-b-modal.modalAddPrice",
+                      modifiers: { modalAddPrice: true }
                     }
                   ],
                   staticClass: "mr-3",
@@ -67591,144 +67571,95 @@ var render = function() {
           _vm._v(" "),
           _c(
             "b-modal",
-            { attrs: { id: "modal-add-price", title: "Добавление цены" } },
-            [_c("p", { staticClass: "my-4" }, [_vm._v("Hello from modal!")])]
+            {
+              ref: "modalAddPrice",
+              attrs: {
+                id: "modalAddPrice",
+                size: "sm",
+                title: "Добавление цены",
+                "hide-footer": "",
+                centered: ""
+              }
+            },
+            [
+              _c(
+                "b-form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.addPrice($event)
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "b-form-group",
+                    { attrs: { label: "Категория:" } },
+                    [
+                      _c("b-form-input", {
+                        attrs: { type: "text", required: "" },
+                        model: {
+                          value: _vm.new_price.category_id,
+                          callback: function($$v) {
+                            _vm.$set(_vm.new_price, "category_id", $$v)
+                          },
+                          expression: "new_price.category_id"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-group",
+                    { attrs: { label: "Цена:" } },
+                    [
+                      _c("b-form-input", {
+                        attrs: { type: "number", required: "" },
+                        model: {
+                          value: _vm.new_price.price,
+                          callback: function($$v) {
+                            _vm.$set(_vm.new_price, "price", $$v)
+                          },
+                          expression: "new_price.price"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "b-button",
+                    { attrs: { variant: "primary", type: "submit" } },
+                    [_vm._v("Добавить")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
           )
         ],
         1
       ),
       _vm._v(" "),
       _c(
-        "div",
+        "b-alert",
         {
-          staticClass: "modal fade",
           attrs: {
-            id: "add-part",
-            tabindex: "-1",
-            role: "dialog",
-            "aria-labelledby": "exampleModalCenterTitle",
-            "aria-hidden": "true"
+            show: _vm.dismissCountDown,
+            dismissible: "",
+            variant: _vm.alertColor
+          },
+          on: {
+            dismissed: function($event) {
+              _vm.dismissCountDown = 0
+            },
+            "dismiss-count-down": _vm.countDownChanged
           }
         },
-        [
-          _c(
-            "div",
-            {
-              staticClass: "modal-dialog modal-dialog-centered modal-sm",
-              attrs: { role: "document" }
-            },
-            [
-              _c("div", { staticClass: "modal-content" }, [
-                _c(
-                  "form",
-                  {
-                    on: {
-                      submit: function($event) {
-                        $event.preventDefault()
-                        return _vm.addPrice($event)
-                      }
-                    }
-                  },
-                  [
-                    _vm._m(0),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "modal-body" }, [
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("label", { attrs: { for: "new-category" } }, [
-                          _vm._v("Категория:")
-                        ]),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.new_price.category_id,
-                              expression: "new_price.category_id"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            id: "new-category",
-                            required: ""
-                          },
-                          domProps: { value: _vm.new_price.category_id },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.$set(
-                                _vm.new_price,
-                                "category_id",
-                                $event.target.value
-                              )
-                            }
-                          }
-                        })
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("label", { attrs: { for: "new-price" } }, [
-                          _vm._v("Цена:")
-                        ]),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.new_price.price,
-                              expression: "new_price.price"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "number",
-                            id: "new-price",
-                            required: ""
-                          },
-                          domProps: { value: _vm.new_price.price },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.$set(
-                                _vm.new_price,
-                                "price",
-                                $event.target.value
-                              )
-                            }
-                          }
-                        })
-                      ]),
-                      _vm._v(" "),
-                      _vm.errors.length
-                        ? _c("div", { staticClass: "form-group" }, [
-                            _c(
-                              "ul",
-                              {
-                                staticClass: "alert alert-danger",
-                                attrs: { role: "alert" }
-                              },
-                              _vm._l(_vm.errors, function(error) {
-                                return _c("li", [_vm._v(_vm._s(error))])
-                              }),
-                              0
-                            )
-                          ])
-                        : _vm._e()
-                    ]),
-                    _vm._v(" "),
-                    _vm._m(1)
-                  ]
-                )
-              ])
-            ]
-          )
-        ]
+        [_vm._v("\n        " + _vm._s(_vm.alertText) + "\n    ")]
       ),
       _vm._v(" "),
       _c(
@@ -67745,7 +67676,7 @@ var render = function() {
         },
         [
           _c("table", { staticClass: "table table-striped" }, [
-            _vm._m(2),
+            _vm._m(0),
             _vm._v(" "),
             _c(
               "tbody",
@@ -67757,54 +67688,65 @@ var render = function() {
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(price.price))]),
                   _vm._v(" "),
-                  _vm._m(3, true),
-                  _vm._v(" "),
                   _c(
-                    "div",
-                    {
-                      staticClass: "modal fade",
-                      attrs: {
-                        id: "modalDelete",
-                        tabindex: "-1",
-                        role: "dialog",
-                        "aria-labelledby": "exampleModalCenterTitle",
-                        "aria-hidden": "true"
-                      }
-                    },
+                    "td",
                     [
                       _c(
-                        "div",
+                        "b-button",
                         {
-                          staticClass:
-                            "modal-dialog modal-dialog-centered modal-sm",
-                          attrs: { role: "document" }
+                          directives: [
+                            {
+                              name: "b-modal",
+                              rawName: "v-b-modal",
+                              value: "modalDelete" + index,
+                              expression: "'modalDelete'+index"
+                            }
+                          ],
+                          attrs: { variant: "link" }
                         },
-                        [
-                          _c("div", { staticClass: "modal-content" }, [
-                            _vm._m(4, true),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "modal-footer" }, [
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-danger",
-                                  attrs: {
-                                    type: "button",
-                                    "data-dismiss": "modal"
-                                  },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.deletePrice(index)
-                                    }
-                                  }
-                                },
-                                [_vm._v("Удалить")]
-                              )
-                            ])
-                          ])
-                        ]
-                      )
-                    ]
+                        [_c("i", { staticClass: "fa fa-trash-o text-danger" })]
+                      ),
+                      _vm._v(" "),
+                      _c("b-modal", {
+                        attrs: {
+                          id: "modalDelete" + index,
+                          size: "sm",
+                          title: "Вы уверены?",
+                          centered: ""
+                        },
+                        scopedSlots: _vm._u(
+                          [
+                            {
+                              key: "modal-footer",
+                              fn: function(ref) {
+                                var ok = ref.ok
+                                return [
+                                  _c(
+                                    "b-button",
+                                    {
+                                      attrs: { variant: "danger" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.deletePrice(index)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                                Удалить\n                            "
+                                      )
+                                    ]
+                                  )
+                                ]
+                              }
+                            }
+                          ],
+                          null,
+                          true
+                        )
+                      })
+                    ],
+                    1
                   )
                 ])
               }),
@@ -67822,39 +67764,6 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-header" }, [
-      _c("h5", { staticClass: "modal-title" }, [_vm._v("Добавление цены")]),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "close",
-          attrs: {
-            type: "button",
-            "data-dismiss": "modal",
-            "aria-label": "Close"
-          }
-        },
-        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-footer" }, [
-      _c(
-        "button",
-        { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-        [_vm._v("Добавить")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Категория")]),
@@ -67866,53 +67775,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Действия")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c(
-        "a",
-        {
-          attrs: {
-            href: "",
-            "data-toggle": "modal",
-            "data-target": "#modalDelete"
-          }
-        },
-        [
-          _c("h5", { staticClass: "d-inline" }, [
-            _c("i", { staticClass: "fa fa-trash-o text-danger" })
-          ])
-        ]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-header" }, [
-      _c(
-        "h5",
-        { staticClass: "modal-title", attrs: { id: "exampleModalLongTitle" } },
-        [_vm._v("Вы уверены?")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "close",
-          attrs: {
-            type: "button",
-            "data-dismiss": "modal",
-            "aria-label": "Close"
-          }
-        },
-        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      )
     ])
   }
 ]
