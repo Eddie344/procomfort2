@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RollConstruction;
-use App\Models\ZebraConstruction;
+use App\Models\ProductType;
 use Illuminate\Http\Request;
 
-class ZebraConstructionController extends Controller
+class ProductTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,9 +19,9 @@ class ZebraConstructionController extends Controller
 
     public function get()
     {
-        return response()->json(ZebraConstruction::all());
+        $types = ProductType::all();
+        return response()->json($types);
     }
-
     /**
      * Store a newly created resource in storage.
      *

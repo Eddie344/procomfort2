@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateZebraConstructionsTable extends Migration
+class CreateConstructionTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateZebraConstructionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('zebra_constructions', function (Blueprint $table) {
+        Schema::create('construction_types', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('label');
+            $table->unsignedBigInteger('product_type_id');
+            $table->foreign('product_type_id')->references('id')->on('product_types');
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ class CreateZebraConstructionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('zebra_constructions');
+        Schema::dropIfExists('construction_types');
     }
 }

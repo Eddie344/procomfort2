@@ -16,8 +16,7 @@ class RollPriceController extends Controller
      */
     public function index()
     {
-        $prices = RollPrice::filter()->get()->groupBy('height')->map->keyBy('width');
-        return view('admin.prices.roll.index', compact('prices'));
+        return view('admin.prices.roll.index');
     }
 
     public function get(Request $request)

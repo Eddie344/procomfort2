@@ -11,4 +11,9 @@ class ProductType extends Model
         return $this->hasOne('App\Models\Order');
     }
 
+    public function construction_types()
+    {
+        return $this->hasMany('ConstructionType');
+    }
+
 }

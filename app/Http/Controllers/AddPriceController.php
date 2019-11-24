@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AddPrice;
 use Illuminate\Http\Request;
 
 class AddPriceController extends Controller
@@ -13,7 +14,15 @@ class AddPriceController extends Controller
      */
     public function index()
     {
-        //
+        return view('admin.prices.add.index');
+    }
+
+    public function get(Request $request)
+    {
+        $prices = AddPrice::where([
+            ['product_type_id', '=', $request->product_type_id],
+        ])->get();
+        return response()->json($prices);
     }
 
     /**

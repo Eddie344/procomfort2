@@ -16,7 +16,7 @@ class CreateRollPricesTable extends Migration
         Schema::create('roll_prices', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('construction_id');
-            $table->foreign('construction_id')->references('id')->on('roll_constructions');
+            $table->foreign('construction_id')->references('id')->on('construction_types');
             $table->unsignedBigInteger('catalog_id');
             $table->foreign('catalog_id')->references('id')->on('catalogs');
             $table->unsignedBigInteger('category_id');

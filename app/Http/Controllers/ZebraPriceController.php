@@ -16,9 +16,7 @@ class ZebraPriceController extends Controller
      */
     public function index()
     {
-        $prices = ZebraPrice::filter()->get()->groupBy('height')->map->keyBy('width');
-        //dd($prices);
-        return view('admin.prices.zebra.index', compact('prices'));
+        return view('admin.prices.zebra.index');
     }
 
     public function get(Request $request)

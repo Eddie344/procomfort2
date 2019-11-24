@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             RollStoragesTableSeeder::class,
             OrderStatusesTableSeeder::class,
             ProductTypesTableSeeder::class,
+            ConstructionTypesTableSeeder::class,
             ComplectationTypesTableSeeder::class,
             FurnColorsTableSeeder::class,
             MeasurementTypesTableSeeder::class,
@@ -38,8 +39,6 @@ class DatabaseSeeder extends Seeder
             RollPartsStoragesTableSeeder::class,
             StorageActionTypesTableSeeder::class,
             RollActionsStoragesTableSeeder::class,
-            RollConstructionsTableSeeder::class,
-            ZebraConstructionsTableSeeder::class,
             RollPricesTableSeeder::class,
         ]);
     }

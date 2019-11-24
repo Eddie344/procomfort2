@@ -16,6 +16,8 @@ class CreateAddPricesTable extends Migration
         Schema::create('add_prices', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('label');
+            $table->unsignedBigInteger('product_type_id');
+            $table->foreign('product_type_id')->references('id')->on('product_types');
             $table->float('price', 8, 2);
         });
     }

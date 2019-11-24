@@ -13,17 +13,10 @@ class ProductTypesTableSeeder extends Seeder
     public function run()
     {
         DB::table('product_types')->insert([
-            ['label' => 'Рулонные MINI'],
-            ['label' => 'Рулонные UNI-1'],
-            ['label' => 'Рулонные UNI-2'],
-            ['label' => 'Рулонные D-25'],
-            ['label' => 'Рулонные D-35'],
-            ['label' => 'День-ночь MINI'],
-            ['label' => 'День-ночь UNI-1'],
-            ['label' => 'День-ночь UNI-2'],
-            ['label' => 'День-ночь MGS'],
-            ['label' => 'Вертикальные'],
-            ['label' => 'Горизонтальные'],
+            ['label' => 'Рулонные шторы'],
+            ['label' => 'День-ночь'],
+            ['label' => 'Вертикальные жалюзи'],
+            ['label' => 'Горизонтальные жалюзи'],
         ]);
     }
 }

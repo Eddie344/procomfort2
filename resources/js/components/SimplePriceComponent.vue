@@ -41,25 +41,36 @@
                         <th scope="col">Действия</th>
                     </tr>
                 </thead>
+                <transition-group name="row-fade" tag="tbody" mode="out-in">
+                    <caption v-show="!Object.keys(prices).length" key="empty">Таблица пуста</caption>
+                    <tr v-for="(price, index) in prices" v-bind:key="price.id">
+                        <th scope="row">{{ price.category_id }}</th>
+                        <td>{{ price.price }}</td>
+                        <td>
+                            <b-button class="p-0" variant="link" v-b-modal ="'modalDeletePrice'+price.id"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
+                            <b-modal ref="modalDeletePrice" :id="'modalDeletePrice'+price.id" size="sm" title="Вы уверены?" centered>
+                                <template v-slot:modal-footer="{ ok }">
+                                    <b-button variant="danger" @click="deletePrice(index, price.id)">
+                                        Удалить
+                                    </b-button>
+                                </template>
+                            </b-modal>
 
-                        <transition-group name="row-fade" tag="tbody">
-                        <tr v-for="(price, index) in prices" v-bind:key="price.id">
-                            <th scope="row">{{ price.category_id }}</th>
-                            <td>{{ price.price }}</td>
-                            <td>
-                                <b-button class="p-0" variant="link" v-b-modal ="'modalDeletePrice'+price.id"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
-
-                                <b-modal ref="modalDeletePrice" :id="'modalDeletePrice'+price.id" size="sm" title="Вы уверены?" centered>
-                                    <template v-slot:modal-footer="{ ok }">
-                                        <b-button variant="danger" @click="deletePrice(index, price.id)">
-                                            Удалить
-                                        </b-button>
-                                    </template>
-                                </b-modal>
-                            </td>
-                        </tr>
-                        </transition-group>
-
+                            <b-button class="p-0" variant="link" v-b-modal ="'modalEditPrice'+price.id"><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
+                            <b-modal ref="modalEditPrice" :id="'modalEditPrice'+price.id" size="sm" title="Редактирование" hide-footer centered>
+                                <b-form @submit.prevent="editPrice(price.id, index)">
+                                    <b-form-group label="Категория:">
+                                        <b-form-input type="number" v-model="price.category_id" readonly></b-form-input>
+                                    </b-form-group>
+                                    <b-form-group label="Цена:">
+                                        <b-form-input type="number" v-model="price.price" required></b-form-input>
+                                    </b-form-group>
+                                    <b-button variant="primary" type="submit">Сохранить</b-button>
+                                </b-form>
+                            </b-modal>
+                        </td>
+                    </tr>
+                </transition-group>
             </table>
         </div>
     </div>
@@ -78,9 +89,8 @@
                 prices: [],
                 loading: false,
                 tableLoaded: false,
-                new_price: {
-                    catalog_id: this.catalog_selected,
-                },
+                new_price: {},
+                edit_price: {},
                 errors: [],
                 dismissSecs: 2,
                 dismissCountDown: 0,
@@ -93,7 +103,7 @@
         },
         computed: {
             validation() {
-                return !this.prices.some(i =>  i.category_id === this.new_price.category_id);
+                return !this.prices.some(i =>  i.category_id == this.new_price.category_id);
             }
         },
         methods:{
@@ -116,7 +126,7 @@
                     });
             },
             addPrice(){
-                let error = this.prices.some(i =>  i.category_id === this.new_price.category_id);
+                let error = this.prices.some(i =>  i.category_id == this.new_price.category_id);
                 if(!error){
                     axios.post('/admin/price/'+this.type, {
                         catalog_id: this.catalog_selected,
@@ -132,6 +142,17 @@
                     //this.showAlert('success', 'Цена успешно добавлена');
                     this.$refs['modalAddPrice'].hide();
                 }
+            },
+            editPrice(id, index){
+                axios.put('/admin/price/'+this.type+'/'+id, {
+                    price: this.prices[index].price,
+                })
+                    .then((response) => {
+                        console.log(response.data);
+                        this.load();
+                    });
+                //this.showAlert('success', 'Цена успешно добавлена');
+                this.$bvModal.hide('modalEditPrice'+id);
             },
             deletePrice(index, id){
                 axios.delete('/admin/price/'+this.type+'/'+id)
@@ -154,16 +175,13 @@
     }
 </script>
 
-<style scoped>
-    .row-fade-enter-active {
-        transition: all .4s ease;
-    }
-    .row-fade-leave-active {
-        transition: all .3s ease;
-    }
+<style scoped lang="sass">
+    .row-fade-enter-active
+        transition: all .3s ease
+    .row-fade-leave-active
+        transition: all .3s ease
     .row-fade-enter, .row-fade-leave-to
-        /* .slide-fade-leave-active до версии 2.1.8 */ {
-        transform: translateX(10px);
-        opacity: 0;
-    }
+        /* .slide-fade-leave-active до версии 2.1.8 */
+        transform: translateX(10px)
+        opacity: 0
 </style>

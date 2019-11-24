@@ -3,7 +3,7 @@
 
 namespace App\Http\ViewComposers;
 
-use App\Models\RollConstruction;
+use App\Models\ConstructionType;
 use App\Models\ZebraConstruction;
 use Illuminate\View\View;
 
@@ -18,7 +18,7 @@ class ConstructionComposer
      */
     public function __construct()
     {
-        $this->roll_constructions = RollConstruction::all();
+        $this->roll_constructions = ConstructionType::all();
         $this->zebra_constructions = ZebraConstruction::all();
     }
 

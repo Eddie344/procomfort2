@@ -20,11 +20,9 @@ class GorizPriceController extends Controller
 
     public function get(Request $request)
     {
-        $prices = DB::table('goriz_prices')
-            ->where([
-                ['catalog_id', '=', $request->catalog_id],
-            ])
-            ->get()->sortBy('category_id');
+        $prices = GorizPrice::where([
+            ['catalog_id', '=', $request->catalog_id],
+        ])->get();
         return response()->json($prices);
     }
 
@@ -60,7 +58,8 @@ class GorizPriceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        GorizPrice::find($id)->update($request->toArray());
+        return response('Ok');
     }
 
     /**

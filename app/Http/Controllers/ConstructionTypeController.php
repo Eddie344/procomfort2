@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RollConstruction;
+use App\Models\ConstructionType;
 use Illuminate\Http\Request;
 
-class RollConstructionController extends Controller
+class ConstructionTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,9 +17,12 @@ class RollConstructionController extends Controller
         //
     }
 
-    public function get()
+    public function get(Request $request)
     {
-        return response()->json(RollConstruction::all());
+        $constructions = ConstructionType::where([
+            ['product_type_id', '=', $request->product_type_id],
+        ])->get();
+        return response()->json($constructions);
     }
 
     /**

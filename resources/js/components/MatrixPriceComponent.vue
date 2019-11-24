@@ -57,12 +57,12 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(h, key) in prices">
-                    <th class="price-row">{{ key }} <button class="btn btn-link text-danger delete-item" v-on:click="deleteRow(key)">&times;</button></th>
-                    <td v-for="w in h">
-                        <input type="number" step="0.01" class="form-control" v-model="w.price">
-                    </td>
-                </tr>
+                    <tr v-for="(h, key) in prices">
+                        <th class="price-row">{{ key }} <button class="btn btn-link text-danger delete-item" v-on:click="deleteRow(key)">&times;</button></th>
+                        <td v-for="w in h">
+                            <input type="number" step="0.01" class="form-control" v-model="w.price">
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <form @submit.prevent="save">
@@ -89,6 +89,7 @@
         data: function () {
             return {
                 //menu
+                product_type: null,
                 construction_selected: null,
                 catalog_selected: null,
                 category_selected : null,
@@ -107,12 +108,21 @@
             }
         },
         mounted(){
+            this.setProductType();
             this.getUniqWidths(this.prices);
             this.getConstructions();
             this.getCatalogs();
             this.getCategories();
         },
         methods:{
+            setProductType(){
+                if(this.type === 'roll'){
+                    this.product_type = 1;
+                }
+                if(this.type === 'zebra'){
+                    this.product_type = 2;
+                }
+            },
             addRow(){
                 if(this.newRow) // если введено значение в поле
                 {
@@ -224,7 +234,9 @@
                 });
             },
             getConstructions(){
-                axios.post('/admin/other/constructions/'+this.type+'/get')
+                axios.post('/admin/other/construction_types/get', {
+                    product_type_id: this.product_type
+                })
                     .then((response) => {
                         this.constructions = response.data;
                     });

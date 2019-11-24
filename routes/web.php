@@ -89,22 +89,22 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         Route::post('/add/get', 'AddPriceController@get')->name('price.add.get');
     });
     Route::prefix('/other')->group(function () {
-        Route::prefix('/constructions')->group(function () {
-            Route::apiResource('/roll', 'RollConstructionController', [
-            'names' => [
-                'index' => 'constructions.roll.index',
-				'show' => 'constructions.roll.show',
+        Route::apiResource('/construction_types', 'ConstructionTypeController', [
+        'names' => [
+            'index' => 'construction_types.index',
+            'show' => 'construction_types.show',
             ]
         ]);
-            Route::post('/roll/get', 'RollConstructionController@get')->name('other.constructions.roll.get');
-            Route::apiResource('/zebra', 'ZebraConstructionController', [
+        Route::post('/construction_types/get', 'ConstructionTypeController@get')->name('other.constructions.get');
+
+        Route::apiResource('/product_types', 'ProductTypeController', [
             'names' => [
-                'index' => 'constructions.zebra.index',
-				'show' => 'constructions.zebra.show',
+                'index' => 'product_types.index',
+                'show' => 'product_types.show',
             ]
         ]);
-            Route::post('/zebra/get', 'ZebraConstructionController@get')->name('other.constructions.zebra.get');
-        });
+        Route::post('/product_types/get', 'ProductTypeController@get')->name('other.product_types.get');
+
         Route::prefix('/categories')->group(function () {
             Route::apiResource('/roll', 'RollCategoryController', [
             'names' => [
