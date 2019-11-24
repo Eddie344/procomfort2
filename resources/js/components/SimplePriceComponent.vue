@@ -11,7 +11,10 @@
             <b-modal ref="modalAddPrice" id="modalAddPrice" size="sm" title="Добавление цены" hide-footer centered>
                 <b-form @submit.prevent="addPrice">
                     <b-form-group label="Категория:">
-                        <b-form-input type="text" v-model="new_price.category_id" required></b-form-input>
+                        <b-form-input type="number" :state="validation" v-model="new_price.category_id" required></b-form-input>
+                        <b-form-invalid-feedback :state="validation">
+                            Укажите уникальную категорию
+                        </b-form-invalid-feedback>
                     </b-form-group>
                     <b-form-group label="Цена:">
                         <b-form-input type="number" v-model="new_price.price" required></b-form-input>
@@ -38,23 +41,25 @@
                         <th scope="col">Действия</th>
                     </tr>
                 </thead>
-                <tbody>
-                <tr v-for="(price, index) in prices">
-                    <th scope="row">{{ price.category_id }}</th>
-                    <td>{{ price.price }}</td>
-                    <td>
-                        <b-button variant="link" v-b-modal ="'modalDelete'+index"><i class="fa fa-trash-o text-danger"></i></b-button>
 
-                        <b-modal :id="'modalDelete'+index" size="sm" title="Вы уверены?" centered>
-                            <template v-slot:modal-footer="{ ok }">
-                                <b-button variant="danger" @click="deletePrice(index)">
-                                    Удалить
-                                </b-button>
-                            </template>
-                        </b-modal>
-                    </td>
-                </tr>
-                </tbody>
+                        <transition-group name="row-fade" tag="tbody">
+                        <tr v-for="(price, index) in prices" v-bind:key="price.id">
+                            <th scope="row">{{ price.category_id }}</th>
+                            <td>{{ price.price }}</td>
+                            <td>
+                                <b-button class="p-0" variant="link" v-b-modal ="'modalDeletePrice'+price.id"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
+
+                                <b-modal ref="modalDeletePrice" :id="'modalDeletePrice'+price.id" size="sm" title="Вы уверены?" centered>
+                                    <template v-slot:modal-footer="{ ok }">
+                                        <b-button variant="danger" @click="deletePrice(index, price.id)">
+                                            Удалить
+                                        </b-button>
+                                    </template>
+                                </b-modal>
+                            </td>
+                        </tr>
+                        </transition-group>
+
             </table>
         </div>
     </div>
@@ -73,7 +78,9 @@
                 prices: [],
                 loading: false,
                 tableLoaded: false,
-                new_price: {},
+                new_price: {
+                    catalog_id: this.catalog_selected,
+                },
                 errors: [],
                 dismissSecs: 2,
                 dismissCountDown: 0,
@@ -83,6 +90,11 @@
         },
         mounted(){
             this.getCatalogs();
+        },
+        computed: {
+            validation() {
+                return !this.prices.some(i =>  i.category_id === this.new_price.category_id);
+            }
         },
         methods:{
             getCatalogs(){
@@ -97,20 +109,38 @@
                     catalog_id: this.catalog_selected,
                 })
                     .then((response) => {
+                        console.log(response.data);
                         this.prices = response.data;
                         this.loading = false;
                         this.tableLoaded = true;
                     });
             },
             addPrice(){
-                this.prices.push(this.new_price);
-                this.new_price = {};
-                this.$refs['modalAddPrice'].hide();
-                this.showAlert('success', 'Цена успешно добавлена');
+                let error = this.prices.some(i =>  i.category_id === this.new_price.category_id);
+                if(!error){
+                    axios.post('/admin/price/'+this.type, {
+                        catalog_id: this.catalog_selected,
+                        category_id: this.new_price.category_id,
+                        price: this.new_price.price,
+                    })
+                        .then((response) => {
+                            console.log(response.data);
+                            this.new_price.id = response.data;
+                            this.prices.push(this.new_price);
+                            this.new_price = {};
+                        });
+                    //this.showAlert('success', 'Цена успешно добавлена');
+                    this.$refs['modalAddPrice'].hide();
+                }
             },
-            deletePrice(index){
-                this.$delete(this.prices, index);
-                this.showAlert('danger', 'Цена успешно удалена');
+            deletePrice(index, id){
+                axios.delete('/admin/price/'+this.type+'/'+id)
+                    .then((response) => {
+                        console.log(response.data);
+                        this.$delete(this.prices, index);
+                        //this.showAlert('danger', 'Цена успешно удалена');
+                    });
+                this.$bvModal.hide('modalDeletePrice'+id);
             },
             countDownChanged(dismissCountDown) {
                 this.dismissCountDown = dismissCountDown
@@ -125,5 +155,15 @@
 </script>
 
 <style scoped>
-
+    .row-fade-enter-active {
+        transition: all .3s ease;
+    }
+    .row-fade-leave-active {
+        transition: all .8s ease;
+    }
+    .row-fade-enter, .row-fade-leave-to
+        /* .slide-fade-leave-active до версии 2.1.8 */ {
+        transform: translateX(10px);
+        opacity: 0;
+    }
 </style>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GorizPrice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -35,7 +36,8 @@ class GorizPriceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $price = GorizPrice::create($request->toArray());
+        return response($price->id);
     }
 
     /**
@@ -69,6 +71,7 @@ class GorizPriceController extends Controller
      */
     public function destroy($id)
     {
-        //
+        GorizPrice::destroy($id);
+        return response($id);
     }
 }

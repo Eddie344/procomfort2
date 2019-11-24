@@ -90,19 +90,49 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
     });
     Route::prefix('/other')->group(function () {
         Route::prefix('/constructions')->group(function () {
-            Route::apiResource('/roll', 'RollConstructionController');
+            Route::apiResource('/roll', 'RollConstructionController', [
+            'names' => [
+                'index' => 'constructions.roll.index',
+				'show' => 'constructions.roll.show',
+            ]
+        ]);
             Route::post('/roll/get', 'RollConstructionController@get')->name('other.constructions.roll.get');
-            Route::apiResource('/zebra', 'ZebraConstructionController');
+            Route::apiResource('/zebra', 'ZebraConstructionController', [
+            'names' => [
+                'index' => 'constructions.zebra.index',
+				'show' => 'constructions.zebra.show',
+            ]
+        ]);
             Route::post('/zebra/get', 'ZebraConstructionController@get')->name('other.constructions.zebra.get');
         });
         Route::prefix('/categories')->group(function () {
-            Route::apiResource('/roll', 'RollCategoryController');
+            Route::apiResource('/roll', 'RollCategoryController', [
+            'names' => [
+                'index' => 'categories.roll.index',
+				'show' => 'categories.roll.show',
+            ]
+        ]);
             Route::post('/roll/get', 'RollCategoryController@get')->name('other.categories.roll.get');
-            Route::apiResource('/zebra', 'ZebraCategoryController');
+            Route::apiResource('/zebra', 'ZebraCategoryController', [
+            'names' => [
+                'index' => 'categories.zebra.index',
+				'show' => 'categories.zebra.show',
+            ]
+        ]);
             Route::post('/zebra/get', 'ZebraCategoryController@get')->name('other.categories.zebra.get');
-            Route::apiResource('/vert', 'VertCategoryController');
+            Route::apiResource('/vert', 'VertCategoryController', [
+            'names' => [
+                'index' => 'categories.vert.index',
+				'show' => 'categories.vert.show',
+            ]
+        ]);
             Route::post('/vert/get', 'VertCategoryController@get')->name('other.categories.vert.get');
-            Route::apiResource('/goriz', 'GorizCategoryController');
+            Route::apiResource('/goriz', 'GorizCategoryController', [
+            'names' => [
+                'index' => 'categories.goriz.index',
+				'show' => 'categories.goriz.show',
+            ]
+        ]);
             Route::post('/goriz/get', 'GorizCategoryController@get')->name('other.categories.goriz.get');
         });
         Route::apiResource('/catalogs', 'CatalogController');
