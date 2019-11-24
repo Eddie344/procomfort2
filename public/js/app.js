@@ -34887,7 +34887,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.row-fade-enter-active[data-v-11d009f1] {\n    -webkit-transition: all .3s ease;\n    transition: all .3s ease;\n}\n.row-fade-leave-active[data-v-11d009f1] {\n    -webkit-transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);\n    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);\n}\n.row-fade-enter[data-v-11d009f1], .row-fade-leave-to[data-v-11d009f1]\n    /* .slide-fade-leave-active до версии 2.1.8 */ {\n    -webkit-transform: translateX(10px);\n            transform: translateX(10px);\n    opacity: 0;\n}\n", ""]);
+exports.push([module.i, "\n.row-fade-enter-active[data-v-11d009f1] {\n    -webkit-transition: all .4s ease;\n    transition: all .4s ease;\n}\n.row-fade-leave-active[data-v-11d009f1] {\n    -webkit-transition: all .3s ease;\n    transition: all .3s ease;\n}\n.row-fade-enter[data-v-11d009f1], .row-fade-leave-to[data-v-11d009f1]\n    /* .slide-fade-leave-active до версии 2.1.8 */ {\n    -webkit-transform: translateX(10px);\n            transform: translateX(10px);\n    opacity: 0;\n}\n", ""]);
 
 // exports
 

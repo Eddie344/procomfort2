@@ -156,10 +156,10 @@
 
 <style scoped>
     .row-fade-enter-active {
-        transition: all .3s ease;
+        transition: all .4s ease;
     }
     .row-fade-leave-active {
-        transition: all .8s ease;
+        transition: all .3s ease;
     }
     .row-fade-enter, .row-fade-leave-to
         /* .slide-fade-leave-active до версии 2.1.8 */ {
