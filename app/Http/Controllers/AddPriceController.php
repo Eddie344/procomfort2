@@ -33,7 +33,8 @@ class AddPriceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $price = AddPrice::create($request->toArray());
+        return response($price->id);
     }
 
     /**
@@ -56,7 +57,8 @@ class AddPriceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        AddPrice::find($id)->update($request->toArray());
+        return response('Ok');
     }
 
     /**
@@ -67,6 +69,7 @@ class AddPriceController extends Controller
      */
     public function destroy($id)
     {
-        //
+        AddPrice::destroy($id);
+        return response($id);
     }
 }

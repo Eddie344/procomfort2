@@ -1750,6 +1750,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "AddPriceComponent",
   data: function data() {
@@ -1758,7 +1771,8 @@ __webpack_require__.r(__webpack_exports__);
       product_types: {},
       loading: false,
       tableLoaded: false,
-      prices: {}
+      prices: {},
+      new_price: {}
     };
   },
   mounted: function mounted() {
@@ -1784,6 +1798,48 @@ __webpack_require__.r(__webpack_exports__);
         _this2.loading = false;
         _this2.tableLoaded = true;
       });
+    },
+    addPrice: function addPrice() {
+      var _this3 = this;
+
+      axios.post('/admin/price/add', {
+        product_type_id: this.product_type_selected,
+        label: this.new_price.label,
+        price: this.new_price.price
+      }).then(function (response) {
+        console.log(response.data);
+        _this3.new_price.id = response.data;
+
+        _this3.prices.push(_this3.new_price);
+
+        _this3.new_price = {};
+      }); //this.showAlert('success', 'Цена успешно добавлена');
+
+      this.$refs['modalAddPrice'].hide();
+    },
+    editPrice: function editPrice(id, index) {
+      var _this4 = this;
+
+      axios.put('/admin/price/add/' + id, {
+        price: this.prices[index].price
+      }).then(function (response) {
+        console.log(response.data);
+
+        _this4.load();
+      }); //this.showAlert('success', 'Цена успешно добавлена');
+
+      this.$bvModal.hide('modalEditPrice' + id);
+    },
+    deletePrice: function deletePrice(index, id) {
+      var _this5 = this;
+
+      axios["delete"]('/admin/price/add/' + id).then(function (response) {
+        console.log(response.data);
+
+        _this5.$delete(_this5.prices, index); //this.showAlert('danger', 'Цена успешно удалена');
+
+      });
+      this.$bvModal.hide('modalDeletePrice' + id);
     }
   }
 });
@@ -34975,6 +35031,25 @@ var warnNoMutationObserverSupport = function warnNoMutationObserverSupport(sourc
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AddPriceComponent.vue?vue&type=style&index=0&id=6a01214c&scoped=true&lang=sass&":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--8-2!./node_modules/sass-loader/dist/cjs.js??ref--8-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AddPriceComponent.vue?vue&type=style&index=0&id=6a01214c&scoped=true&lang=sass& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "@charset \"UTF-8\";\n.row-fade-enter-active[data-v-6a01214c] {\n  -webkit-transition: all 0.3s ease;\n  transition: all 0.3s ease;\n}\n.row-fade-leave-active[data-v-6a01214c] {\n  -webkit-transition: all 0.3s ease;\n  transition: all 0.3s ease;\n}\n.row-fade-enter[data-v-6a01214c], .row-fade-leave-to[data-v-6a01214c] {\n  /* .slide-fade-leave-active до версии 2.1.8 */\n  -webkit-transform: translateX(10px);\n          transform: translateX(10px);\n  opacity: 0;\n}", ""]);
+
+// exports
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MatrixPriceComponent.vue?vue&type=style&index=0&id=2bd3aa40&lang=sass&scoped=true&":
 /*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--8-2!./node_modules/sass-loader/dist/cjs.js??ref--8-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MatrixPriceComponent.vue?vue&type=style&index=0&id=2bd3aa40&lang=sass&scoped=true& ***!
@@ -66518,6 +66593,36 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AddPriceComponent.vue?vue&type=style&index=0&id=6a01214c&scoped=true&lang=sass&":
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--8-2!./node_modules/sass-loader/dist/cjs.js??ref--8-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AddPriceComponent.vue?vue&type=style&index=0&id=6a01214c&scoped=true&lang=sass& ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--8-2!../../../node_modules/sass-loader/dist/cjs.js??ref--8-3!../../../node_modules/vue-loader/lib??vue-loader-options!./AddPriceComponent.vue?vue&type=style&index=0&id=6a01214c&scoped=true&lang=sass& */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AddPriceComponent.vue?vue&type=style&index=0&id=6a01214c&scoped=true&lang=sass&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MatrixPriceComponent.vue?vue&type=style&index=0&id=2bd3aa40&lang=sass&scoped=true&":
 /*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--8-2!./node_modules/sass-loader/dist/cjs.js??ref--8-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MatrixPriceComponent.vue?vue&type=style&index=0&id=2bd3aa40&lang=sass&scoped=true& ***!
@@ -67237,7 +67342,97 @@ var render = function() {
                 staticClass: "mr-3",
                 attrs: { small: "", label: "Loading...", variant: "info" }
               })
-            : _vm._e()
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.tableLoaded && !_vm.loading
+            ? _c(
+                "b-button",
+                {
+                  directives: [
+                    {
+                      name: "b-modal",
+                      rawName: "v-b-modal.modalAddPrice",
+                      modifiers: { modalAddPrice: true }
+                    }
+                  ],
+                  staticClass: "mr-3",
+                  attrs: { variant: "success" }
+                },
+                [_c("strong", [_vm._v("+")])]
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "b-modal",
+            {
+              ref: "modalAddPrice",
+              attrs: {
+                id: "modalAddPrice",
+                size: "sm",
+                title: "Добавление",
+                "hide-footer": "",
+                centered: ""
+              }
+            },
+            [
+              _c(
+                "b-form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.addPrice($event)
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "b-form-group",
+                    { attrs: { label: "Наименование:" } },
+                    [
+                      _c("b-form-input", {
+                        attrs: { type: "text", required: "" },
+                        model: {
+                          value: _vm.new_price.label,
+                          callback: function($$v) {
+                            _vm.$set(_vm.new_price, "label", $$v)
+                          },
+                          expression: "new_price.label"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-group",
+                    { attrs: { label: "Цена:" } },
+                    [
+                      _c("b-form-input", {
+                        attrs: { type: "number", required: "" },
+                        model: {
+                          value: _vm.new_price.price,
+                          callback: function($$v) {
+                            _vm.$set(_vm.new_price, "price", $$v)
+                          },
+                          expression: "new_price.price"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "b-button",
+                    { attrs: { variant: "primary", type: "submit" } },
+                    [_vm._v("Добавить")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
         ],
         1
       ),
@@ -67407,16 +67602,16 @@ var render = function() {
                                 [
                                   _c(
                                     "b-form-group",
-                                    { attrs: { label: "Категория:" } },
+                                    { attrs: { label: "Наименование:" } },
                                     [
                                       _c("b-form-input", {
-                                        attrs: { type: "number", readonly: "" },
+                                        attrs: { type: "text", readonly: "" },
                                         model: {
-                                          value: price.category_id,
+                                          value: price.label,
                                           callback: function($$v) {
-                                            _vm.$set(price, "category_id", $$v)
+                                            _vm.$set(price, "label", $$v)
                                           },
-                                          expression: "price.category_id"
+                                          expression: "price.label"
                                         }
                                       })
                                     ],
@@ -80773,7 +80968,9 @@ if (token) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _AddPriceComponent_vue_vue_type_template_id_6a01214c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AddPriceComponent.vue?vue&type=template&id=6a01214c&scoped=true& */ "./resources/js/components/AddPriceComponent.vue?vue&type=template&id=6a01214c&scoped=true&");
 /* harmony import */ var _AddPriceComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AddPriceComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/AddPriceComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _AddPriceComponent_vue_vue_type_style_index_0_id_6a01214c_scoped_true_lang_sass___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AddPriceComponent.vue?vue&type=style&index=0&id=6a01214c&scoped=true&lang=sass& */ "./resources/js/components/AddPriceComponent.vue?vue&type=style&index=0&id=6a01214c&scoped=true&lang=sass&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -80781,7 +80978,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _AddPriceComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _AddPriceComponent_vue_vue_type_template_id_6a01214c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
   _AddPriceComponent_vue_vue_type_template_id_6a01214c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -80810,6 +81007,22 @@ component.options.__file = "resources/js/components/AddPriceComponent.vue"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddPriceComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./AddPriceComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AddPriceComponent.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddPriceComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/AddPriceComponent.vue?vue&type=style&index=0&id=6a01214c&scoped=true&lang=sass&":
+/*!*****************************************************************************************************************!*\
+  !*** ./resources/js/components/AddPriceComponent.vue?vue&type=style&index=0&id=6a01214c&scoped=true&lang=sass& ***!
+  \*****************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_2_node_modules_sass_loader_dist_cjs_js_ref_8_3_node_modules_vue_loader_lib_index_js_vue_loader_options_AddPriceComponent_vue_vue_type_style_index_0_id_6a01214c_scoped_true_lang_sass___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--8-2!../../../node_modules/sass-loader/dist/cjs.js??ref--8-3!../../../node_modules/vue-loader/lib??vue-loader-options!./AddPriceComponent.vue?vue&type=style&index=0&id=6a01214c&scoped=true&lang=sass& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AddPriceComponent.vue?vue&type=style&index=0&id=6a01214c&scoped=true&lang=sass&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_2_node_modules_sass_loader_dist_cjs_js_ref_8_3_node_modules_vue_loader_lib_index_js_vue_loader_options_AddPriceComponent_vue_vue_type_style_index_0_id_6a01214c_scoped_true_lang_sass___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_2_node_modules_sass_loader_dist_cjs_js_ref_8_3_node_modules_vue_loader_lib_index_js_vue_loader_options_AddPriceComponent_vue_vue_type_style_index_0_id_6a01214c_scoped_true_lang_sass___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_2_node_modules_sass_loader_dist_cjs_js_ref_8_3_node_modules_vue_loader_lib_index_js_vue_loader_options_AddPriceComponent_vue_vue_type_style_index_0_id_6a01214c_scoped_true_lang_sass___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_2_node_modules_sass_loader_dist_cjs_js_ref_8_3_node_modules_vue_loader_lib_index_js_vue_loader_options_AddPriceComponent_vue_vue_type_style_index_0_id_6a01214c_scoped_true_lang_sass___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_2_node_modules_sass_loader_dist_cjs_js_ref_8_3_node_modules_vue_loader_lib_index_js_vue_loader_options_AddPriceComponent_vue_vue_type_style_index_0_id_6a01214c_scoped_true_lang_sass___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
