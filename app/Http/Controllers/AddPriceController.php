@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\AddPrice;
+use App\Models\AddPrice;
 use Illuminate\Http\Request;
 
 class AddPriceController extends Controller
