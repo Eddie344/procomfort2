@@ -11100,3 +11100,115 @@ a.text-dark:focus {
   }
 }
 
+body {
+  font-size: 16px;
+  min-width: 320px;
+  position: relative;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+body input,
+body textarea {
+  border: #666 1px solid;
+  outline: none;
+}
+
+body input:focus:required:invalid,
+body textarea:focus:required:invalid {
+  border-color: red;
+}
+
+body input:required:valid,
+body textarea:required:valid {
+  border-color: green;
+}
+
+i {
+  margin-right: 8px;
+}
+
+.navbar .form-control {
+  padding: 0.75rem 1rem;
+  border-width: 0;
+  border-radius: 0;
+}
+
+.navbar .dropdown .user-dropdown {
+  color: #fff;
+}
+
+.navbar .dropdown .user-dropdown-menu {
+  border-radius: 0;
+  right: 10%;
+  left: auto;
+}
+
+.form-control-dark {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  padding: 48px 0 0;
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  height: calc(100vh - 48px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-top: 25px;
+}
+
+.accordion .card {
+  border-radius: 0;
+}
+
+.accordion .card .card-header {
+  padding-left: 30px;
+  border-radius: 0;
+  color: #444;
+  -webkit-transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-pack: justify;
+          justify-content: space-between;
+}
+
+.accordion .card .card-header i {
+  font-size: 18px;
+}
+
+.accordion .card .card-header:hover {
+  text-decoration: none;
+}
+
+.accordion .card .list-group .list-group-item {
+  border-radius: 0;
+  padding-left: 50px;
+  color: #666;
+}
+
+.operations .input-group {
+  width: 102%;
+}
+
+#sidebar-prices .price-padding {
+  padding-left: 80px;
+}
+
+.main-section {
+  margin-top: 80px;
+}
+

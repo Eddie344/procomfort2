@@ -21,7 +21,7 @@
                     </select>
                 </div>
                 <div class="col-sm-3"  v-if="category_selected && construction_selected && catalog_selected">
-                    <button class="btn btn-info mr-3" type="submit" :disabled="loading" v-on:click="load">
+                    <button class="btn btn-primary mr-3" type="submit" :disabled="loading" v-on:click="load">
                         <span v-if="!loading">Загрузить</span>
                         <div class="spinner-border spinner-border-sm" role="status" v-if="loading">
                             <span class="sr-only">Loading...</span>
@@ -67,7 +67,7 @@
             </table>
             <form @submit.prevent="save">
                 <div class="d-flex">
-                    <button class="btn btn-info mr-3" type="submit" :disabled="alertSaved">
+                    <button class="btn btn-primary mr-3" type="submit" :disabled="alertSaved">
                         <span v-if="!alertSaved">Сохранить</span>
                         <span v-if="alertSaved">Изменения сохранены</span>
                         <div class="spinner-border spinner-border-sm" role="status" v-if="btnLoading">

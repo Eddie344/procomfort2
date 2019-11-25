@@ -1,0 +1,82 @@
+
+body
+    font-size: 16px
+    min-width: 320px
+    position: relative
+    line-height: 1.65
+    overflow-x: hidden
+    input, textarea
+        border: #666 1px solid
+        outline: none
+        &:focus:required:invalid
+            border-color: red
+        &:required:valid
+            border-color: green
+
+i
+    margin-right: 8px
+.navbar
+    .form-control
+        padding: .75rem 1rem
+        border-width: 0
+        border-radius: 0
+    .dropdown
+        .user-dropdown
+            color: #fff
+        .user-dropdown-menu
+            border-radius: 0
+            right: 10%
+            left: auto
+
+.form-control-dark
+    color: #fff
+    background-color: rgba(255, 255, 255, .1)
+    border-color: rgba(255, 255, 255, .1)
+
+.sidebar
+    position: fixed
+    top: 0
+    bottom: 0
+    left: 0
+    z-index: 100
+    padding: 48px 0 0
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1)
+
+.sidebar-sticky
+    position: sticky
+    top: 0
+    height: calc(100vh - 48px)
+    overflow-x: hidden
+    overflow-y: auto
+    padding-top: 25px
+.accordion
+    .card
+        border-radius: 0
+        .card-header
+            padding-left: 30px
+            border-radius: 0
+            color: #444
+            transition: background-color .3s ease, color .3s ease
+            display: flex
+            justify-content: space-between
+            i
+                font-size: 18px
+            &:hover
+                text-decoration: none
+                //background-color: darken(#f8f9fa, 5%)
+        .list-group
+            .list-group-item
+                border-radius: 0
+                padding-left: 50px
+                color: #666
+
+.operations
+    .input-group
+        width: 102%
+
+#sidebar-prices
+    .price-padding
+        padding-left: 80px
+
+.main-section
+    margin-top: 80px

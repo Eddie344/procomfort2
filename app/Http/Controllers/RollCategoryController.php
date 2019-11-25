@@ -19,7 +19,7 @@ class RollCategoryController extends Controller
 
     public function get()
     {
-        return response()->json(RollCategory::all());
+        return response()->json(RollCategory::all()->keyBy('id'));
     }
 
     /**

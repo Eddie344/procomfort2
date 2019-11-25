@@ -19,7 +19,7 @@ class CatalogController extends Controller
 
     public function get()
     {
-        return response()->json(Catalog::all());
+        return response()->json(Catalog::all()->keyBy('id'));
     }
 
     /**

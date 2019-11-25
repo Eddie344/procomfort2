@@ -29,6 +29,7 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
 
         Route::resource('roll_part', 'RollPartsStorageController');
         Route::resource('roll', 'RollStorageController')->except(['create', 'edit']);
+        Route::post('/roll/get', 'RollStorageController@get')->name('storage.roll.get');
 
         Route::resource('zebra_part', 'ZebraPartsStorageController')->only(['store', 'update', 'destroy']);
         Route::resource('zebra', 'ZebraStorageController')->except(['create', 'edit']);
@@ -96,6 +97,14 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
             ]
         ]);
         Route::post('/construction_types/get', 'ConstructionTypeController@get')->name('other.constructions.get');
+
+        Route::apiResource('/picture_types', 'PictureTypeController', [
+            'names' => [
+                'index' => 'picture_types.index',
+                'show' => 'picture_types.show',
+            ]
+        ]);
+        Route::post('/picture_types/get', 'PictureTypeController@get')->name('other.picture_types.get');
 
         Route::apiResource('/product_types', 'ProductTypeController', [
             'names' => [

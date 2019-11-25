@@ -16,10 +16,14 @@ class RollStorageController extends Controller
      */
     public function index()
     {
-        $rolls = RollStorage::with(['catalog', 'category', 'picture'])->filter()->paginate('10');
-        return view('admin.storage.roll.index', compact('rolls'));
+        return view('admin.storage.roll.index');
     }
 
+    public function get()
+    {
+        $rolls = RollStorage::with(['catalog', 'category', 'picture'])->get();
+        return response()->json($rolls);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -39,8 +43,9 @@ class RollStorageController extends Controller
      */
     public function store(Request $request)
     {
-        RollStorage::create($request->all());
-        return redirect('admin/storage/roll')->with(['status' => 'Предмет успешно добавлен в склад!', 'color' => 'success']);
+        $item = RollStorage::create($request->item);
+        $new_item = $item->with(['catalog', 'category', 'picture'])->find($item->id);
+        return response()->json($new_item);
     }
 
     /**
