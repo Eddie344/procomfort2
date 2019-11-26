@@ -2079,6 +2079,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "ListStorageComponent",
   data: function data() {
@@ -2100,6 +2104,13 @@ __webpack_require__.r(__webpack_exports__);
         key: 'picture.label',
         label: 'Направление рисунка',
         sortable: true
+      }, {
+        key: 'picture.label',
+        label: 'Направление рисунка',
+        sortable: true
+      }, {
+        key: 'delete',
+        label: 'Действия'
       }],
       items: [],
       categories: [],
@@ -2142,25 +2153,36 @@ __webpack_require__.r(__webpack_exports__);
 
       this.$refs['modalAddPrice'].hide();
     },
-    getCategories: function getCategories() {
+    deleteItem: function deleteItem(index) {
       var _this3 = this;
 
+      axios["delete"]('/admin/price/add/' + id).then(function (response) {
+        console.log(response.data);
+
+        _this3.$delete(_this3.prices, index); //this.showAlert('danger', 'Цена успешно удалена');
+
+      });
+      this.$bvModal.hide('modalDeletePrice' + id);
+    },
+    getCategories: function getCategories() {
+      var _this4 = this;
+
       axios.post('/admin/other/categories/roll/get').then(function (response) {
-        _this3.categories = response.data;
+        _this4.categories = response.data;
       });
     },
     getCatalogs: function getCatalogs() {
-      var _this4 = this;
+      var _this5 = this;
 
       axios.post('/admin/other/catalogs/get').then(function (response) {
-        _this4.catalogs = response.data;
+        _this5.catalogs = response.data;
       });
     },
     getPictures: function getPictures() {
-      var _this5 = this;
+      var _this6 = this;
 
       axios.post('/admin/other/picture_types/get').then(function (response) {
-        _this5.pictures = response.data;
+        _this6.pictures = response.data;
       });
     }
   }
@@ -68253,7 +68275,36 @@ var render = function() {
           "per-page": _vm.perPage,
           "current-page": _vm.currentPage,
           striped: true
-        }
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "cell(delete)",
+            fn: function(data) {
+              return [
+                _c(
+                  "b-button",
+                  {
+                    directives: [
+                      {
+                        name: "b-modal",
+                        rawName: "v-b-modal",
+                        value: "modalDelete" + data.index,
+                        expression: "'modalDelete'+ data.index"
+                      }
+                    ],
+                    staticClass: "p-0",
+                    attrs: { variant: "link" }
+                  },
+                  [
+                    _c("h5", { staticClass: "d-inline" }, [
+                      _c("i", { staticClass: "fa fa-trash-o text-danger" })
+                    ])
+                  ]
+                )
+              ]
+            }
+          }
+        ])
       }),
       _vm._v(" "),
       _c("b-pagination", {
@@ -81661,15 +81712,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!**********************************************************!*\
   !*** ./resources/js/components/ListStorageComponent.vue ***!
   \**********************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ListStorageComponent_vue_vue_type_template_id_1e023e6b_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ListStorageComponent.vue?vue&type=template&id=1e023e6b&scoped=true& */ "./resources/js/components/ListStorageComponent.vue?vue&type=template&id=1e023e6b&scoped=true&");
 /* harmony import */ var _ListStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ListStorageComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/ListStorageComponent.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _ListStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _ListStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -81699,7 +81749,7 @@ component.options.__file = "resources/js/components/ListStorageComponent.vue"
 /*!***********************************************************************************!*\
   !*** ./resources/js/components/ListStorageComponent.vue?vue&type=script&lang=js& ***!
   \***********************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

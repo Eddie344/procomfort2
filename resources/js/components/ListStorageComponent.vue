@@ -59,6 +59,10 @@
             :current-page="currentPage"
             :striped="true"
         >
+            <template v-slot:cell(delete)="data">
+                <b-button class="p-0" variant="link" v-b-modal ="'modalDelete'+ data.index"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
+
+            </template>
         </b-table>
         <b-pagination
             v-model="currentPage"
@@ -216,6 +220,15 @@
                         label: 'Направление рисунка',
                         sortable: true
                     },
+                    {
+                        key: 'picture.label',
+                        label: 'Направление рисунка',
+                        sortable: true
+                    },
+                    {
+                        key: 'delete',
+                        label: 'Действия'
+                    }
                 ],
                 items: [],
                 categories: [],
@@ -253,6 +266,15 @@
                     });
                 //this.showAlert('success', 'Цена успешно добавлена');
                 this.$refs['modalAddPrice'].hide();
+            },
+            deleteItem(index){
+                axios.delete('/admin/price/add/'+id)
+                    .then((response) => {
+                        console.log(response.data);
+                        this.$delete(this.prices, index);
+                        //this.showAlert('danger', 'Цена успешно удалена');
+                    });
+                this.$bvModal.hide('modalDeletePrice'+id);
             },
             getCategories(){
                 axios.post('/admin/other/categories/roll/get')
