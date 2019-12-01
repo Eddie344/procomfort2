@@ -16,8 +16,13 @@ class FurnStorageController extends Controller
      */
     public function index()
     {
-        $furns = FurnStorage::filter()->paginate(10);
-        return view('admin.storage.furn.index', compact('furns'));
+        return view('admin.storage.furn.index');
+    }
+
+    public function get()
+    {
+        $items = FurnStorage::all();
+        return response()->json($items);
     }
 
     /**
@@ -38,8 +43,9 @@ class FurnStorageController extends Controller
      */
     public function store(Request $request)
     {
-        FurnStorage::create($request->all());
-        return redirect('admin/storage/furn')->with(['status' => 'Предмет успешно добавлен в склад!', 'color' => 'success']);
+        $item = FurnStorage::create($request->item);
+        $new_item = $item->find($item->id);
+        return response()->json($new_item);
     }
 
     /**
@@ -50,10 +56,10 @@ class FurnStorageController extends Controller
      */
     public function show($id)
     {
-        $furn = FurnStorage::find($id);
-        $parts = FurnPartsStorage::with(['type', 'status', 'provider', 'furnStorage'])->where('furn_storage_id', $id)->get();
-        $actions = FurnActionsStorage::index($id)->filter()->paginate('10');
-        return view('admin.storage.furn.show', compact('furn', 'parts', 'actions'));
+        $zebra = ZebraStorage::find($id);
+        $parts = ZebraPartsStorage::with(['type', 'status', 'provider', 'zebraStorage'])->where('zebra_storage_id', $id)->orderBy('type_id')->get();
+        $actions = ZebraActionsStorage::index($id)->filter()->paginate('10');
+        return view('admin.storage.zebra.show', compact('zebra', 'parts', 'actions'));
     }
 
     /**
@@ -76,9 +82,9 @@ class FurnStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $furn = FurnStorage::find($id);
-        $furn->update($request->all());
-        return redirect(route('furn.show', ['id' => $id]))->with('status', 'Изменения сохранены!');
+        $item = $request->item;
+        FurnStorage::find($id)->update($item);
+        return response()->json(FurnStorage::find($id));
     }
 
     /**
@@ -90,6 +96,6 @@ class FurnStorageController extends Controller
     public function destroy($id)
     {
         FurnStorage::destroy($id);
-        return redirect('admin/storage/furn')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
+        return response($id);
     }
 }

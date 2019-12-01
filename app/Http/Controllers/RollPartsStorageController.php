@@ -21,14 +21,10 @@ class RollPartsStorageController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function getAll(Request $request)
     {
-        //
+        $parts = RollPartsStorage::with(['type', 'status', 'provider', 'rollStorage'])->where('roll_storage_id', $request->roll_storage_id)->get();
+        return response()->json($parts);
     }
 
     /**
@@ -39,16 +35,19 @@ class RollPartsStorageController extends Controller
      */
     public function store(Request $request)
     {
-        RollPartsStorage::create($request->all());
-        $action = new RollActionsStorage;
-        $action -> roll_storage_id = $request->roll_storage_id;
-        $action -> type_id = 1;
-        $action -> user_id = Auth::id();
-        $action -> reason = $request->reason;
-        $action -> width = $request->width;
-        $action -> lenght = $request->lenght;
-        $action->save();
-        return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Партия успешно добавлена!', 'part_color' => 'success']);
+        $item = RollPartsStorage::create($request->part);
+        $new_item = $item->with(['type', 'status', 'provider', 'rollStorage'])->find($item->id);
+        return response()->json($new_item);
+//        RollPartsStorage::create($request->all());
+//        $action = new RollActionsStorage;
+//        $action -> roll_storage_id = $request->roll_storage_id;
+//        $action -> type_id = 1;
+//        $action -> user_id = Auth::id();
+//        $action -> reason = $request->reason;
+//        $action -> width = $request->width;
+//        $action -> lenght = $request->lenght;
+//        $action->save();
+//        return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Партия успешно добавлена!', 'part_color' => 'success']);
     }
 
     /**
@@ -58,17 +57,6 @@ class RollPartsStorageController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
     {
         //
     }

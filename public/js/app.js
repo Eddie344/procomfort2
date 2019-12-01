@@ -1879,15 +1879,310 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ListStorageComponent.vue?vue&type=script&lang=js&":
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/FurnStorageComponent.vue?vue&type=script&lang=js&":
 /*!*******************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ListStorageComponent.vue?vue&type=script&lang=js& ***!
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/FurnStorageComponent.vue?vue&type=script&lang=js& ***!
   \*******************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "ListStorageComponent",
+  data: function data() {
+    return {
+      perPage: 10,
+      currentPage: 1,
+      fields: [{
+        key: 'label',
+        label: 'Наименование'
+      }, {
+        key: 'unit',
+        label: 'Единица измерения'
+      }, {
+        key: 'delete',
+        label: 'Действия'
+      }],
+      items: [],
+      new_item: {},
+      isBusy: false,
+      actionLoad: false,
+      pageOptions: [5, 10, 15],
+      filter: null,
+      filterOn: [],
+      deletingModal: {
+        id: 'delMod',
+        index: null
+      },
+      editingModal: {
+        id: 'edMod',
+        item_id: null,
+        index: null,
+        label: '',
+        unit: ''
+      }
+    };
+  },
+  computed: {
+    rows: function rows() {
+      return this.items.length;
+    },
+    sortOptions: function sortOptions() {
+      // Create an options list from our fields
+      return this.fields.filter(function (f) {
+        return f.sortable;
+      }).map(function (f) {
+        return {
+          text: f.label,
+          value: f.key
+        };
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.load();
+  },
+  methods: {
+    load: function load() {
+      var _this = this;
+
+      this.isBusy = true;
+      axios.post('/admin/storage/furn/get').then(function (response) {
+        _this.items = response.data;
+        _this.isBusy = false;
+      });
+    },
+    addItem: function addItem() {
+      var _this2 = this;
+
+      this.actionLoad = true;
+      axios.post('/admin/storage/furn', {
+        item: this.new_item
+      }).then(function (response) {
+        _this2.items.push(response.data);
+
+        _this2.new_item = {};
+        _this2.actionLoad = false;
+
+        _this2.$refs['modalAddPrice'].hide();
+      });
+    },
+    editItem: function editItem(index) {
+      var _this3 = this;
+
+      this.actionLoad = true;
+      axios.put('/admin/storage/furn/' + this.editingModal.item_id, {
+        item: {
+          label: this.editingModal.label,
+          unit: this.editingModal.unit
+        }
+      }).then(function (response) {
+        _.extend(_this3.items[index], response.data);
+
+        _this3.actionLoad = false;
+
+        _this3.$bvModal.hide(_this3.editingModal.id);
+      });
+    },
+    deleteItem: function deleteItem(index) {
+      var _this4 = this;
+
+      this.actionLoad = true;
+      axios["delete"]('/admin/storage/furn/' + this.items[index].id).then(function (response) {
+        _this4.$delete(_this4.items, index);
+
+        _this4.actionLoad = false;
+
+        _this4.$bvModal.hide(_this4.deletingModal.id);
+
+        _this4.deletingModal.index = null;
+      });
+    },
+    deleteModal: function deleteModal(index) {
+      this.deletingModal.index = index;
+      this.$root.$emit('bv::show::modal', this.deletingModal.id);
+    },
+    editModal: function editModal(index, item) {
+      this.editingModal.index = index;
+      this.editingModal.item_id = item.id;
+      this.editingModal.label = item.label;
+      this.editingModal.unit = item.unit;
+      this.$root.$emit('bv::show::modal', this.editingModal.id);
+    },
+    resetEditingModal: function resetEditingModal() {
+      this.editingModal.index = null;
+      this.editingModal.item_id = null;
+      this.editingModal.label = '';
+      this.editingModal.unit = '';
+    },
+    onFiltered: function onFiltered(filteredItems) {
+      // Trigger pagination to update the number of buttons/pages due to filtering
+      this.totalRows = filteredItems.length;
+      this.currentPage = 1;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GorizStorageComponent.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GorizStorageComponent.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
 //
 //
 //
@@ -2093,20 +2388,12 @@ __webpack_require__.r(__webpack_exports__);
         key: 'label',
         label: 'Наименование'
       }, {
-        key: 'catalog.label',
+        key: 'catalog',
         label: 'Каталог',
         sortable: true
       }, {
-        key: 'category.label',
+        key: 'category',
         label: 'Категория',
-        sortable: true
-      }, {
-        key: 'picture.label',
-        label: 'Направление рисунка',
-        sortable: true
-      }, {
-        key: 'picture.label',
-        label: 'Направление рисунка',
         sortable: true
       }, {
         key: 'delete',
@@ -2115,75 +2402,141 @@ __webpack_require__.r(__webpack_exports__);
       items: [],
       categories: [],
       catalogs: [],
-      pictures: [],
-      new_item: {}
+      new_item: {},
+      isBusy: false,
+      actionLoad: false,
+      pageOptions: [5, 10, 15],
+      filter: null,
+      filterOn: [],
+      deletingModal: {
+        id: 'delMod',
+        index: null
+      },
+      editingModal: {
+        id: 'edMod',
+        item_id: null,
+        index: null,
+        label: '',
+        catalog: null,
+        category: null
+      }
     };
   },
   computed: {
     rows: function rows() {
       return this.items.length;
+    },
+    sortOptions: function sortOptions() {
+      // Create an options list from our fields
+      return this.fields.filter(function (f) {
+        return f.sortable;
+      }).map(function (f) {
+        return {
+          text: f.label,
+          value: f.key
+        };
+      });
     }
   },
   mounted: function mounted() {
     this.getCatalogs();
     this.getCategories();
-    this.getPictures();
     this.load();
   },
   methods: {
     load: function load() {
       var _this = this;
 
-      axios.post('/admin/storage/roll/get').then(function (response) {
+      this.isBusy = true;
+      axios.post('/admin/storage/goriz/get').then(function (response) {
         _this.items = response.data;
+        _this.isBusy = false;
       });
     },
     addItem: function addItem() {
       var _this2 = this;
 
-      axios.post('/admin/storage/roll', {
+      this.actionLoad = true;
+      axios.post('/admin/storage/goriz', {
         item: this.new_item
       }).then(function (response) {
-        console.log(response.data);
-
         _this2.items.push(response.data);
 
         _this2.new_item = {};
-      }); //this.showAlert('success', 'Цена успешно добавлена');
+        _this2.actionLoad = false;
 
-      this.$refs['modalAddPrice'].hide();
+        _this2.$refs['modalAddPrice'].hide();
+      });
     },
-    deleteItem: function deleteItem(index) {
+    editItem: function editItem(index) {
       var _this3 = this;
 
-      axios["delete"]('/admin/price/add/' + id).then(function (response) {
-        console.log(response.data);
+      this.actionLoad = true;
+      axios.put('/admin/storage/goriz/' + this.editingModal.item_id, {
+        item: {
+          label: this.editingModal.label,
+          catalog_id: this.editingModal.catalog,
+          category_id: this.editingModal.category
+        }
+      }).then(function (response) {
+        _.extend(_this3.items[index], response.data);
 
-        _this3.$delete(_this3.prices, index); //this.showAlert('danger', 'Цена успешно удалена');
+        _this3.actionLoad = false;
 
+        _this3.$bvModal.hide(_this3.editingModal.id);
       });
-      this.$bvModal.hide('modalDeletePrice' + id);
     },
-    getCategories: function getCategories() {
+    deleteItem: function deleteItem(index) {
       var _this4 = this;
 
-      axios.post('/admin/other/categories/roll/get').then(function (response) {
-        _this4.categories = response.data;
+      this.actionLoad = true;
+      axios["delete"]('/admin/storage/goriz/' + this.items[index].id).then(function (response) {
+        _this4.$delete(_this4.items, index);
+
+        _this4.actionLoad = false;
+
+        _this4.$bvModal.hide(_this4.deletingModal.id);
+
+        _this4.deletingModal.index = null;
+      });
+    },
+    deleteModal: function deleteModal(index) {
+      this.deletingModal.index = index;
+      this.$root.$emit('bv::show::modal', this.deletingModal.id);
+    },
+    editModal: function editModal(index, item) {
+      this.editingModal.index = index;
+      this.editingModal.item_id = item.id;
+      this.editingModal.label = item.label;
+      this.editingModal.catalog = item.catalog_id;
+      this.editingModal.category = item.category_id;
+      this.$root.$emit('bv::show::modal', this.editingModal.id);
+    },
+    resetEditingModal: function resetEditingModal() {
+      this.editingModal.index = null;
+      this.editingModal.item_id = null;
+      this.editingModal.label = '';
+      this.editingModal.catalog = null;
+      this.editingModal.category = null;
+    },
+    getCategories: function getCategories() {
+      var _this5 = this;
+
+      axios.post('/admin/other/categories/goriz/get').then(function (response) {
+        _this5.categories = response.data;
       });
     },
     getCatalogs: function getCatalogs() {
-      var _this5 = this;
-
-      axios.post('/admin/other/catalogs/get').then(function (response) {
-        _this5.catalogs = response.data;
-      });
-    },
-    getPictures: function getPictures() {
       var _this6 = this;
 
-      axios.post('/admin/other/picture_types/get').then(function (response) {
-        _this6.pictures = response.data;
+      axios.post('/admin/other/catalogs/get').then(function (response) {
+        _this6.catalogs = response.data;
       });
+    },
+    onFiltered: function onFiltered(filteredItems) {
+      // Trigger pagination to update the number of buttons/pages due to filtering
+      this.totalRows = filteredItems.length;
+      this.currentPage = 1;
     }
   }
 });
@@ -2470,6 +2823,1022 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MetalStorageComponent.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MetalStorageComponent.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "ListStorageComponent",
+  data: function data() {
+    return {
+      perPage: 10,
+      currentPage: 1,
+      fields: [{
+        key: 'label',
+        label: 'Наименование'
+      }, {
+        key: 'delete',
+        label: 'Действия'
+      }],
+      items: [],
+      new_item: {},
+      isBusy: false,
+      actionLoad: false,
+      pageOptions: [5, 10, 15],
+      filter: null,
+      filterOn: [],
+      deletingModal: {
+        id: 'delMod',
+        index: null
+      },
+      editingModal: {
+        id: 'edMod',
+        item_id: null,
+        index: null,
+        label: ''
+      }
+    };
+  },
+  computed: {
+    rows: function rows() {
+      return this.items.length;
+    },
+    sortOptions: function sortOptions() {
+      // Create an options list from our fields
+      return this.fields.filter(function (f) {
+        return f.sortable;
+      }).map(function (f) {
+        return {
+          text: f.label,
+          value: f.key
+        };
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.load();
+  },
+  methods: {
+    load: function load() {
+      var _this = this;
+
+      this.isBusy = true;
+      axios.post('/admin/storage/metal/get').then(function (response) {
+        _this.items = response.data;
+        _this.isBusy = false;
+      });
+    },
+    addItem: function addItem() {
+      var _this2 = this;
+
+      this.actionLoad = true;
+      axios.post('/admin/storage/metal', {
+        item: this.new_item
+      }).then(function (response) {
+        _this2.items.push(response.data);
+
+        _this2.new_item = {};
+        _this2.actionLoad = false;
+
+        _this2.$refs['modalAddPrice'].hide();
+      });
+    },
+    editItem: function editItem(index) {
+      var _this3 = this;
+
+      this.actionLoad = true;
+      axios.put('/admin/storage/metal/' + this.editingModal.item_id, {
+        item: {
+          label: this.editingModal.label
+        }
+      }).then(function (response) {
+        _.extend(_this3.items[index], response.data);
+
+        _this3.actionLoad = false;
+
+        _this3.$bvModal.hide(_this3.editingModal.id);
+      });
+    },
+    deleteItem: function deleteItem(index) {
+      var _this4 = this;
+
+      this.actionLoad = true;
+      axios["delete"]('/admin/storage/metal/' + this.items[index].id).then(function (response) {
+        _this4.$delete(_this4.items, index);
+
+        _this4.actionLoad = false;
+
+        _this4.$bvModal.hide(_this4.deletingModal.id);
+
+        _this4.deletingModal.index = null;
+      });
+    },
+    deleteModal: function deleteModal(index) {
+      this.deletingModal.index = index;
+      this.$root.$emit('bv::show::modal', this.deletingModal.id);
+    },
+    editModal: function editModal(index, item) {
+      this.editingModal.index = index;
+      this.editingModal.item_id = item.id;
+      this.editingModal.label = item.label;
+      this.$root.$emit('bv::show::modal', this.editingModal.id);
+    },
+    resetEditingModal: function resetEditingModal() {
+      this.editingModal.index = null;
+      this.editingModal.item_id = null;
+      this.editingModal.label = '';
+    },
+    onFiltered: function onFiltered(filteredItems) {
+      // Trigger pagination to update the number of buttons/pages due to filtering
+      this.totalRows = filteredItems.length;
+      this.currentPage = 1;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RollStorageComponent.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/RollStorageComponent.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "ListStorageComponent",
+  data: function data() {
+    return {
+      perPage: 10,
+      currentPage: 1,
+      fields: [{
+        key: 'label',
+        label: 'Наименование'
+      }, {
+        key: 'catalog',
+        label: 'Каталог',
+        sortable: true
+      }, {
+        key: 'category',
+        label: 'Категория',
+        sortable: true
+      }, {
+        key: 'picture',
+        label: 'Направление рисунка',
+        sortable: true
+      }, {
+        key: 'delete',
+        label: 'Действия'
+      }],
+      items: [],
+      categories: [],
+      catalogs: [],
+      pictures: [],
+      new_item: {},
+      isBusy: false,
+      actionLoad: false,
+      pageOptions: [5, 10, 15],
+      filter: null,
+      filterOn: [],
+      deletingModal: {
+        id: 'delMod',
+        index: null
+      },
+      editingModal: {
+        id: 'edMod',
+        item_id: null,
+        index: null,
+        label: '',
+        catalog: null,
+        category: null,
+        picture: null
+      }
+    };
+  },
+  computed: {
+    rows: function rows() {
+      return this.items.length;
+    },
+    sortOptions: function sortOptions() {
+      // Create an options list from our fields
+      return this.fields.filter(function (f) {
+        return f.sortable;
+      }).map(function (f) {
+        return {
+          text: f.label,
+          value: f.key
+        };
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.getCatalogs();
+    this.getCategories();
+    this.getPictures();
+    this.load();
+  },
+  methods: {
+    load: function load() {
+      var _this = this;
+
+      this.isBusy = true;
+      axios.post('/admin/storage/roll/getAll').then(function (response) {
+        _this.items = response.data;
+        _this.isBusy = false;
+      });
+    },
+    addItem: function addItem() {
+      var _this2 = this;
+
+      this.actionLoad = true;
+      axios.post('/admin/storage/roll', {
+        item: this.new_item
+      }).then(function (response) {
+        _this2.items.push(response.data);
+
+        _this2.new_item = {};
+        _this2.actionLoad = false;
+
+        _this2.$refs['modalAddPrice'].hide();
+      });
+    },
+    editItem: function editItem(index) {
+      var _this3 = this;
+
+      this.actionLoad = true;
+      axios.put('/admin/storage/roll/' + this.editingModal.item_id, {
+        item: {
+          label: this.editingModal.label,
+          catalog_id: this.editingModal.catalog,
+          category_id: this.editingModal.category,
+          picture_id: this.editingModal.picture
+        }
+      }).then(function (response) {
+        _.extend(_this3.items[index], response.data);
+
+        _this3.actionLoad = false;
+
+        _this3.$bvModal.hide(_this3.editingModal.id);
+      });
+    },
+    deleteItem: function deleteItem(index) {
+      var _this4 = this;
+
+      this.actionLoad = true;
+      axios["delete"]('/admin/storage/roll/' + this.items[index].id).then(function (response) {
+        _this4.$delete(_this4.items, index);
+
+        _this4.actionLoad = false;
+
+        _this4.$bvModal.hide(_this4.deletingModal.id);
+
+        _this4.deletingModal.index = null;
+      });
+    },
+    deleteModal: function deleteModal(index) {
+      this.deletingModal.index = index;
+      this.$root.$emit('bv::show::modal', this.deletingModal.id);
+    },
+    editModal: function editModal(index, item) {
+      this.editingModal.index = index;
+      this.editingModal.item_id = item.id;
+      this.editingModal.label = item.label;
+      this.editingModal.catalog = item.catalog_id;
+      this.editingModal.category = item.category_id;
+      this.editingModal.picture = item.picture_id;
+      this.$root.$emit('bv::show::modal', this.editingModal.id);
+    },
+    resetEditingModal: function resetEditingModal() {
+      this.editingModal.index = null;
+      this.editingModal.item_id = null;
+      this.editingModal.label = '';
+      this.editingModal.catalog = null;
+      this.editingModal.category = null;
+      this.editingModal.picture = null;
+    },
+    getCategories: function getCategories() {
+      var _this5 = this;
+
+      axios.post('/admin/other/categories/roll/get').then(function (response) {
+        _this5.categories = response.data;
+      });
+    },
+    getCatalogs: function getCatalogs() {
+      var _this6 = this;
+
+      axios.post('/admin/other/catalogs/get').then(function (response) {
+        _this6.catalogs = response.data;
+      });
+    },
+    getPictures: function getPictures() {
+      var _this7 = this;
+
+      axios.post('/admin/other/picture_types/get').then(function (response) {
+        _this7.pictures = response.data;
+      });
+    },
+    onFiltered: function onFiltered(filteredItems) {
+      // Trigger pagination to update the number of buttons/pages due to filtering
+      this.totalRows = filteredItems.length;
+      this.currentPage = 1;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RollStorageSingleComponent.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/RollStorageSingleComponent.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "RollStorageSingleComponent",
+  props: ['id'],
+  data: function data() {
+    return {
+      perPage: 10,
+      currentPage: 1,
+      isBusy: false,
+      actionLoad: false,
+      pageOptions: [5, 10, 15],
+      filter: null,
+      filterOn: [],
+      parts_fields: [{
+        key: 'width',
+        label: 'Ширина',
+        sortable: true
+      }, {
+        key: 'lenght',
+        label: 'Длина',
+        sortable: true
+      }, {
+        key: 'price',
+        label: 'Категория',
+        sortable: true
+      }, {
+        key: 'provider',
+        label: 'Поставщик',
+        sortable: true
+      }, {
+        key: 'status',
+        label: 'Статус',
+        sortable: true
+      }, {
+        key: 'type',
+        label: 'Тип',
+        sortable: true
+      }, {
+        key: 'delete',
+        label: 'Действия'
+      }],
+      item: {},
+      parts: [],
+      new_part: {
+        roll_storage_id: this.id
+      },
+      providers: [],
+      part_statuses: [],
+      part_types: []
+    };
+  },
+  computed: {
+    rows: function rows() {
+      return this.items.length;
+    },
+    sortOptions: function sortOptions() {
+      // Create an options list from our fields
+      return this.fields.filter(function (f) {
+        return f.sortable;
+      }).map(function (f) {
+        return {
+          text: f.label,
+          value: f.key
+        };
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.loadItem();
+    this.loadParts();
+    this.getPartStatuses();
+    this.getPartTypes();
+    this.getProviders();
+  },
+  methods: {
+    loadItem: function loadItem() {
+      var _this = this;
+
+      axios.post('/admin/storage/roll/get/' + this.id).then(function (response) {
+        _this.item = response.data;
+      });
+    },
+    loadParts: function loadParts() {
+      var _this2 = this;
+
+      axios.post('/admin/storage/roll_parts/getAll', {
+        roll_storage_id: this.id
+      }).then(function (response) {
+        console.log(response.data);
+        _this2.parts = response.data;
+      });
+    },
+    addPart: function addPart() {
+      var _this3 = this;
+
+      this.actionLoad = true;
+      axios.post('/admin/storage/roll_parts', {
+        part: this.new_part
+      }).then(function (response) {
+        _this3.parts.push(response.data);
+
+        _this3.new_part = {};
+        _this3.actionLoad = false;
+
+        _this3.$refs['modalAddPart'].hide();
+      });
+    },
+    getPartTypes: function getPartTypes() {
+      var _this4 = this;
+
+      axios.post('/admin/other/part_types/get').then(function (response) {
+        _this4.part_types = response.data;
+      });
+    },
+    getPartStatuses: function getPartStatuses() {
+      var _this5 = this;
+
+      axios.post('/admin/other/part_statuses/get').then(function (response) {
+        _this5.part_statuses = response.data;
+      });
+    },
+    getProviders: function getProviders() {
+      var _this6 = this;
+
+      axios.post('/admin/other/providers/get').then(function (response) {
+        _this6.providers = response.data;
+      });
+    },
+    onFiltered: function onFiltered(filteredItems) {
+      // Trigger pagination to update the number of buttons/pages due to filtering
+      this.totalRows = filteredItems.length;
+      this.currentPage = 1;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SimplePriceComponent.vue?vue&type=script&lang=js&":
 /*!*******************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SimplePriceComponent.vue?vue&type=script&lang=js& ***!
@@ -2664,6 +4033,750 @@ __webpack_require__.r(__webpack_exports__);
       this.alertColor = color;
       this.alertText = text;
       this.dismissCountDown = this.dismissSecs;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VertStorageComponent.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/VertStorageComponent.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "ListStorageComponent",
+  data: function data() {
+    return {
+      perPage: 10,
+      currentPage: 1,
+      fields: [{
+        key: 'label',
+        label: 'Наименование'
+      }, {
+        key: 'catalog',
+        label: 'Каталог',
+        sortable: true
+      }, {
+        key: 'category',
+        label: 'Категория',
+        sortable: true
+      }, {
+        key: 'delete',
+        label: 'Действия'
+      }],
+      items: [],
+      categories: [],
+      catalogs: [],
+      new_item: {},
+      isBusy: false,
+      actionLoad: false,
+      pageOptions: [5, 10, 15],
+      filter: null,
+      filterOn: [],
+      deletingModal: {
+        id: 'delMod',
+        index: null
+      },
+      editingModal: {
+        id: 'edMod',
+        item_id: null,
+        index: null,
+        label: '',
+        catalog: null,
+        category: null
+      }
+    };
+  },
+  computed: {
+    rows: function rows() {
+      return this.items.length;
+    },
+    sortOptions: function sortOptions() {
+      // Create an options list from our fields
+      return this.fields.filter(function (f) {
+        return f.sortable;
+      }).map(function (f) {
+        return {
+          text: f.label,
+          value: f.key
+        };
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.getCatalogs();
+    this.getCategories();
+    this.load();
+  },
+  methods: {
+    load: function load() {
+      var _this = this;
+
+      this.isBusy = true;
+      axios.post('/admin/storage/vert/get').then(function (response) {
+        _this.items = response.data;
+        _this.isBusy = false;
+      });
+    },
+    addItem: function addItem() {
+      var _this2 = this;
+
+      this.actionLoad = true;
+      axios.post('/admin/storage/vert', {
+        item: this.new_item
+      }).then(function (response) {
+        _this2.items.push(response.data);
+
+        _this2.new_item = {};
+        _this2.actionLoad = false;
+
+        _this2.$refs['modalAddPrice'].hide();
+      });
+    },
+    editItem: function editItem(index) {
+      var _this3 = this;
+
+      this.actionLoad = true;
+      axios.put('/admin/storage/vert/' + this.editingModal.item_id, {
+        item: {
+          label: this.editingModal.label,
+          catalog_id: this.editingModal.catalog,
+          category_id: this.editingModal.category
+        }
+      }).then(function (response) {
+        _.extend(_this3.items[index], response.data);
+
+        _this3.actionLoad = false;
+
+        _this3.$bvModal.hide(_this3.editingModal.id);
+      });
+    },
+    deleteItem: function deleteItem(index) {
+      var _this4 = this;
+
+      this.actionLoad = true;
+      axios["delete"]('/admin/storage/vert/' + this.items[index].id).then(function (response) {
+        _this4.$delete(_this4.items, index);
+
+        _this4.actionLoad = false;
+
+        _this4.$bvModal.hide(_this4.deletingModal.id);
+
+        _this4.deletingModal.index = null;
+      });
+    },
+    deleteModal: function deleteModal(index) {
+      this.deletingModal.index = index;
+      this.$root.$emit('bv::show::modal', this.deletingModal.id);
+    },
+    editModal: function editModal(index, item) {
+      this.editingModal.index = index;
+      this.editingModal.item_id = item.id;
+      this.editingModal.label = item.label;
+      this.editingModal.catalog = item.catalog_id;
+      this.editingModal.category = item.category_id;
+      this.$root.$emit('bv::show::modal', this.editingModal.id);
+    },
+    resetEditingModal: function resetEditingModal() {
+      this.editingModal.index = null;
+      this.editingModal.item_id = null;
+      this.editingModal.label = '';
+      this.editingModal.catalog = null;
+      this.editingModal.category = null;
+    },
+    getCategories: function getCategories() {
+      var _this5 = this;
+
+      axios.post('/admin/other/categories/vert/get').then(function (response) {
+        _this5.categories = response.data;
+      });
+    },
+    getCatalogs: function getCatalogs() {
+      var _this6 = this;
+
+      axios.post('/admin/other/catalogs/get').then(function (response) {
+        _this6.catalogs = response.data;
+      });
+    },
+    onFiltered: function onFiltered(filteredItems) {
+      // Trigger pagination to update the number of buttons/pages due to filtering
+      this.totalRows = filteredItems.length;
+      this.currentPage = 1;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ZebraStorageComponent.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ZebraStorageComponent.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "ListStorageComponent",
+  data: function data() {
+    return {
+      perPage: 10,
+      currentPage: 1,
+      fields: [{
+        key: 'label',
+        label: 'Наименование'
+      }, {
+        key: 'catalog',
+        label: 'Каталог',
+        sortable: true
+      }, {
+        key: 'category',
+        label: 'Категория',
+        sortable: true
+      }, {
+        key: 'delete',
+        label: 'Действия'
+      }],
+      items: [],
+      categories: [],
+      catalogs: [],
+      new_item: {},
+      isBusy: false,
+      actionLoad: false,
+      pageOptions: [5, 10, 15],
+      filter: null,
+      filterOn: [],
+      deletingModal: {
+        id: 'delMod',
+        index: null
+      },
+      editingModal: {
+        id: 'edMod',
+        item_id: null,
+        index: null,
+        label: '',
+        catalog: null,
+        category: null
+      }
+    };
+  },
+  computed: {
+    rows: function rows() {
+      return this.items.length;
+    },
+    sortOptions: function sortOptions() {
+      // Create an options list from our fields
+      return this.fields.filter(function (f) {
+        return f.sortable;
+      }).map(function (f) {
+        return {
+          text: f.label,
+          value: f.key
+        };
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.getCatalogs();
+    this.getCategories();
+    this.load();
+  },
+  methods: {
+    load: function load() {
+      var _this = this;
+
+      this.isBusy = true;
+      axios.post('/admin/storage/zebra/get').then(function (response) {
+        _this.items = response.data;
+        _this.isBusy = false;
+      });
+    },
+    addItem: function addItem() {
+      var _this2 = this;
+
+      this.actionLoad = true;
+      axios.post('/admin/storage/zebra', {
+        item: this.new_item
+      }).then(function (response) {
+        _this2.items.push(response.data);
+
+        _this2.new_item = {};
+        _this2.actionLoad = false;
+
+        _this2.$refs['modalAddPrice'].hide();
+      });
+    },
+    editItem: function editItem(index) {
+      var _this3 = this;
+
+      this.actionLoad = true;
+      axios.put('/admin/storage/zebra/' + this.editingModal.item_id, {
+        item: {
+          label: this.editingModal.label,
+          catalog_id: this.editingModal.catalog,
+          category_id: this.editingModal.category
+        }
+      }).then(function (response) {
+        _.extend(_this3.items[index], response.data);
+
+        _this3.actionLoad = false;
+
+        _this3.$bvModal.hide(_this3.editingModal.id);
+      });
+    },
+    deleteItem: function deleteItem(index) {
+      var _this4 = this;
+
+      this.actionLoad = true;
+      axios["delete"]('/admin/storage/zebra/' + this.items[index].id).then(function (response) {
+        _this4.$delete(_this4.items, index);
+
+        _this4.actionLoad = false;
+
+        _this4.$bvModal.hide(_this4.deletingModal.id);
+
+        _this4.deletingModal.index = null;
+      });
+    },
+    deleteModal: function deleteModal(index) {
+      this.deletingModal.index = index;
+      this.$root.$emit('bv::show::modal', this.deletingModal.id);
+    },
+    editModal: function editModal(index, item) {
+      this.editingModal.index = index;
+      this.editingModal.item_id = item.id;
+      this.editingModal.label = item.label;
+      this.editingModal.catalog = item.catalog_id;
+      this.editingModal.category = item.category_id;
+      this.$root.$emit('bv::show::modal', this.editingModal.id);
+    },
+    resetEditingModal: function resetEditingModal() {
+      this.editingModal.index = null;
+      this.editingModal.item_id = null;
+      this.editingModal.label = '';
+      this.editingModal.catalog = null;
+      this.editingModal.category = null;
+    },
+    getCategories: function getCategories() {
+      var _this5 = this;
+
+      axios.post('/admin/other/categories/zebra/get').then(function (response) {
+        _this5.categories = response.data;
+      });
+    },
+    getCatalogs: function getCatalogs() {
+      var _this6 = this;
+
+      axios.post('/admin/other/catalogs/get').then(function (response) {
+        _this6.catalogs = response.data;
+      });
+    },
+    onFiltered: function onFiltered(filteredItems) {
+      // Trigger pagination to update the number of buttons/pages due to filtering
+      this.totalRows = filteredItems.length;
+      this.currentPage = 1;
     }
   }
 });
@@ -68049,9 +70162,9 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ListStorageComponent.vue?vue&type=template&id=1e023e6b&scoped=true&":
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/FurnStorageComponent.vue?vue&type=template&id=439eced0&scoped=true&":
 /*!***********************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ListStorageComponent.vue?vue&type=template&id=1e023e6b&scoped=true& ***!
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/FurnStorageComponent.vue?vue&type=template&id=439eced0&scoped=true& ***!
   \***********************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -68068,194 +70181,222 @@ var render = function() {
     "div",
     [
       _c(
-        "b-form",
-        { staticClass: "mb-3", attrs: { inline: "" } },
+        "b-row",
+        { staticClass: "mb-3" },
         [
           _c(
-            "b-button",
-            {
-              directives: [
-                {
-                  name: "b-modal",
-                  rawName: "v-b-modal.modalAddPrice",
-                  modifiers: { modalAddPrice: true }
-                }
-              ],
-              staticClass: "mr-3",
-              attrs: { variant: "success" }
-            },
-            [_c("strong", [_vm._v("+")])]
-          ),
-          _vm._v(" "),
-          _c(
-            "b-modal",
-            {
-              ref: "modalAddPrice",
-              attrs: {
-                id: "modalAddPrice",
-                size: "sm",
-                title: "Добавление",
-                "hide-footer": "",
-                centered: ""
-              }
-            },
+            "b-col",
+            { attrs: { lg: "1" } },
             [
               _c(
-                "b-form",
+                "b-button",
                 {
-                  on: {
-                    submit: function($event) {
-                      $event.preventDefault()
-                      return _vm.addItem($event)
+                  directives: [
+                    {
+                      name: "b-modal",
+                      rawName: "v-b-modal.modalAddPrice",
+                      modifiers: { modalAddPrice: true }
                     }
+                  ],
+                  staticClass: "mr-3",
+                  attrs: { variant: "success" }
+                },
+                [_vm._v("Добавить")]
+              ),
+              _vm._v(" "),
+              _c(
+                "b-modal",
+                {
+                  ref: "modalAddPrice",
+                  attrs: {
+                    id: "modalAddPrice",
+                    size: "sm",
+                    title: "Добавление",
+                    "hide-footer": "",
+                    centered: ""
                   }
                 },
                 [
                   _c(
-                    "b-form-group",
-                    { attrs: { label: "Наименование:" } },
+                    "b-form",
+                    {
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.addItem($event)
+                        }
+                      }
+                    },
+                    [
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Наименование:" } },
+                        [
+                          _c("b-form-input", {
+                            attrs: { type: "text", required: "" },
+                            model: {
+                              value: _vm.new_item.label,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "label", $$v)
+                              },
+                              expression: "new_item.label"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Единица измерения:" } },
+                        [
+                          _c("b-form-input", {
+                            attrs: { type: "text", required: "" },
+                            model: {
+                              value: _vm.new_item.unit,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "unit", $$v)
+                              },
+                              expression: "new_item.unit"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-button",
+                        {
+                          attrs: {
+                            variant: "primary",
+                            type: "submit",
+                            disabled: _vm.actionLoad
+                          }
+                        },
+                        [
+                          !_vm.actionLoad
+                            ? _c("span", [_vm._v("Добавить")])
+                            : _c(
+                                "span",
+                                [
+                                  _c("b-spinner", { attrs: { small: "" } }),
+                                  _vm._v(
+                                    "\n                            Подождите...\n                        "
+                                  )
+                                ],
+                                1
+                              )
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { attrs: { lg: "5" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Фильтр",
+                    "label-cols-sm": "3",
+                    "label-align-sm": "right",
+                    "label-for": "filterInput"
+                  }
+                },
+                [
+                  _c(
+                    "b-input-group",
                     [
                       _c("b-form-input", {
-                        attrs: { type: "text", required: "" },
-                        model: {
-                          value: _vm.new_item.label,
-                          callback: function($$v) {
-                            _vm.$set(_vm.new_item, "label", $$v)
-                          },
-                          expression: "new_item.label"
-                        }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "b-form-group",
-                    { attrs: { label: "Каталог:" } },
-                    [
-                      _c("b-form-select", {
-                        staticClass: "mb-3",
                         attrs: {
-                          options: _vm.catalogs,
-                          "value-field": "id",
-                          "text-field": "label"
+                          type: "search",
+                          id: "filterInput",
+                          placeholder: "Введите для поиска..."
                         },
-                        scopedSlots: _vm._u([
-                          {
-                            key: "first",
-                            fn: function() {
-                              return [
-                                _c(
-                                  "option",
-                                  {
-                                    attrs: { disabled: "", selected: "" },
-                                    domProps: { value: null }
-                                  },
-                                  [_vm._v("Выберите каталог...")]
-                                )
-                              ]
-                            },
-                            proxy: true
-                          }
-                        ]),
                         model: {
-                          value: _vm.new_item.catalog_id,
+                          value: _vm.filter,
                           callback: function($$v) {
-                            _vm.$set(_vm.new_item, "catalog_id", $$v)
+                            _vm.filter = $$v
                           },
-                          expression: "new_item.catalog_id"
+                          expression: "filter"
                         }
-                      })
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "b-input-group-append",
+                        [
+                          _c(
+                            "b-button",
+                            {
+                              attrs: { disabled: !_vm.filter },
+                              on: {
+                                click: function($event) {
+                                  _vm.filter = ""
+                                }
+                              }
+                            },
+                            [_vm._v("Очистить")]
+                          )
+                        ],
+                        1
+                      )
                     ],
                     1
-                  ),
-                  _vm._v(" "),
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { attrs: { lg: "6" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Фильтровать по",
+                    "label-cols-sm": "3",
+                    "label-align-sm": "right"
+                  }
+                },
+                [
                   _c(
-                    "b-form-group",
-                    { attrs: { label: "Категория:" } },
+                    "b-form-checkbox-group",
+                    {
+                      staticClass: "mt-1",
+                      model: {
+                        value: _vm.filterOn,
+                        callback: function($$v) {
+                          _vm.filterOn = $$v
+                        },
+                        expression: "filterOn"
+                      }
+                    },
                     [
-                      _c("b-form-select", {
-                        staticClass: "mb-3",
-                        attrs: {
-                          options: _vm.categories,
-                          "value-field": "id",
-                          "text-field": "label"
-                        },
-                        scopedSlots: _vm._u([
-                          {
-                            key: "first",
-                            fn: function() {
-                              return [
-                                _c(
-                                  "option",
-                                  {
-                                    attrs: { disabled: "", selected: "" },
-                                    domProps: { value: null }
-                                  },
-                                  [_vm._v("Выберите категорию...")]
-                                )
-                              ]
-                            },
-                            proxy: true
-                          }
-                        ]),
-                        model: {
-                          value: _vm.new_item.category_id,
-                          callback: function($$v) {
-                            _vm.$set(_vm.new_item, "category_id", $$v)
-                          },
-                          expression: "new_item.category_id"
-                        }
-                      })
+                      _c("b-form-checkbox", { attrs: { value: "label" } }, [
+                        _vm._v("Наименование")
+                      ]),
+                      _vm._v(" "),
+                      _c("b-form-checkbox", { attrs: { value: "unit" } }, [
+                        _vm._v("Единица измерения")
+                      ])
                     ],
                     1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "b-form-group",
-                    { attrs: { label: "Направление рисунка:" } },
-                    [
-                      _c("b-form-select", {
-                        staticClass: "mb-3",
-                        attrs: {
-                          options: _vm.pictures,
-                          "value-field": "id",
-                          "text-field": "label"
-                        },
-                        scopedSlots: _vm._u([
-                          {
-                            key: "first",
-                            fn: function() {
-                              return [
-                                _c(
-                                  "option",
-                                  {
-                                    attrs: { disabled: "", selected: "" },
-                                    domProps: { value: null }
-                                  },
-                                  [_vm._v("Выберите направление рисунка...")]
-                                )
-                              ]
-                            },
-                            proxy: true
-                          }
-                        ]),
-                        model: {
-                          value: _vm.new_item.picture_id,
-                          callback: function($$v) {
-                            _vm.$set(_vm.new_item, "picture_id", $$v)
-                          },
-                          expression: "new_item.picture_id"
-                        }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "b-button",
-                    { attrs: { variant: "primary", type: "submit" } },
-                    [_vm._v("Добавить")]
                   )
                 ],
                 1
@@ -68269,12 +70410,18 @@ var render = function() {
       _vm._v(" "),
       _c("b-table", {
         attrs: {
+          "show-empty": "",
+          "empty-text": "Нет записей",
+          "empty-filtered-text": "По данному запросу нет записей",
           id: "my-table",
           items: _vm.items,
           fields: _vm.fields,
           "per-page": _vm.perPage,
           "current-page": _vm.currentPage,
-          striped: true
+          striped: true,
+          busy: _vm.isBusy,
+          filter: _vm.filter,
+          filterIncludedFields: _vm.filterOn
         },
         scopedSlots: _vm._u([
           {
@@ -68284,21 +70431,94 @@ var render = function() {
                 _c(
                   "b-button",
                   {
-                    directives: [
-                      {
-                        name: "b-modal",
-                        rawName: "v-b-modal",
-                        value: "modalDelete" + data.index,
-                        expression: "'modalDelete'+ data.index"
-                      }
-                    ],
                     staticClass: "p-0",
-                    attrs: { variant: "link" }
+                    attrs: { variant: "link" },
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteModal(data.index)
+                      }
+                    }
                   },
                   [
                     _c("h5", { staticClass: "d-inline" }, [
                       _c("i", { staticClass: "fa fa-trash-o text-danger" })
                     ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "b-button",
+                  {
+                    staticClass: "p-0",
+                    attrs: { variant: "link" },
+                    on: {
+                      click: function($event) {
+                        return _vm.editModal(data.index, data.item)
+                      }
+                    }
+                  },
+                  [
+                    _c("h5", { staticClass: "d-inline" }, [
+                      _c("i", { staticClass: "fa fa-pencil text-primary" })
+                    ])
+                  ]
+                )
+              ]
+            }
+          },
+          {
+            key: "table-busy",
+            fn: function() {
+              return [
+                _c(
+                  "div",
+                  { staticClass: "text-center text-primary my-2" },
+                  [_c("b-spinner", { staticClass: "align-middle" })],
+                  1
+                )
+              ]
+            },
+            proxy: true
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c("b-modal", {
+        attrs: {
+          id: _vm.deletingModal.id,
+          size: "sm",
+          title: "Вы уверены?",
+          centered: ""
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "modal-footer",
+            fn: function(ref) {
+              var ok = ref.ok
+              return [
+                _c(
+                  "b-button",
+                  {
+                    attrs: { variant: "danger", disabled: _vm.actionLoad },
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteItem(_vm.deletingModal.index)
+                      }
+                    }
+                  },
+                  [
+                    !_vm.actionLoad
+                      ? _c("span", [_vm._v("Удалить")])
+                      : _c(
+                          "span",
+                          [
+                            _c("b-spinner", { attrs: { small: "" } }),
+                            _vm._v(
+                              "\n                    Подождите...\n                "
+                            )
+                          ],
+                          1
+                        )
                   ]
                 )
               ]
@@ -68307,20 +70527,848 @@ var render = function() {
         ])
       }),
       _vm._v(" "),
-      _c("b-pagination", {
-        attrs: {
-          "total-rows": _vm.rows,
-          "per-page": _vm.perPage,
-          "aria-controls": "my-table"
-        },
-        model: {
-          value: _vm.currentPage,
-          callback: function($$v) {
-            _vm.currentPage = $$v
+      _c(
+        "b-modal",
+        {
+          attrs: {
+            id: _vm.editingModal.id,
+            size: "sm",
+            title: "Редактирование",
+            "hide-footer": "",
+            centered: ""
           },
-          expression: "currentPage"
-        }
-      })
+          on: { hide: _vm.resetEditingModal }
+        },
+        [
+          _c(
+            "b-form",
+            {
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.editItem(_vm.editingModal.index)
+                }
+              }
+            },
+            [
+              _c(
+                "b-form-group",
+                { attrs: { label: "Наименование:" } },
+                [
+                  _c("b-form-input", {
+                    attrs: { type: "text", required: "" },
+                    model: {
+                      value: _vm.editingModal.label,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "label", $$v)
+                      },
+                      expression: "editingModal.label"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                { attrs: { label: "Единица измерения:" } },
+                [
+                  _c("b-form-input", {
+                    attrs: { type: "text", required: "" },
+                    model: {
+                      value: _vm.editingModal.unit,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "unit", $$v)
+                      },
+                      expression: "editingModal.unit"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-button",
+                {
+                  attrs: {
+                    variant: "primary",
+                    type: "submit",
+                    disabled: _vm.actionLoad
+                  }
+                },
+                [
+                  !_vm.actionLoad
+                    ? _c("span", [_vm._v("Сохранить")])
+                    : _c(
+                        "span",
+                        [
+                          _c("b-spinner", { attrs: { small: "" } }),
+                          _vm._v(
+                            "\n                    Подождите...\n                "
+                          )
+                        ],
+                        1
+                      )
+                ]
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "b-row",
+        [
+          _c(
+            "b-col",
+            { staticClass: "my-1", attrs: { sm: "5", md: "6" } },
+            [
+              !_vm.isBusy
+                ? _c("b-pagination", {
+                    attrs: {
+                      "total-rows": _vm.rows,
+                      "per-page": _vm.perPage,
+                      "aria-controls": "my-table"
+                    },
+                    model: {
+                      value: _vm.currentPage,
+                      callback: function($$v) {
+                        _vm.currentPage = $$v
+                      },
+                      expression: "currentPage"
+                    }
+                  })
+                : _vm._e()
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { staticClass: "my-1", attrs: { sm: "5", md: "6" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Элементов на странице:",
+                    "label-cols-sm": "6",
+                    "label-cols-md": "4",
+                    "label-cols-lg": "6",
+                    "label-align-sm": "right",
+                    "label-for": "perPageSelect"
+                  }
+                },
+                [
+                  _c("b-form-select", {
+                    attrs: { id: "perPageSelect", options: _vm.pageOptions },
+                    model: {
+                      value: _vm.perPage,
+                      callback: function($$v) {
+                        _vm.perPage = $$v
+                      },
+                      expression: "perPage"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GorizStorageComponent.vue?vue&type=template&id=0d910e42&scoped=true&":
+/*!************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GorizStorageComponent.vue?vue&type=template&id=0d910e42&scoped=true& ***!
+  \************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "b-row",
+        { staticClass: "mb-3" },
+        [
+          _c(
+            "b-col",
+            { attrs: { lg: "1" } },
+            [
+              _c(
+                "b-button",
+                {
+                  directives: [
+                    {
+                      name: "b-modal",
+                      rawName: "v-b-modal.modalAddPrice",
+                      modifiers: { modalAddPrice: true }
+                    }
+                  ],
+                  staticClass: "mr-3",
+                  attrs: { variant: "success" }
+                },
+                [_vm._v("Добавить")]
+              ),
+              _vm._v(" "),
+              _c(
+                "b-modal",
+                {
+                  ref: "modalAddPrice",
+                  attrs: {
+                    id: "modalAddPrice",
+                    size: "sm",
+                    title: "Добавление",
+                    "hide-footer": "",
+                    centered: ""
+                  }
+                },
+                [
+                  _c(
+                    "b-form",
+                    {
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.addItem($event)
+                        }
+                      }
+                    },
+                    [
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Наименование:" } },
+                        [
+                          _c("b-form-input", {
+                            attrs: { type: "text", required: "" },
+                            model: {
+                              value: _vm.new_item.label,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "label", $$v)
+                              },
+                              expression: "new_item.label"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Каталог:" } },
+                        [
+                          _c("b-form-select", {
+                            staticClass: "mb-3",
+                            attrs: {
+                              options: _vm.catalogs,
+                              "value-field": "id",
+                              "text-field": "label"
+                            },
+                            scopedSlots: _vm._u([
+                              {
+                                key: "first",
+                                fn: function() {
+                                  return [
+                                    _c(
+                                      "option",
+                                      {
+                                        attrs: { disabled: "", selected: "" },
+                                        domProps: { value: null }
+                                      },
+                                      [_vm._v("Выберите каталог...")]
+                                    )
+                                  ]
+                                },
+                                proxy: true
+                              }
+                            ]),
+                            model: {
+                              value: _vm.new_item.catalog_id,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "catalog_id", $$v)
+                              },
+                              expression: "new_item.catalog_id"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Категория:" } },
+                        [
+                          _c("b-form-select", {
+                            staticClass: "mb-3",
+                            attrs: {
+                              options: _vm.categories,
+                              "value-field": "id",
+                              "text-field": "label"
+                            },
+                            scopedSlots: _vm._u([
+                              {
+                                key: "first",
+                                fn: function() {
+                                  return [
+                                    _c(
+                                      "option",
+                                      {
+                                        attrs: { disabled: "", selected: "" },
+                                        domProps: { value: null }
+                                      },
+                                      [_vm._v("Выберите категорию...")]
+                                    )
+                                  ]
+                                },
+                                proxy: true
+                              }
+                            ]),
+                            model: {
+                              value: _vm.new_item.category_id,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "category_id", $$v)
+                              },
+                              expression: "new_item.category_id"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-button",
+                        {
+                          attrs: {
+                            variant: "primary",
+                            type: "submit",
+                            disabled: _vm.actionLoad
+                          }
+                        },
+                        [
+                          !_vm.actionLoad
+                            ? _c("span", [_vm._v("Добавить")])
+                            : _c(
+                                "span",
+                                [
+                                  _c("b-spinner", { attrs: { small: "" } }),
+                                  _vm._v(
+                                    "\n                            Подождите...\n                        "
+                                  )
+                                ],
+                                1
+                              )
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { attrs: { lg: "5" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Фильтр",
+                    "label-cols-sm": "3",
+                    "label-align-sm": "right",
+                    "label-for": "filterInput"
+                  }
+                },
+                [
+                  _c(
+                    "b-input-group",
+                    [
+                      _c("b-form-input", {
+                        attrs: {
+                          type: "search",
+                          id: "filterInput",
+                          placeholder: "Введите для поиска..."
+                        },
+                        model: {
+                          value: _vm.filter,
+                          callback: function($$v) {
+                            _vm.filter = $$v
+                          },
+                          expression: "filter"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "b-input-group-append",
+                        [
+                          _c(
+                            "b-button",
+                            {
+                              attrs: { disabled: !_vm.filter },
+                              on: {
+                                click: function($event) {
+                                  _vm.filter = ""
+                                }
+                              }
+                            },
+                            [_vm._v("Очистить")]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { attrs: { lg: "6" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Фильтровать по",
+                    "label-cols-sm": "3",
+                    "label-align-sm": "right"
+                  }
+                },
+                [
+                  _c(
+                    "b-form-checkbox-group",
+                    {
+                      staticClass: "mt-1",
+                      model: {
+                        value: _vm.filterOn,
+                        callback: function($$v) {
+                          _vm.filterOn = $$v
+                        },
+                        expression: "filterOn"
+                      }
+                    },
+                    [
+                      _c("b-form-checkbox", { attrs: { value: "label" } }, [
+                        _vm._v("Наименование")
+                      ]),
+                      _vm._v(" "),
+                      _c("b-form-checkbox", { attrs: { value: "catalog" } }, [
+                        _vm._v("Каталог")
+                      ]),
+                      _vm._v(" "),
+                      _c("b-form-checkbox", { attrs: { value: "category" } }, [
+                        _vm._v("Категория")
+                      ])
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("b-table", {
+        attrs: {
+          "show-empty": "",
+          "empty-text": "Нет записей",
+          "empty-filtered-text": "По данному запросу нет записей",
+          id: "my-table",
+          items: _vm.items,
+          fields: _vm.fields,
+          "per-page": _vm.perPage,
+          "current-page": _vm.currentPage,
+          striped: true,
+          busy: _vm.isBusy,
+          filter: _vm.filter,
+          filterIncludedFields: _vm.filterOn
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "cell(catalog)",
+            fn: function(data) {
+              return [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(data.item.catalog.label) +
+                    "\n        "
+                )
+              ]
+            }
+          },
+          {
+            key: "cell(category)",
+            fn: function(data) {
+              return [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(data.item.category.label) +
+                    "\n        "
+                )
+              ]
+            }
+          },
+          {
+            key: "cell(delete)",
+            fn: function(data) {
+              return [
+                _c(
+                  "b-button",
+                  {
+                    staticClass: "p-0",
+                    attrs: { variant: "link" },
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteModal(data.index)
+                      }
+                    }
+                  },
+                  [
+                    _c("h5", { staticClass: "d-inline" }, [
+                      _c("i", { staticClass: "fa fa-trash-o text-danger" })
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "b-button",
+                  {
+                    staticClass: "p-0",
+                    attrs: { variant: "link" },
+                    on: {
+                      click: function($event) {
+                        return _vm.editModal(data.index, data.item)
+                      }
+                    }
+                  },
+                  [
+                    _c("h5", { staticClass: "d-inline" }, [
+                      _c("i", { staticClass: "fa fa-pencil text-primary" })
+                    ])
+                  ]
+                )
+              ]
+            }
+          },
+          {
+            key: "table-busy",
+            fn: function() {
+              return [
+                _c(
+                  "div",
+                  { staticClass: "text-center text-primary my-2" },
+                  [_c("b-spinner", { staticClass: "align-middle" })],
+                  1
+                )
+              ]
+            },
+            proxy: true
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c("b-modal", {
+        attrs: {
+          id: _vm.deletingModal.id,
+          size: "sm",
+          title: "Вы уверены?",
+          centered: ""
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "modal-footer",
+            fn: function(ref) {
+              var ok = ref.ok
+              return [
+                _c(
+                  "b-button",
+                  {
+                    attrs: { variant: "danger", disabled: _vm.actionLoad },
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteItem(_vm.deletingModal.index)
+                      }
+                    }
+                  },
+                  [
+                    !_vm.actionLoad
+                      ? _c("span", [_vm._v("Удалить")])
+                      : _c(
+                          "span",
+                          [
+                            _c("b-spinner", { attrs: { small: "" } }),
+                            _vm._v(
+                              "\n                    Подождите...\n                "
+                            )
+                          ],
+                          1
+                        )
+                  ]
+                )
+              ]
+            }
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          attrs: {
+            id: _vm.editingModal.id,
+            size: "sm",
+            title: "Редактирование",
+            "hide-footer": "",
+            centered: ""
+          },
+          on: { hide: _vm.resetEditingModal }
+        },
+        [
+          _c(
+            "b-form",
+            {
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.editItem(_vm.editingModal.index)
+                }
+              }
+            },
+            [
+              _c(
+                "b-form-group",
+                { attrs: { label: "Наименование:" } },
+                [
+                  _c("b-form-input", {
+                    attrs: { type: "text", required: "" },
+                    model: {
+                      value: _vm.editingModal.label,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "label", $$v)
+                      },
+                      expression: "editingModal.label"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                { attrs: { label: "Каталог:" } },
+                [
+                  _c("b-form-select", {
+                    staticClass: "mb-3",
+                    attrs: {
+                      options: _vm.catalogs,
+                      "value-field": "id",
+                      "text-field": "label"
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "first",
+                        fn: function() {
+                          return [
+                            _c(
+                              "option",
+                              {
+                                attrs: { disabled: "", selected: "" },
+                                domProps: { value: null }
+                              },
+                              [_vm._v("Выберите каталог...")]
+                            )
+                          ]
+                        },
+                        proxy: true
+                      }
+                    ]),
+                    model: {
+                      value: _vm.editingModal.catalog,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "catalog", $$v)
+                      },
+                      expression: "editingModal.catalog"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                { attrs: { label: "Категория:" } },
+                [
+                  _c("b-form-select", {
+                    staticClass: "mb-3",
+                    attrs: {
+                      options: _vm.categories,
+                      "value-field": "id",
+                      "text-field": "label"
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "first",
+                        fn: function() {
+                          return [
+                            _c(
+                              "option",
+                              {
+                                attrs: { disabled: "", selected: "" },
+                                domProps: { value: null }
+                              },
+                              [_vm._v("Выберите категорию...")]
+                            )
+                          ]
+                        },
+                        proxy: true
+                      }
+                    ]),
+                    model: {
+                      value: _vm.editingModal.category,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "category", $$v)
+                      },
+                      expression: "editingModal.category"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-button",
+                {
+                  attrs: {
+                    variant: "primary",
+                    type: "submit",
+                    disabled: _vm.actionLoad
+                  }
+                },
+                [
+                  !_vm.actionLoad
+                    ? _c("span", [_vm._v("Сохранить")])
+                    : _c(
+                        "span",
+                        [
+                          _c("b-spinner", { attrs: { small: "" } }),
+                          _vm._v(
+                            "\n                    Подождите...\n                "
+                          )
+                        ],
+                        1
+                      )
+                ]
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "b-row",
+        [
+          _c(
+            "b-col",
+            { staticClass: "my-1", attrs: { sm: "5", md: "6" } },
+            [
+              !_vm.isBusy
+                ? _c("b-pagination", {
+                    attrs: {
+                      "total-rows": _vm.rows,
+                      "per-page": _vm.perPage,
+                      "aria-controls": "my-table"
+                    },
+                    model: {
+                      value: _vm.currentPage,
+                      callback: function($$v) {
+                        _vm.currentPage = $$v
+                      },
+                      expression: "currentPage"
+                    }
+                  })
+                : _vm._e()
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { staticClass: "my-1", attrs: { sm: "5", md: "6" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Элементов на странице:",
+                    "label-cols-sm": "6",
+                    "label-cols-md": "4",
+                    "label-cols-lg": "6",
+                    "label-align-sm": "right",
+                    "label-for": "perPageSelect"
+                  }
+                },
+                [
+                  _c("b-form-select", {
+                    attrs: { id: "perPageSelect", options: _vm.pageOptions },
+                    model: {
+                      value: _vm.perPage,
+                      callback: function($$v) {
+                        _vm.perPage = $$v
+                      },
+                      expression: "perPage"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
     ],
     1
   )
@@ -68826,6 +71874,1980 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MetalStorageComponent.vue?vue&type=template&id=03098fe4&scoped=true&":
+/*!************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MetalStorageComponent.vue?vue&type=template&id=03098fe4&scoped=true& ***!
+  \************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "b-row",
+        { staticClass: "mb-3" },
+        [
+          _c(
+            "b-col",
+            { attrs: { lg: "1" } },
+            [
+              _c(
+                "b-button",
+                {
+                  directives: [
+                    {
+                      name: "b-modal",
+                      rawName: "v-b-modal.modalAddPrice",
+                      modifiers: { modalAddPrice: true }
+                    }
+                  ],
+                  staticClass: "mr-3",
+                  attrs: { variant: "success" }
+                },
+                [_vm._v("Добавить")]
+              ),
+              _vm._v(" "),
+              _c(
+                "b-modal",
+                {
+                  ref: "modalAddPrice",
+                  attrs: {
+                    id: "modalAddPrice",
+                    size: "sm",
+                    title: "Добавление",
+                    "hide-footer": "",
+                    centered: ""
+                  }
+                },
+                [
+                  _c(
+                    "b-form",
+                    {
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.addItem($event)
+                        }
+                      }
+                    },
+                    [
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Наименование:" } },
+                        [
+                          _c("b-form-input", {
+                            attrs: { type: "text", required: "" },
+                            model: {
+                              value: _vm.new_item.label,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "label", $$v)
+                              },
+                              expression: "new_item.label"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-button",
+                        {
+                          attrs: {
+                            variant: "primary",
+                            type: "submit",
+                            disabled: _vm.actionLoad
+                          }
+                        },
+                        [
+                          !_vm.actionLoad
+                            ? _c("span", [_vm._v("Добавить")])
+                            : _c(
+                                "span",
+                                [
+                                  _c("b-spinner", { attrs: { small: "" } }),
+                                  _vm._v(
+                                    "\n                            Подождите...\n                        "
+                                  )
+                                ],
+                                1
+                              )
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { attrs: { lg: "5" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Фильтр",
+                    "label-cols-sm": "3",
+                    "label-align-sm": "right",
+                    "label-for": "filterInput"
+                  }
+                },
+                [
+                  _c(
+                    "b-input-group",
+                    [
+                      _c("b-form-input", {
+                        attrs: {
+                          type: "search",
+                          id: "filterInput",
+                          placeholder: "Введите для поиска..."
+                        },
+                        model: {
+                          value: _vm.filter,
+                          callback: function($$v) {
+                            _vm.filter = $$v
+                          },
+                          expression: "filter"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "b-input-group-append",
+                        [
+                          _c(
+                            "b-button",
+                            {
+                              attrs: { disabled: !_vm.filter },
+                              on: {
+                                click: function($event) {
+                                  _vm.filter = ""
+                                }
+                              }
+                            },
+                            [_vm._v("Очистить")]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { attrs: { lg: "6" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Фильтровать по",
+                    "label-cols-sm": "3",
+                    "label-align-sm": "right"
+                  }
+                },
+                [
+                  _c(
+                    "b-form-checkbox-group",
+                    {
+                      staticClass: "mt-1",
+                      model: {
+                        value: _vm.filterOn,
+                        callback: function($$v) {
+                          _vm.filterOn = $$v
+                        },
+                        expression: "filterOn"
+                      }
+                    },
+                    [
+                      _c("b-form-checkbox", { attrs: { value: "label" } }, [
+                        _vm._v("Наименование")
+                      ])
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("b-table", {
+        attrs: {
+          "show-empty": "",
+          "empty-text": "Нет записей",
+          "empty-filtered-text": "По данному запросу нет записей",
+          id: "my-table",
+          items: _vm.items,
+          fields: _vm.fields,
+          "per-page": _vm.perPage,
+          "current-page": _vm.currentPage,
+          striped: true,
+          busy: _vm.isBusy,
+          filter: _vm.filter,
+          filterIncludedFields: _vm.filterOn
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "cell(delete)",
+            fn: function(data) {
+              return [
+                _c(
+                  "b-button",
+                  {
+                    staticClass: "p-0",
+                    attrs: { variant: "link" },
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteModal(data.index)
+                      }
+                    }
+                  },
+                  [
+                    _c("h5", { staticClass: "d-inline" }, [
+                      _c("i", { staticClass: "fa fa-trash-o text-danger" })
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "b-button",
+                  {
+                    staticClass: "p-0",
+                    attrs: { variant: "link" },
+                    on: {
+                      click: function($event) {
+                        return _vm.editModal(data.index, data.item)
+                      }
+                    }
+                  },
+                  [
+                    _c("h5", { staticClass: "d-inline" }, [
+                      _c("i", { staticClass: "fa fa-pencil text-primary" })
+                    ])
+                  ]
+                )
+              ]
+            }
+          },
+          {
+            key: "table-busy",
+            fn: function() {
+              return [
+                _c(
+                  "div",
+                  { staticClass: "text-center text-primary my-2" },
+                  [_c("b-spinner", { staticClass: "align-middle" })],
+                  1
+                )
+              ]
+            },
+            proxy: true
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c("b-modal", {
+        attrs: {
+          id: _vm.deletingModal.id,
+          size: "sm",
+          title: "Вы уверены?",
+          centered: ""
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "modal-footer",
+            fn: function(ref) {
+              var ok = ref.ok
+              return [
+                _c(
+                  "b-button",
+                  {
+                    attrs: { variant: "danger", disabled: _vm.actionLoad },
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteItem(_vm.deletingModal.index)
+                      }
+                    }
+                  },
+                  [
+                    !_vm.actionLoad
+                      ? _c("span", [_vm._v("Удалить")])
+                      : _c(
+                          "span",
+                          [
+                            _c("b-spinner", { attrs: { small: "" } }),
+                            _vm._v(
+                              "\n                    Подождите...\n                "
+                            )
+                          ],
+                          1
+                        )
+                  ]
+                )
+              ]
+            }
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          attrs: {
+            id: _vm.editingModal.id,
+            size: "sm",
+            title: "Редактирование",
+            "hide-footer": "",
+            centered: ""
+          },
+          on: { hide: _vm.resetEditingModal }
+        },
+        [
+          _c(
+            "b-form",
+            {
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.editItem(_vm.editingModal.index)
+                }
+              }
+            },
+            [
+              _c(
+                "b-form-group",
+                { attrs: { label: "Наименование:" } },
+                [
+                  _c("b-form-input", {
+                    attrs: { type: "text", required: "" },
+                    model: {
+                      value: _vm.editingModal.label,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "label", $$v)
+                      },
+                      expression: "editingModal.label"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-button",
+                {
+                  attrs: {
+                    variant: "primary",
+                    type: "submit",
+                    disabled: _vm.actionLoad
+                  }
+                },
+                [
+                  !_vm.actionLoad
+                    ? _c("span", [_vm._v("Сохранить")])
+                    : _c(
+                        "span",
+                        [
+                          _c("b-spinner", { attrs: { small: "" } }),
+                          _vm._v(
+                            "\n                    Подождите...\n                "
+                          )
+                        ],
+                        1
+                      )
+                ]
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "b-row",
+        [
+          _c(
+            "b-col",
+            { staticClass: "my-1", attrs: { sm: "5", md: "6" } },
+            [
+              !_vm.isBusy
+                ? _c("b-pagination", {
+                    attrs: {
+                      "total-rows": _vm.rows,
+                      "per-page": _vm.perPage,
+                      "aria-controls": "my-table"
+                    },
+                    model: {
+                      value: _vm.currentPage,
+                      callback: function($$v) {
+                        _vm.currentPage = $$v
+                      },
+                      expression: "currentPage"
+                    }
+                  })
+                : _vm._e()
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { staticClass: "my-1", attrs: { sm: "5", md: "6" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Элементов на странице:",
+                    "label-cols-sm": "6",
+                    "label-cols-md": "4",
+                    "label-cols-lg": "6",
+                    "label-align-sm": "right",
+                    "label-for": "perPageSelect"
+                  }
+                },
+                [
+                  _c("b-form-select", {
+                    attrs: { id: "perPageSelect", options: _vm.pageOptions },
+                    model: {
+                      value: _vm.perPage,
+                      callback: function($$v) {
+                        _vm.perPage = $$v
+                      },
+                      expression: "perPage"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RollStorageComponent.vue?vue&type=template&id=9e752e6c&scoped=true&":
+/*!***********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/RollStorageComponent.vue?vue&type=template&id=9e752e6c&scoped=true& ***!
+  \***********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "b-row",
+        { staticClass: "mb-3" },
+        [
+          _c(
+            "b-col",
+            { attrs: { lg: "1" } },
+            [
+              _c(
+                "b-button",
+                {
+                  directives: [
+                    {
+                      name: "b-modal",
+                      rawName: "v-b-modal.modalAddPrice",
+                      modifiers: { modalAddPrice: true }
+                    }
+                  ],
+                  staticClass: "mr-3",
+                  attrs: { variant: "success" }
+                },
+                [_vm._v("Добавить")]
+              ),
+              _vm._v(" "),
+              _c(
+                "b-modal",
+                {
+                  ref: "modalAddPrice",
+                  attrs: {
+                    id: "modalAddPrice",
+                    size: "sm",
+                    title: "Добавление",
+                    "hide-footer": "",
+                    centered: ""
+                  }
+                },
+                [
+                  _c(
+                    "b-form",
+                    {
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.addItem($event)
+                        }
+                      }
+                    },
+                    [
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Наименование:" } },
+                        [
+                          _c("b-form-input", {
+                            attrs: { type: "text", required: "" },
+                            model: {
+                              value: _vm.new_item.label,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "label", $$v)
+                              },
+                              expression: "new_item.label"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Каталог:" } },
+                        [
+                          _c("b-form-select", {
+                            staticClass: "mb-3",
+                            attrs: {
+                              options: _vm.catalogs,
+                              "value-field": "id",
+                              "text-field": "label"
+                            },
+                            scopedSlots: _vm._u([
+                              {
+                                key: "first",
+                                fn: function() {
+                                  return [
+                                    _c(
+                                      "option",
+                                      {
+                                        attrs: { disabled: "", selected: "" },
+                                        domProps: { value: null }
+                                      },
+                                      [_vm._v("Выберите каталог...")]
+                                    )
+                                  ]
+                                },
+                                proxy: true
+                              }
+                            ]),
+                            model: {
+                              value: _vm.new_item.catalog_id,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "catalog_id", $$v)
+                              },
+                              expression: "new_item.catalog_id"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Категория:" } },
+                        [
+                          _c("b-form-select", {
+                            staticClass: "mb-3",
+                            attrs: {
+                              options: _vm.categories,
+                              "value-field": "id",
+                              "text-field": "label"
+                            },
+                            scopedSlots: _vm._u([
+                              {
+                                key: "first",
+                                fn: function() {
+                                  return [
+                                    _c(
+                                      "option",
+                                      {
+                                        attrs: { disabled: "", selected: "" },
+                                        domProps: { value: null }
+                                      },
+                                      [_vm._v("Выберите категорию...")]
+                                    )
+                                  ]
+                                },
+                                proxy: true
+                              }
+                            ]),
+                            model: {
+                              value: _vm.new_item.category_id,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "category_id", $$v)
+                              },
+                              expression: "new_item.category_id"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Направление рисунка:" } },
+                        [
+                          _c("b-form-select", {
+                            staticClass: "mb-3",
+                            attrs: {
+                              options: _vm.pictures,
+                              "value-field": "id",
+                              "text-field": "label"
+                            },
+                            scopedSlots: _vm._u([
+                              {
+                                key: "first",
+                                fn: function() {
+                                  return [
+                                    _c(
+                                      "option",
+                                      {
+                                        attrs: { disabled: "", selected: "" },
+                                        domProps: { value: null }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "Выберите направление рисунка..."
+                                        )
+                                      ]
+                                    )
+                                  ]
+                                },
+                                proxy: true
+                              }
+                            ]),
+                            model: {
+                              value: _vm.new_item.picture_id,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "picture_id", $$v)
+                              },
+                              expression: "new_item.picture_id"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-button",
+                        {
+                          attrs: {
+                            variant: "primary",
+                            type: "submit",
+                            disabled: _vm.actionLoad
+                          }
+                        },
+                        [
+                          !_vm.actionLoad
+                            ? _c("span", [_vm._v("Добавить")])
+                            : _c(
+                                "span",
+                                [
+                                  _c("b-spinner", { attrs: { small: "" } }),
+                                  _vm._v(
+                                    "\n                            Подождите...\n                        "
+                                  )
+                                ],
+                                1
+                              )
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { attrs: { lg: "5" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Фильтр",
+                    "label-cols-sm": "3",
+                    "label-align-sm": "right",
+                    "label-for": "filterInput"
+                  }
+                },
+                [
+                  _c(
+                    "b-input-group",
+                    [
+                      _c("b-form-input", {
+                        attrs: {
+                          type: "search",
+                          id: "filterInput",
+                          placeholder: "Введите для поиска..."
+                        },
+                        model: {
+                          value: _vm.filter,
+                          callback: function($$v) {
+                            _vm.filter = $$v
+                          },
+                          expression: "filter"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "b-input-group-append",
+                        [
+                          _c(
+                            "b-button",
+                            {
+                              attrs: { disabled: !_vm.filter },
+                              on: {
+                                click: function($event) {
+                                  _vm.filter = ""
+                                }
+                              }
+                            },
+                            [_vm._v("Очистить")]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { attrs: { lg: "6" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Фильтровать по",
+                    "label-cols-sm": "3",
+                    "label-align-sm": "right"
+                  }
+                },
+                [
+                  _c(
+                    "b-form-checkbox-group",
+                    {
+                      staticClass: "mt-1",
+                      model: {
+                        value: _vm.filterOn,
+                        callback: function($$v) {
+                          _vm.filterOn = $$v
+                        },
+                        expression: "filterOn"
+                      }
+                    },
+                    [
+                      _c("b-form-checkbox", { attrs: { value: "label" } }, [
+                        _vm._v("Наименование")
+                      ]),
+                      _vm._v(" "),
+                      _c("b-form-checkbox", { attrs: { value: "catalog" } }, [
+                        _vm._v("Каталог")
+                      ]),
+                      _vm._v(" "),
+                      _c("b-form-checkbox", { attrs: { value: "category" } }, [
+                        _vm._v("Категория")
+                      ]),
+                      _vm._v(" "),
+                      _c("b-form-checkbox", { attrs: { value: "picture" } }, [
+                        _vm._v("Направление рисунка")
+                      ])
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("b-table", {
+        attrs: {
+          "show-empty": "",
+          "empty-text": "Нет записей",
+          "empty-filtered-text": "По данному запросу нет записей",
+          id: "my-table",
+          items: _vm.items,
+          fields: _vm.fields,
+          "per-page": _vm.perPage,
+          "current-page": _vm.currentPage,
+          striped: true,
+          busy: _vm.isBusy,
+          filter: _vm.filter,
+          filterIncludedFields: _vm.filterOn
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "cell(label)",
+            fn: function(data) {
+              return [
+                _c(
+                  "a",
+                  { attrs: { href: "/admin/storage/roll/" + data.item.id } },
+                  [_vm._v(_vm._s(data.item.label))]
+                )
+              ]
+            }
+          },
+          {
+            key: "cell(catalog)",
+            fn: function(data) {
+              return [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(data.item.catalog.label) +
+                    "\n        "
+                )
+              ]
+            }
+          },
+          {
+            key: "cell(category)",
+            fn: function(data) {
+              return [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(data.item.category.label) +
+                    "\n        "
+                )
+              ]
+            }
+          },
+          {
+            key: "cell(picture)",
+            fn: function(data) {
+              return [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(data.item.picture.label) +
+                    "\n        "
+                )
+              ]
+            }
+          },
+          {
+            key: "cell(delete)",
+            fn: function(data) {
+              return [
+                _c(
+                  "b-button",
+                  {
+                    staticClass: "p-0",
+                    attrs: { variant: "link" },
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteModal(data.index)
+                      }
+                    }
+                  },
+                  [
+                    _c("h5", { staticClass: "d-inline" }, [
+                      _c("i", { staticClass: "fa fa-trash-o text-danger" })
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "b-button",
+                  {
+                    staticClass: "p-0",
+                    attrs: { variant: "link" },
+                    on: {
+                      click: function($event) {
+                        return _vm.editModal(data.index, data.item)
+                      }
+                    }
+                  },
+                  [
+                    _c("h5", { staticClass: "d-inline" }, [
+                      _c("i", { staticClass: "fa fa-pencil text-primary" })
+                    ])
+                  ]
+                )
+              ]
+            }
+          },
+          {
+            key: "table-busy",
+            fn: function() {
+              return [
+                _c(
+                  "div",
+                  { staticClass: "text-center text-primary my-2" },
+                  [_c("b-spinner", { staticClass: "align-middle" })],
+                  1
+                )
+              ]
+            },
+            proxy: true
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c("b-modal", {
+        attrs: {
+          id: _vm.deletingModal.id,
+          size: "sm",
+          title: "Вы уверены?",
+          centered: ""
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "modal-footer",
+            fn: function(ref) {
+              var ok = ref.ok
+              return [
+                _c(
+                  "b-button",
+                  {
+                    attrs: { variant: "danger", disabled: _vm.actionLoad },
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteItem(_vm.deletingModal.index)
+                      }
+                    }
+                  },
+                  [
+                    !_vm.actionLoad
+                      ? _c("span", [_vm._v("Удалить")])
+                      : _c(
+                          "span",
+                          [
+                            _c("b-spinner", { attrs: { small: "" } }),
+                            _vm._v(
+                              "\n                    Подождите...\n                "
+                            )
+                          ],
+                          1
+                        )
+                  ]
+                )
+              ]
+            }
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          attrs: {
+            id: _vm.editingModal.id,
+            size: "sm",
+            title: "Редактирование",
+            "hide-footer": "",
+            centered: ""
+          },
+          on: { hide: _vm.resetEditingModal }
+        },
+        [
+          _c(
+            "b-form",
+            {
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.editItem(_vm.editingModal.index)
+                }
+              }
+            },
+            [
+              _c(
+                "b-form-group",
+                { attrs: { label: "Наименование:" } },
+                [
+                  _c("b-form-input", {
+                    attrs: { type: "text", required: "" },
+                    model: {
+                      value: _vm.editingModal.label,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "label", $$v)
+                      },
+                      expression: "editingModal.label"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                { attrs: { label: "Каталог:" } },
+                [
+                  _c("b-form-select", {
+                    staticClass: "mb-3",
+                    attrs: {
+                      options: _vm.catalogs,
+                      "value-field": "id",
+                      "text-field": "label"
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "first",
+                        fn: function() {
+                          return [
+                            _c(
+                              "option",
+                              {
+                                attrs: { disabled: "", selected: "" },
+                                domProps: { value: null }
+                              },
+                              [_vm._v("Выберите каталог...")]
+                            )
+                          ]
+                        },
+                        proxy: true
+                      }
+                    ]),
+                    model: {
+                      value: _vm.editingModal.catalog,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "catalog", $$v)
+                      },
+                      expression: "editingModal.catalog"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                { attrs: { label: "Категория:" } },
+                [
+                  _c("b-form-select", {
+                    staticClass: "mb-3",
+                    attrs: {
+                      options: _vm.categories,
+                      "value-field": "id",
+                      "text-field": "label"
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "first",
+                        fn: function() {
+                          return [
+                            _c(
+                              "option",
+                              {
+                                attrs: { disabled: "", selected: "" },
+                                domProps: { value: null }
+                              },
+                              [_vm._v("Выберите категорию...")]
+                            )
+                          ]
+                        },
+                        proxy: true
+                      }
+                    ]),
+                    model: {
+                      value: _vm.editingModal.category,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "category", $$v)
+                      },
+                      expression: "editingModal.category"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                { attrs: { label: "Направление рисунка:" } },
+                [
+                  _c("b-form-select", {
+                    staticClass: "mb-3",
+                    attrs: {
+                      options: _vm.pictures,
+                      "value-field": "id",
+                      "text-field": "label"
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "first",
+                        fn: function() {
+                          return [
+                            _c(
+                              "option",
+                              {
+                                attrs: { disabled: "", selected: "" },
+                                domProps: { value: null }
+                              },
+                              [_vm._v("Выберите направление рисунка...")]
+                            )
+                          ]
+                        },
+                        proxy: true
+                      }
+                    ]),
+                    model: {
+                      value: _vm.editingModal.picture,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "picture", $$v)
+                      },
+                      expression: "editingModal.picture"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-button",
+                {
+                  attrs: {
+                    variant: "primary",
+                    type: "submit",
+                    disabled: _vm.actionLoad
+                  }
+                },
+                [
+                  !_vm.actionLoad
+                    ? _c("span", [_vm._v("Сохранить")])
+                    : _c(
+                        "span",
+                        [
+                          _c("b-spinner", { attrs: { small: "" } }),
+                          _vm._v(
+                            "\n                    Подождите...\n                "
+                          )
+                        ],
+                        1
+                      )
+                ]
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "b-row",
+        [
+          _c(
+            "b-col",
+            { staticClass: "my-1", attrs: { sm: "5", md: "6" } },
+            [
+              !_vm.isBusy
+                ? _c("b-pagination", {
+                    attrs: {
+                      "total-rows": _vm.rows,
+                      "per-page": _vm.perPage,
+                      "aria-controls": "my-table"
+                    },
+                    model: {
+                      value: _vm.currentPage,
+                      callback: function($$v) {
+                        _vm.currentPage = $$v
+                      },
+                      expression: "currentPage"
+                    }
+                  })
+                : _vm._e()
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { staticClass: "my-1", attrs: { sm: "5", md: "6" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Элементов на странице:",
+                    "label-cols-sm": "6",
+                    "label-cols-md": "4",
+                    "label-cols-lg": "6",
+                    "label-align-sm": "right",
+                    "label-for": "perPageSelect"
+                  }
+                },
+                [
+                  _c("b-form-select", {
+                    attrs: { id: "perPageSelect", options: _vm.pageOptions },
+                    model: {
+                      value: _vm.perPage,
+                      callback: function($$v) {
+                        _vm.perPage = $$v
+                      },
+                      expression: "perPage"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RollStorageSingleComponent.vue?vue&type=template&id=5247eda2&scoped=true&":
+/*!*****************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/RollStorageSingleComponent.vue?vue&type=template&id=5247eda2&scoped=true& ***!
+  \*****************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("h2", { staticClass: "mb-4" }, [_vm._v("Ткани рулонные > L-0880")]),
+      _vm._v(" "),
+      _c(
+        "b-card",
+        { attrs: { "no-body": "" } },
+        [
+          _c(
+            "b-tabs",
+            { attrs: { card: "" } },
+            [
+              _c(
+                "b-tab",
+                { attrs: { title: "Общая информация", active: "" } },
+                [
+                  _c("b-card-text", [
+                    _c("dl", { staticClass: "row" }, [
+                      _c("dt", { staticClass: "col-sm-6" }, [
+                        _vm._v("Наименование:")
+                      ]),
+                      _vm._v(" "),
+                      _c("dd", { staticClass: "col-sm-6" }, [
+                        _c("h4", [_vm._v(_vm._s(_vm.item.label))])
+                      ]),
+                      _vm._v(" "),
+                      _c("dt", { staticClass: "col-sm-6" }, [
+                        _vm._v("Каталог:")
+                      ]),
+                      _vm._v(" "),
+                      _c("dd", { staticClass: "col-sm-6" }, [
+                        _vm._v(_vm._s(_vm.item.catalog.label))
+                      ]),
+                      _vm._v(" "),
+                      _c("dt", { staticClass: "col-sm-6" }, [
+                        _vm._v("Категория:")
+                      ]),
+                      _vm._v(" "),
+                      _c("dd", { staticClass: "col-sm-6" }, [
+                        _vm._v(_vm._s(_vm.item.category.label))
+                      ]),
+                      _vm._v(" "),
+                      _c("dt", { staticClass: "col-sm-6" }, [
+                        _vm._v("Направление рисунка:")
+                      ]),
+                      _vm._v(" "),
+                      _c("dd", { staticClass: "col-sm-6" }, [
+                        _vm._v(_vm._s(_vm.item.picture.label))
+                      ])
+                    ])
+                  ])
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-tab",
+                { attrs: { title: "Партии и остатки" } },
+                [
+                  _c(
+                    "b-card-text",
+                    [
+                      _c(
+                        "b-row",
+                        { staticClass: "mb-3" },
+                        [
+                          _c(
+                            "b-col",
+                            { attrs: { lg: "1" } },
+                            [
+                              _c(
+                                "b-button",
+                                {
+                                  directives: [
+                                    {
+                                      name: "b-modal",
+                                      rawName: "v-b-modal.modalAddPart",
+                                      modifiers: { modalAddPart: true }
+                                    }
+                                  ],
+                                  staticClass: "mr-3",
+                                  attrs: { variant: "success" }
+                                },
+                                [_vm._v("Добавить")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "b-modal",
+                                {
+                                  ref: "modalAddPart",
+                                  attrs: {
+                                    id: "modalAddPart",
+                                    size: "sm",
+                                    title: "Добавление",
+                                    "hide-footer": "",
+                                    centered: ""
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "b-form",
+                                    {
+                                      on: {
+                                        submit: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.addPart($event)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "b-form-group",
+                                        { attrs: { label: "Тип:" } },
+                                        [
+                                          _c("b-form-select", {
+                                            staticClass: "mb-3",
+                                            attrs: {
+                                              options: _vm.part_types,
+                                              "value-field": "id",
+                                              "text-field": "label"
+                                            },
+                                            scopedSlots: _vm._u([
+                                              {
+                                                key: "first",
+                                                fn: function() {
+                                                  return [
+                                                    _c(
+                                                      "option",
+                                                      {
+                                                        attrs: {
+                                                          disabled: "",
+                                                          selected: ""
+                                                        },
+                                                        domProps: {
+                                                          value: null
+                                                        }
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "Выберите тип..."
+                                                        )
+                                                      ]
+                                                    )
+                                                  ]
+                                                },
+                                                proxy: true
+                                              }
+                                            ]),
+                                            model: {
+                                              value: _vm.new_part.type_id,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.new_part,
+                                                  "type_id",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "new_part.type_id"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "b-form-group",
+                                        { attrs: { label: "Поставщик:" } },
+                                        [
+                                          _c("b-form-select", {
+                                            staticClass: "mb-3",
+                                            attrs: {
+                                              options: _vm.providers,
+                                              "value-field": "id",
+                                              "text-field": "label"
+                                            },
+                                            scopedSlots: _vm._u([
+                                              {
+                                                key: "first",
+                                                fn: function() {
+                                                  return [
+                                                    _c(
+                                                      "option",
+                                                      {
+                                                        attrs: {
+                                                          disabled: "",
+                                                          selected: ""
+                                                        },
+                                                        domProps: {
+                                                          value: null
+                                                        }
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "Выберите поставщика..."
+                                                        )
+                                                      ]
+                                                    )
+                                                  ]
+                                                },
+                                                proxy: true
+                                              }
+                                            ]),
+                                            model: {
+                                              value: _vm.new_part.provider_id,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.new_part,
+                                                  "provider_id",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "new_part.provider_id"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "b-form-group",
+                                        { attrs: { label: "Ширина:" } },
+                                        [
+                                          _c("b-form-input", {
+                                            attrs: {
+                                              type: "number",
+                                              step: "0.01",
+                                              required: ""
+                                            },
+                                            model: {
+                                              value: _vm.new_part.width,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.new_part,
+                                                  "width",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "new_part.width"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "b-form-group",
+                                        { attrs: { label: "Длина:" } },
+                                        [
+                                          _c("b-form-input", {
+                                            attrs: {
+                                              type: "number",
+                                              step: "0.01",
+                                              required: ""
+                                            },
+                                            model: {
+                                              value: _vm.new_part.lenght,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.new_part,
+                                                  "lenght",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "new_part.lenght"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "b-form-group",
+                                        { attrs: { label: "Цена:" } },
+                                        [
+                                          _c("b-form-input", {
+                                            attrs: {
+                                              type: "number",
+                                              step: "0.01",
+                                              required: ""
+                                            },
+                                            model: {
+                                              value: _vm.new_part.price,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.new_part,
+                                                  "price",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "new_part.price"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "b-form-group",
+                                        { attrs: { label: "Статус:" } },
+                                        [
+                                          _c("b-form-select", {
+                                            staticClass: "mb-3",
+                                            attrs: {
+                                              options: _vm.part_statuses,
+                                              "value-field": "id",
+                                              "text-field": "label"
+                                            },
+                                            scopedSlots: _vm._u([
+                                              {
+                                                key: "first",
+                                                fn: function() {
+                                                  return [
+                                                    _c(
+                                                      "option",
+                                                      {
+                                                        attrs: {
+                                                          disabled: "",
+                                                          selected: ""
+                                                        },
+                                                        domProps: {
+                                                          value: null
+                                                        }
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "Выберите статус..."
+                                                        )
+                                                      ]
+                                                    )
+                                                  ]
+                                                },
+                                                proxy: true
+                                              }
+                                            ]),
+                                            model: {
+                                              value: _vm.new_part.status_id,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.new_part,
+                                                  "status_id",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "new_part.status_id"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "b-button",
+                                        {
+                                          attrs: {
+                                            variant: "primary",
+                                            type: "submit",
+                                            disabled: _vm.actionLoad
+                                          }
+                                        },
+                                        [
+                                          !_vm.actionLoad
+                                            ? _c("span", [_vm._v("Добавить")])
+                                            : _c(
+                                                "span",
+                                                [
+                                                  _c("b-spinner", {
+                                                    attrs: { small: "" }
+                                                  }),
+                                                  _vm._v(
+                                                    "\n                                            Подождите...\n                                        "
+                                                  )
+                                                ],
+                                                1
+                                              )
+                                        ]
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "b-col",
+                            { attrs: { lg: "5" } },
+                            [
+                              _c(
+                                "b-form-group",
+                                {
+                                  staticClass: "mb-0",
+                                  attrs: {
+                                    label: "Фильтр",
+                                    "label-cols-sm": "3",
+                                    "label-align-sm": "right",
+                                    "label-for": "filterInput"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "b-input-group",
+                                    [
+                                      _c("b-form-input", {
+                                        attrs: {
+                                          type: "search",
+                                          id: "filterInput",
+                                          placeholder: "Введите для поиска..."
+                                        },
+                                        model: {
+                                          value: _vm.filter,
+                                          callback: function($$v) {
+                                            _vm.filter = $$v
+                                          },
+                                          expression: "filter"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "b-input-group-append",
+                                        [
+                                          _c(
+                                            "b-button",
+                                            {
+                                              attrs: { disabled: !_vm.filter },
+                                              on: {
+                                                click: function($event) {
+                                                  _vm.filter = ""
+                                                }
+                                              }
+                                            },
+                                            [_vm._v("Очистить")]
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "b-col",
+                            { attrs: { lg: "6" } },
+                            [
+                              _c(
+                                "b-form-group",
+                                {
+                                  staticClass: "mb-0",
+                                  attrs: {
+                                    label: "Фильтровать по",
+                                    "label-cols-sm": "3",
+                                    "label-align-sm": "right"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "b-form-checkbox-group",
+                                    {
+                                      staticClass: "mt-1",
+                                      model: {
+                                        value: _vm.filterOn,
+                                        callback: function($$v) {
+                                          _vm.filterOn = $$v
+                                        },
+                                        expression: "filterOn"
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "b-form-checkbox",
+                                        { attrs: { value: "label" } },
+                                        [_vm._v("Наименование")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "b-form-checkbox",
+                                        { attrs: { value: "catalog" } },
+                                        [_vm._v("Каталог")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "b-form-checkbox",
+                                        { attrs: { value: "category" } },
+                                        [_vm._v("Категория")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "b-form-checkbox",
+                                        { attrs: { value: "picture" } },
+                                        [_vm._v("Направление рисунка")]
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c("b-table", {
+                        attrs: {
+                          "show-empty": "",
+                          "empty-text": "Нет записей",
+                          "empty-filtered-text":
+                            "По данному запросу нет записей",
+                          id: "my-table",
+                          items: _vm.parts,
+                          fields: _vm.parts_fields,
+                          "per-page": _vm.perPage,
+                          "current-page": _vm.currentPage,
+                          striped: true,
+                          busy: _vm.isBusy,
+                          filter: _vm.filter,
+                          filterIncludedFields: _vm.filterOn
+                        },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "cell(provider)",
+                            fn: function(data) {
+                              return [
+                                _vm._v(
+                                  "\n                            " +
+                                    _vm._s(data.item.provider.label) +
+                                    "\n                        "
+                                )
+                              ]
+                            }
+                          },
+                          {
+                            key: "cell(status)",
+                            fn: function(data) {
+                              return [
+                                _vm._v(
+                                  "\n                            " +
+                                    _vm._s(data.item.status.label) +
+                                    "\n                        "
+                                )
+                              ]
+                            }
+                          },
+                          {
+                            key: "cell(type)",
+                            fn: function(data) {
+                              return [
+                                _vm._v(
+                                  "\n                            " +
+                                    _vm._s(data.item.type.label) +
+                                    "\n                        "
+                                )
+                              ]
+                            }
+                          },
+                          {
+                            key: "cell(delete)",
+                            fn: function(data) {
+                              return [
+                                _c(
+                                  "b-button",
+                                  {
+                                    staticClass: "p-0",
+                                    attrs: { variant: "link" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.deleteModal(data.index)
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c("h5", { staticClass: "d-inline" }, [
+                                      _c("i", {
+                                        staticClass: "fa fa-trash-o text-danger"
+                                      })
+                                    ])
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "b-button",
+                                  {
+                                    staticClass: "p-0",
+                                    attrs: { variant: "link" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.editModal(
+                                          data.index,
+                                          data.item
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c("h5", { staticClass: "d-inline" }, [
+                                      _c("i", {
+                                        staticClass: "fa fa-pencil text-primary"
+                                      })
+                                    ])
+                                  ]
+                                )
+                              ]
+                            }
+                          },
+                          {
+                            key: "table-busy",
+                            fn: function() {
+                              return [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "text-center text-primary my-2"
+                                  },
+                                  [
+                                    _c("b-spinner", {
+                                      staticClass: "align-middle"
+                                    })
+                                  ],
+                                  1
+                                )
+                              ]
+                            },
+                            proxy: true
+                          }
+                        ])
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-tab",
+                { attrs: { title: "Операции" } },
+                [_c("b-card-text", [_vm._v("Tab contents 2")])],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SimplePriceComponent.vue?vue&type=template&id=11d009f1&scoped=true&":
 /*!***********************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SimplePriceComponent.vue?vue&type=template&id=11d009f1&scoped=true& ***!
@@ -69265,6 +74287,1380 @@ var staticRenderFns = [
     ])
   }
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VertStorageComponent.vue?vue&type=template&id=46c5b37e&scoped=true&":
+/*!***********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/VertStorageComponent.vue?vue&type=template&id=46c5b37e&scoped=true& ***!
+  \***********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "b-row",
+        { staticClass: "mb-3" },
+        [
+          _c(
+            "b-col",
+            { attrs: { lg: "1" } },
+            [
+              _c(
+                "b-button",
+                {
+                  directives: [
+                    {
+                      name: "b-modal",
+                      rawName: "v-b-modal.modalAddPrice",
+                      modifiers: { modalAddPrice: true }
+                    }
+                  ],
+                  staticClass: "mr-3",
+                  attrs: { variant: "success" }
+                },
+                [_vm._v("Добавить")]
+              ),
+              _vm._v(" "),
+              _c(
+                "b-modal",
+                {
+                  ref: "modalAddPrice",
+                  attrs: {
+                    id: "modalAddPrice",
+                    size: "sm",
+                    title: "Добавление",
+                    "hide-footer": "",
+                    centered: ""
+                  }
+                },
+                [
+                  _c(
+                    "b-form",
+                    {
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.addItem($event)
+                        }
+                      }
+                    },
+                    [
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Наименование:" } },
+                        [
+                          _c("b-form-input", {
+                            attrs: { type: "text", required: "" },
+                            model: {
+                              value: _vm.new_item.label,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "label", $$v)
+                              },
+                              expression: "new_item.label"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Каталог:" } },
+                        [
+                          _c("b-form-select", {
+                            staticClass: "mb-3",
+                            attrs: {
+                              options: _vm.catalogs,
+                              "value-field": "id",
+                              "text-field": "label"
+                            },
+                            scopedSlots: _vm._u([
+                              {
+                                key: "first",
+                                fn: function() {
+                                  return [
+                                    _c(
+                                      "option",
+                                      {
+                                        attrs: { disabled: "", selected: "" },
+                                        domProps: { value: null }
+                                      },
+                                      [_vm._v("Выберите каталог...")]
+                                    )
+                                  ]
+                                },
+                                proxy: true
+                              }
+                            ]),
+                            model: {
+                              value: _vm.new_item.catalog_id,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "catalog_id", $$v)
+                              },
+                              expression: "new_item.catalog_id"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Категория:" } },
+                        [
+                          _c("b-form-select", {
+                            staticClass: "mb-3",
+                            attrs: {
+                              options: _vm.categories,
+                              "value-field": "id",
+                              "text-field": "label"
+                            },
+                            scopedSlots: _vm._u([
+                              {
+                                key: "first",
+                                fn: function() {
+                                  return [
+                                    _c(
+                                      "option",
+                                      {
+                                        attrs: { disabled: "", selected: "" },
+                                        domProps: { value: null }
+                                      },
+                                      [_vm._v("Выберите категорию...")]
+                                    )
+                                  ]
+                                },
+                                proxy: true
+                              }
+                            ]),
+                            model: {
+                              value: _vm.new_item.category_id,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "category_id", $$v)
+                              },
+                              expression: "new_item.category_id"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-button",
+                        {
+                          attrs: {
+                            variant: "primary",
+                            type: "submit",
+                            disabled: _vm.actionLoad
+                          }
+                        },
+                        [
+                          !_vm.actionLoad
+                            ? _c("span", [_vm._v("Добавить")])
+                            : _c(
+                                "span",
+                                [
+                                  _c("b-spinner", { attrs: { small: "" } }),
+                                  _vm._v(
+                                    "\n                            Подождите...\n                        "
+                                  )
+                                ],
+                                1
+                              )
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { attrs: { lg: "5" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Фильтр",
+                    "label-cols-sm": "3",
+                    "label-align-sm": "right",
+                    "label-for": "filterInput"
+                  }
+                },
+                [
+                  _c(
+                    "b-input-group",
+                    [
+                      _c("b-form-input", {
+                        attrs: {
+                          type: "search",
+                          id: "filterInput",
+                          placeholder: "Введите для поиска..."
+                        },
+                        model: {
+                          value: _vm.filter,
+                          callback: function($$v) {
+                            _vm.filter = $$v
+                          },
+                          expression: "filter"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "b-input-group-append",
+                        [
+                          _c(
+                            "b-button",
+                            {
+                              attrs: { disabled: !_vm.filter },
+                              on: {
+                                click: function($event) {
+                                  _vm.filter = ""
+                                }
+                              }
+                            },
+                            [_vm._v("Очистить")]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { attrs: { lg: "6" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Фильтровать по",
+                    "label-cols-sm": "3",
+                    "label-align-sm": "right"
+                  }
+                },
+                [
+                  _c(
+                    "b-form-checkbox-group",
+                    {
+                      staticClass: "mt-1",
+                      model: {
+                        value: _vm.filterOn,
+                        callback: function($$v) {
+                          _vm.filterOn = $$v
+                        },
+                        expression: "filterOn"
+                      }
+                    },
+                    [
+                      _c("b-form-checkbox", { attrs: { value: "label" } }, [
+                        _vm._v("Наименование")
+                      ]),
+                      _vm._v(" "),
+                      _c("b-form-checkbox", { attrs: { value: "catalog" } }, [
+                        _vm._v("Каталог")
+                      ]),
+                      _vm._v(" "),
+                      _c("b-form-checkbox", { attrs: { value: "category" } }, [
+                        _vm._v("Категория")
+                      ])
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("b-table", {
+        attrs: {
+          "show-empty": "",
+          "empty-text": "Нет записей",
+          "empty-filtered-text": "По данному запросу нет записей",
+          id: "my-table",
+          items: _vm.items,
+          fields: _vm.fields,
+          "per-page": _vm.perPage,
+          "current-page": _vm.currentPage,
+          striped: true,
+          busy: _vm.isBusy,
+          filter: _vm.filter,
+          filterIncludedFields: _vm.filterOn
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "cell(catalog)",
+            fn: function(data) {
+              return [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(data.item.catalog.label) +
+                    "\n        "
+                )
+              ]
+            }
+          },
+          {
+            key: "cell(category)",
+            fn: function(data) {
+              return [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(data.item.category.label) +
+                    "\n        "
+                )
+              ]
+            }
+          },
+          {
+            key: "cell(delete)",
+            fn: function(data) {
+              return [
+                _c(
+                  "b-button",
+                  {
+                    staticClass: "p-0",
+                    attrs: { variant: "link" },
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteModal(data.index)
+                      }
+                    }
+                  },
+                  [
+                    _c("h5", { staticClass: "d-inline" }, [
+                      _c("i", { staticClass: "fa fa-trash-o text-danger" })
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "b-button",
+                  {
+                    staticClass: "p-0",
+                    attrs: { variant: "link" },
+                    on: {
+                      click: function($event) {
+                        return _vm.editModal(data.index, data.item)
+                      }
+                    }
+                  },
+                  [
+                    _c("h5", { staticClass: "d-inline" }, [
+                      _c("i", { staticClass: "fa fa-pencil text-primary" })
+                    ])
+                  ]
+                )
+              ]
+            }
+          },
+          {
+            key: "table-busy",
+            fn: function() {
+              return [
+                _c(
+                  "div",
+                  { staticClass: "text-center text-primary my-2" },
+                  [_c("b-spinner", { staticClass: "align-middle" })],
+                  1
+                )
+              ]
+            },
+            proxy: true
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c("b-modal", {
+        attrs: {
+          id: _vm.deletingModal.id,
+          size: "sm",
+          title: "Вы уверены?",
+          centered: ""
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "modal-footer",
+            fn: function(ref) {
+              var ok = ref.ok
+              return [
+                _c(
+                  "b-button",
+                  {
+                    attrs: { variant: "danger", disabled: _vm.actionLoad },
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteItem(_vm.deletingModal.index)
+                      }
+                    }
+                  },
+                  [
+                    !_vm.actionLoad
+                      ? _c("span", [_vm._v("Удалить")])
+                      : _c(
+                          "span",
+                          [
+                            _c("b-spinner", { attrs: { small: "" } }),
+                            _vm._v(
+                              "\n                    Подождите...\n                "
+                            )
+                          ],
+                          1
+                        )
+                  ]
+                )
+              ]
+            }
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          attrs: {
+            id: _vm.editingModal.id,
+            size: "sm",
+            title: "Редактирование",
+            "hide-footer": "",
+            centered: ""
+          },
+          on: { hide: _vm.resetEditingModal }
+        },
+        [
+          _c(
+            "b-form",
+            {
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.editItem(_vm.editingModal.index)
+                }
+              }
+            },
+            [
+              _c(
+                "b-form-group",
+                { attrs: { label: "Наименование:" } },
+                [
+                  _c("b-form-input", {
+                    attrs: { type: "text", required: "" },
+                    model: {
+                      value: _vm.editingModal.label,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "label", $$v)
+                      },
+                      expression: "editingModal.label"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                { attrs: { label: "Каталог:" } },
+                [
+                  _c("b-form-select", {
+                    staticClass: "mb-3",
+                    attrs: {
+                      options: _vm.catalogs,
+                      "value-field": "id",
+                      "text-field": "label"
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "first",
+                        fn: function() {
+                          return [
+                            _c(
+                              "option",
+                              {
+                                attrs: { disabled: "", selected: "" },
+                                domProps: { value: null }
+                              },
+                              [_vm._v("Выберите каталог...")]
+                            )
+                          ]
+                        },
+                        proxy: true
+                      }
+                    ]),
+                    model: {
+                      value: _vm.editingModal.catalog,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "catalog", $$v)
+                      },
+                      expression: "editingModal.catalog"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                { attrs: { label: "Категория:" } },
+                [
+                  _c("b-form-select", {
+                    staticClass: "mb-3",
+                    attrs: {
+                      options: _vm.categories,
+                      "value-field": "id",
+                      "text-field": "label"
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "first",
+                        fn: function() {
+                          return [
+                            _c(
+                              "option",
+                              {
+                                attrs: { disabled: "", selected: "" },
+                                domProps: { value: null }
+                              },
+                              [_vm._v("Выберите категорию...")]
+                            )
+                          ]
+                        },
+                        proxy: true
+                      }
+                    ]),
+                    model: {
+                      value: _vm.editingModal.category,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "category", $$v)
+                      },
+                      expression: "editingModal.category"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-button",
+                {
+                  attrs: {
+                    variant: "primary",
+                    type: "submit",
+                    disabled: _vm.actionLoad
+                  }
+                },
+                [
+                  !_vm.actionLoad
+                    ? _c("span", [_vm._v("Сохранить")])
+                    : _c(
+                        "span",
+                        [
+                          _c("b-spinner", { attrs: { small: "" } }),
+                          _vm._v(
+                            "\n                    Подождите...\n                "
+                          )
+                        ],
+                        1
+                      )
+                ]
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "b-row",
+        [
+          _c(
+            "b-col",
+            { staticClass: "my-1", attrs: { sm: "5", md: "6" } },
+            [
+              !_vm.isBusy
+                ? _c("b-pagination", {
+                    attrs: {
+                      "total-rows": _vm.rows,
+                      "per-page": _vm.perPage,
+                      "aria-controls": "my-table"
+                    },
+                    model: {
+                      value: _vm.currentPage,
+                      callback: function($$v) {
+                        _vm.currentPage = $$v
+                      },
+                      expression: "currentPage"
+                    }
+                  })
+                : _vm._e()
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { staticClass: "my-1", attrs: { sm: "5", md: "6" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Элементов на странице:",
+                    "label-cols-sm": "6",
+                    "label-cols-md": "4",
+                    "label-cols-lg": "6",
+                    "label-align-sm": "right",
+                    "label-for": "perPageSelect"
+                  }
+                },
+                [
+                  _c("b-form-select", {
+                    attrs: { id: "perPageSelect", options: _vm.pageOptions },
+                    model: {
+                      value: _vm.perPage,
+                      callback: function($$v) {
+                        _vm.perPage = $$v
+                      },
+                      expression: "perPage"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ZebraStorageComponent.vue?vue&type=template&id=3c7d9ae6&scoped=true&":
+/*!************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ZebraStorageComponent.vue?vue&type=template&id=3c7d9ae6&scoped=true& ***!
+  \************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "b-row",
+        { staticClass: "mb-3" },
+        [
+          _c(
+            "b-col",
+            { attrs: { lg: "1" } },
+            [
+              _c(
+                "b-button",
+                {
+                  directives: [
+                    {
+                      name: "b-modal",
+                      rawName: "v-b-modal.modalAddPrice",
+                      modifiers: { modalAddPrice: true }
+                    }
+                  ],
+                  staticClass: "mr-3",
+                  attrs: { variant: "success" }
+                },
+                [_vm._v("Добавить")]
+              ),
+              _vm._v(" "),
+              _c(
+                "b-modal",
+                {
+                  ref: "modalAddPrice",
+                  attrs: {
+                    id: "modalAddPrice",
+                    size: "sm",
+                    title: "Добавление",
+                    "hide-footer": "",
+                    centered: ""
+                  }
+                },
+                [
+                  _c(
+                    "b-form",
+                    {
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.addItem($event)
+                        }
+                      }
+                    },
+                    [
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Наименование:" } },
+                        [
+                          _c("b-form-input", {
+                            attrs: { type: "text", required: "" },
+                            model: {
+                              value: _vm.new_item.label,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "label", $$v)
+                              },
+                              expression: "new_item.label"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Каталог:" } },
+                        [
+                          _c("b-form-select", {
+                            staticClass: "mb-3",
+                            attrs: {
+                              options: _vm.catalogs,
+                              "value-field": "id",
+                              "text-field": "label"
+                            },
+                            scopedSlots: _vm._u([
+                              {
+                                key: "first",
+                                fn: function() {
+                                  return [
+                                    _c(
+                                      "option",
+                                      {
+                                        attrs: { disabled: "", selected: "" },
+                                        domProps: { value: null }
+                                      },
+                                      [_vm._v("Выберите каталог...")]
+                                    )
+                                  ]
+                                },
+                                proxy: true
+                              }
+                            ]),
+                            model: {
+                              value: _vm.new_item.catalog_id,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "catalog_id", $$v)
+                              },
+                              expression: "new_item.catalog_id"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-form-group",
+                        { attrs: { label: "Категория:" } },
+                        [
+                          _c("b-form-select", {
+                            staticClass: "mb-3",
+                            attrs: {
+                              options: _vm.categories,
+                              "value-field": "id",
+                              "text-field": "label"
+                            },
+                            scopedSlots: _vm._u([
+                              {
+                                key: "first",
+                                fn: function() {
+                                  return [
+                                    _c(
+                                      "option",
+                                      {
+                                        attrs: { disabled: "", selected: "" },
+                                        domProps: { value: null }
+                                      },
+                                      [_vm._v("Выберите категорию...")]
+                                    )
+                                  ]
+                                },
+                                proxy: true
+                              }
+                            ]),
+                            model: {
+                              value: _vm.new_item.category_id,
+                              callback: function($$v) {
+                                _vm.$set(_vm.new_item, "category_id", $$v)
+                              },
+                              expression: "new_item.category_id"
+                            }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-button",
+                        {
+                          attrs: {
+                            variant: "primary",
+                            type: "submit",
+                            disabled: _vm.actionLoad
+                          }
+                        },
+                        [
+                          !_vm.actionLoad
+                            ? _c("span", [_vm._v("Добавить")])
+                            : _c(
+                                "span",
+                                [
+                                  _c("b-spinner", { attrs: { small: "" } }),
+                                  _vm._v(
+                                    "\n                            Подождите...\n                        "
+                                  )
+                                ],
+                                1
+                              )
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { attrs: { lg: "5" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Фильтр",
+                    "label-cols-sm": "3",
+                    "label-align-sm": "right",
+                    "label-for": "filterInput"
+                  }
+                },
+                [
+                  _c(
+                    "b-input-group",
+                    [
+                      _c("b-form-input", {
+                        attrs: {
+                          type: "search",
+                          id: "filterInput",
+                          placeholder: "Введите для поиска..."
+                        },
+                        model: {
+                          value: _vm.filter,
+                          callback: function($$v) {
+                            _vm.filter = $$v
+                          },
+                          expression: "filter"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "b-input-group-append",
+                        [
+                          _c(
+                            "b-button",
+                            {
+                              attrs: { disabled: !_vm.filter },
+                              on: {
+                                click: function($event) {
+                                  _vm.filter = ""
+                                }
+                              }
+                            },
+                            [_vm._v("Очистить")]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { attrs: { lg: "6" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Фильтровать по",
+                    "label-cols-sm": "3",
+                    "label-align-sm": "right"
+                  }
+                },
+                [
+                  _c(
+                    "b-form-checkbox-group",
+                    {
+                      staticClass: "mt-1",
+                      model: {
+                        value: _vm.filterOn,
+                        callback: function($$v) {
+                          _vm.filterOn = $$v
+                        },
+                        expression: "filterOn"
+                      }
+                    },
+                    [
+                      _c("b-form-checkbox", { attrs: { value: "label" } }, [
+                        _vm._v("Наименование")
+                      ]),
+                      _vm._v(" "),
+                      _c("b-form-checkbox", { attrs: { value: "catalog" } }, [
+                        _vm._v("Каталог")
+                      ]),
+                      _vm._v(" "),
+                      _c("b-form-checkbox", { attrs: { value: "category" } }, [
+                        _vm._v("Категория")
+                      ])
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("b-table", {
+        attrs: {
+          "show-empty": "",
+          "empty-text": "Нет записей",
+          "empty-filtered-text": "По данному запросу нет записей",
+          id: "my-table",
+          items: _vm.items,
+          fields: _vm.fields,
+          "per-page": _vm.perPage,
+          "current-page": _vm.currentPage,
+          striped: true,
+          busy: _vm.isBusy,
+          filter: _vm.filter,
+          filterIncludedFields: _vm.filterOn
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "cell(catalog)",
+            fn: function(data) {
+              return [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(data.item.catalog.label) +
+                    "\n        "
+                )
+              ]
+            }
+          },
+          {
+            key: "cell(category)",
+            fn: function(data) {
+              return [
+                _vm._v(
+                  "\n            " +
+                    _vm._s(data.item.category.label) +
+                    "\n        "
+                )
+              ]
+            }
+          },
+          {
+            key: "cell(delete)",
+            fn: function(data) {
+              return [
+                _c(
+                  "b-button",
+                  {
+                    staticClass: "p-0",
+                    attrs: { variant: "link" },
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteModal(data.index)
+                      }
+                    }
+                  },
+                  [
+                    _c("h5", { staticClass: "d-inline" }, [
+                      _c("i", { staticClass: "fa fa-trash-o text-danger" })
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "b-button",
+                  {
+                    staticClass: "p-0",
+                    attrs: { variant: "link" },
+                    on: {
+                      click: function($event) {
+                        return _vm.editModal(data.index, data.item)
+                      }
+                    }
+                  },
+                  [
+                    _c("h5", { staticClass: "d-inline" }, [
+                      _c("i", { staticClass: "fa fa-pencil text-primary" })
+                    ])
+                  ]
+                )
+              ]
+            }
+          },
+          {
+            key: "table-busy",
+            fn: function() {
+              return [
+                _c(
+                  "div",
+                  { staticClass: "text-center text-primary my-2" },
+                  [_c("b-spinner", { staticClass: "align-middle" })],
+                  1
+                )
+              ]
+            },
+            proxy: true
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c("b-modal", {
+        attrs: {
+          id: _vm.deletingModal.id,
+          size: "sm",
+          title: "Вы уверены?",
+          centered: ""
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "modal-footer",
+            fn: function(ref) {
+              var ok = ref.ok
+              return [
+                _c(
+                  "b-button",
+                  {
+                    attrs: { variant: "danger", disabled: _vm.actionLoad },
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteItem(_vm.deletingModal.index)
+                      }
+                    }
+                  },
+                  [
+                    !_vm.actionLoad
+                      ? _c("span", [_vm._v("Удалить")])
+                      : _c(
+                          "span",
+                          [
+                            _c("b-spinner", { attrs: { small: "" } }),
+                            _vm._v(
+                              "\n                    Подождите...\n                "
+                            )
+                          ],
+                          1
+                        )
+                  ]
+                )
+              ]
+            }
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          attrs: {
+            id: _vm.editingModal.id,
+            size: "sm",
+            title: "Редактирование",
+            "hide-footer": "",
+            centered: ""
+          },
+          on: { hide: _vm.resetEditingModal }
+        },
+        [
+          _c(
+            "b-form",
+            {
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.editItem(_vm.editingModal.index)
+                }
+              }
+            },
+            [
+              _c(
+                "b-form-group",
+                { attrs: { label: "Наименование:" } },
+                [
+                  _c("b-form-input", {
+                    attrs: { type: "text", required: "" },
+                    model: {
+                      value: _vm.editingModal.label,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "label", $$v)
+                      },
+                      expression: "editingModal.label"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                { attrs: { label: "Каталог:" } },
+                [
+                  _c("b-form-select", {
+                    staticClass: "mb-3",
+                    attrs: {
+                      options: _vm.catalogs,
+                      "value-field": "id",
+                      "text-field": "label"
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "first",
+                        fn: function() {
+                          return [
+                            _c(
+                              "option",
+                              {
+                                attrs: { disabled: "", selected: "" },
+                                domProps: { value: null }
+                              },
+                              [_vm._v("Выберите каталог...")]
+                            )
+                          ]
+                        },
+                        proxy: true
+                      }
+                    ]),
+                    model: {
+                      value: _vm.editingModal.catalog,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "catalog", $$v)
+                      },
+                      expression: "editingModal.catalog"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                { attrs: { label: "Категория:" } },
+                [
+                  _c("b-form-select", {
+                    staticClass: "mb-3",
+                    attrs: {
+                      options: _vm.categories,
+                      "value-field": "id",
+                      "text-field": "label"
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "first",
+                        fn: function() {
+                          return [
+                            _c(
+                              "option",
+                              {
+                                attrs: { disabled: "", selected: "" },
+                                domProps: { value: null }
+                              },
+                              [_vm._v("Выберите категорию...")]
+                            )
+                          ]
+                        },
+                        proxy: true
+                      }
+                    ]),
+                    model: {
+                      value: _vm.editingModal.category,
+                      callback: function($$v) {
+                        _vm.$set(_vm.editingModal, "category", $$v)
+                      },
+                      expression: "editingModal.category"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-button",
+                {
+                  attrs: {
+                    variant: "primary",
+                    type: "submit",
+                    disabled: _vm.actionLoad
+                  }
+                },
+                [
+                  !_vm.actionLoad
+                    ? _c("span", [_vm._v("Сохранить")])
+                    : _c(
+                        "span",
+                        [
+                          _c("b-spinner", { attrs: { small: "" } }),
+                          _vm._v(
+                            "\n                    Подождите...\n                "
+                          )
+                        ],
+                        1
+                      )
+                ]
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "b-row",
+        [
+          _c(
+            "b-col",
+            { staticClass: "my-1", attrs: { sm: "5", md: "6" } },
+            [
+              !_vm.isBusy
+                ? _c("b-pagination", {
+                    attrs: {
+                      "total-rows": _vm.rows,
+                      "per-page": _vm.perPage,
+                      "aria-controls": "my-table"
+                    },
+                    model: {
+                      value: _vm.currentPage,
+                      callback: function($$v) {
+                        _vm.currentPage = $$v
+                      },
+                      expression: "currentPage"
+                    }
+                  })
+                : _vm._e()
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { staticClass: "my-1", attrs: { sm: "5", md: "6" } },
+            [
+              _c(
+                "b-form-group",
+                {
+                  staticClass: "mb-0",
+                  attrs: {
+                    label: "Элементов на странице:",
+                    "label-cols-sm": "6",
+                    "label-cols-md": "4",
+                    "label-cols-lg": "6",
+                    "label-align-sm": "right",
+                    "label-for": "perPageSelect"
+                  }
+                },
+                [
+                  _c("b-form-select", {
+                    attrs: { id: "perPageSelect", options: _vm.pageOptions },
+                    model: {
+                      value: _vm.perPage,
+                      callback: function($$v) {
+                        _vm.perPage = $$v
+                      },
+                      expression: "perPage"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -81417,9 +87813,15 @@ module.exports = function(module) {
 var map = {
 	"./components/AddPriceComponent.vue": "./resources/js/components/AddPriceComponent.vue",
 	"./components/ExampleComponent.vue": "./resources/js/components/ExampleComponent.vue",
-	"./components/ListStorageComponent.vue": "./resources/js/components/ListStorageComponent.vue",
+	"./components/FurnStorageComponent.vue": "./resources/js/components/FurnStorageComponent.vue",
+	"./components/GorizStorageComponent.vue": "./resources/js/components/GorizStorageComponent.vue",
 	"./components/MatrixPriceComponent.vue": "./resources/js/components/MatrixPriceComponent.vue",
-	"./components/SimplePriceComponent.vue": "./resources/js/components/SimplePriceComponent.vue"
+	"./components/MetalStorageComponent.vue": "./resources/js/components/MetalStorageComponent.vue",
+	"./components/RollStorageComponent.vue": "./resources/js/components/RollStorageComponent.vue",
+	"./components/RollStorageSingleComponent.vue": "./resources/js/components/RollStorageSingleComponent.vue",
+	"./components/SimplePriceComponent.vue": "./resources/js/components/SimplePriceComponent.vue",
+	"./components/VertStorageComponent.vue": "./resources/js/components/VertStorageComponent.vue",
+	"./components/ZebraStorageComponent.vue": "./resources/js/components/ZebraStorageComponent.vue"
 };
 
 
@@ -81708,17 +88110,17 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/ListStorageComponent.vue":
+/***/ "./resources/js/components/FurnStorageComponent.vue":
 /*!**********************************************************!*\
-  !*** ./resources/js/components/ListStorageComponent.vue ***!
+  !*** ./resources/js/components/FurnStorageComponent.vue ***!
   \**********************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ListStorageComponent_vue_vue_type_template_id_1e023e6b_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ListStorageComponent.vue?vue&type=template&id=1e023e6b&scoped=true& */ "./resources/js/components/ListStorageComponent.vue?vue&type=template&id=1e023e6b&scoped=true&");
-/* harmony import */ var _ListStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ListStorageComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/ListStorageComponent.vue?vue&type=script&lang=js&");
+/* harmony import */ var _FurnStorageComponent_vue_vue_type_template_id_439eced0_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FurnStorageComponent.vue?vue&type=template&id=439eced0&scoped=true& */ "./resources/js/components/FurnStorageComponent.vue?vue&type=template&id=439eced0&scoped=true&");
+/* harmony import */ var _FurnStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FurnStorageComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/FurnStorageComponent.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -81728,50 +88130,119 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _ListStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _ListStorageComponent_vue_vue_type_template_id_1e023e6b_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _ListStorageComponent_vue_vue_type_template_id_1e023e6b_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _FurnStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _FurnStorageComponent_vue_vue_type_template_id_439eced0_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _FurnStorageComponent_vue_vue_type_template_id_439eced0_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
-  "1e023e6b",
+  "439eced0",
   null
   
 )
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/ListStorageComponent.vue"
+component.options.__file = "resources/js/components/FurnStorageComponent.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/ListStorageComponent.vue?vue&type=script&lang=js&":
+/***/ "./resources/js/components/FurnStorageComponent.vue?vue&type=script&lang=js&":
 /*!***********************************************************************************!*\
-  !*** ./resources/js/components/ListStorageComponent.vue?vue&type=script&lang=js& ***!
+  !*** ./resources/js/components/FurnStorageComponent.vue?vue&type=script&lang=js& ***!
   \***********************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ListStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ListStorageComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ListStorageComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ListStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FurnStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./FurnStorageComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/FurnStorageComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FurnStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/components/ListStorageComponent.vue?vue&type=template&id=1e023e6b&scoped=true&":
+/***/ "./resources/js/components/FurnStorageComponent.vue?vue&type=template&id=439eced0&scoped=true&":
 /*!*****************************************************************************************************!*\
-  !*** ./resources/js/components/ListStorageComponent.vue?vue&type=template&id=1e023e6b&scoped=true& ***!
+  !*** ./resources/js/components/FurnStorageComponent.vue?vue&type=template&id=439eced0&scoped=true& ***!
   \*****************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ListStorageComponent_vue_vue_type_template_id_1e023e6b_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ListStorageComponent.vue?vue&type=template&id=1e023e6b&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ListStorageComponent.vue?vue&type=template&id=1e023e6b&scoped=true&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ListStorageComponent_vue_vue_type_template_id_1e023e6b_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FurnStorageComponent_vue_vue_type_template_id_439eced0_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./FurnStorageComponent.vue?vue&type=template&id=439eced0&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/FurnStorageComponent.vue?vue&type=template&id=439eced0&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FurnStorageComponent_vue_vue_type_template_id_439eced0_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ListStorageComponent_vue_vue_type_template_id_1e023e6b_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FurnStorageComponent_vue_vue_type_template_id_439eced0_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/GorizStorageComponent.vue":
+/*!***********************************************************!*\
+  !*** ./resources/js/components/GorizStorageComponent.vue ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _GorizStorageComponent_vue_vue_type_template_id_0d910e42_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./GorizStorageComponent.vue?vue&type=template&id=0d910e42&scoped=true& */ "./resources/js/components/GorizStorageComponent.vue?vue&type=template&id=0d910e42&scoped=true&");
+/* harmony import */ var _GorizStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GorizStorageComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/GorizStorageComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _GorizStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _GorizStorageComponent_vue_vue_type_template_id_0d910e42_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _GorizStorageComponent_vue_vue_type_template_id_0d910e42_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "0d910e42",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/GorizStorageComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/GorizStorageComponent.vue?vue&type=script&lang=js&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/GorizStorageComponent.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GorizStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./GorizStorageComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GorizStorageComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GorizStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/GorizStorageComponent.vue?vue&type=template&id=0d910e42&scoped=true&":
+/*!******************************************************************************************************!*\
+  !*** ./resources/js/components/GorizStorageComponent.vue?vue&type=template&id=0d910e42&scoped=true& ***!
+  \******************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GorizStorageComponent_vue_vue_type_template_id_0d910e42_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./GorizStorageComponent.vue?vue&type=template&id=0d910e42&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GorizStorageComponent.vue?vue&type=template&id=0d910e42&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GorizStorageComponent_vue_vue_type_template_id_0d910e42_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GorizStorageComponent_vue_vue_type_template_id_0d910e42_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -81864,6 +88335,213 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/MetalStorageComponent.vue":
+/*!***********************************************************!*\
+  !*** ./resources/js/components/MetalStorageComponent.vue ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _MetalStorageComponent_vue_vue_type_template_id_03098fe4_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MetalStorageComponent.vue?vue&type=template&id=03098fe4&scoped=true& */ "./resources/js/components/MetalStorageComponent.vue?vue&type=template&id=03098fe4&scoped=true&");
+/* harmony import */ var _MetalStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MetalStorageComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/MetalStorageComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _MetalStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _MetalStorageComponent_vue_vue_type_template_id_03098fe4_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _MetalStorageComponent_vue_vue_type_template_id_03098fe4_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "03098fe4",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/MetalStorageComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/MetalStorageComponent.vue?vue&type=script&lang=js&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/MetalStorageComponent.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MetalStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./MetalStorageComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MetalStorageComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MetalStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/MetalStorageComponent.vue?vue&type=template&id=03098fe4&scoped=true&":
+/*!******************************************************************************************************!*\
+  !*** ./resources/js/components/MetalStorageComponent.vue?vue&type=template&id=03098fe4&scoped=true& ***!
+  \******************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MetalStorageComponent_vue_vue_type_template_id_03098fe4_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./MetalStorageComponent.vue?vue&type=template&id=03098fe4&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MetalStorageComponent.vue?vue&type=template&id=03098fe4&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MetalStorageComponent_vue_vue_type_template_id_03098fe4_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MetalStorageComponent_vue_vue_type_template_id_03098fe4_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/RollStorageComponent.vue":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/RollStorageComponent.vue ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _RollStorageComponent_vue_vue_type_template_id_9e752e6c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./RollStorageComponent.vue?vue&type=template&id=9e752e6c&scoped=true& */ "./resources/js/components/RollStorageComponent.vue?vue&type=template&id=9e752e6c&scoped=true&");
+/* harmony import */ var _RollStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RollStorageComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/RollStorageComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _RollStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _RollStorageComponent_vue_vue_type_template_id_9e752e6c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _RollStorageComponent_vue_vue_type_template_id_9e752e6c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "9e752e6c",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/RollStorageComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/RollStorageComponent.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/RollStorageComponent.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_RollStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./RollStorageComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RollStorageComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_RollStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/RollStorageComponent.vue?vue&type=template&id=9e752e6c&scoped=true&":
+/*!*****************************************************************************************************!*\
+  !*** ./resources/js/components/RollStorageComponent.vue?vue&type=template&id=9e752e6c&scoped=true& ***!
+  \*****************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RollStorageComponent_vue_vue_type_template_id_9e752e6c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./RollStorageComponent.vue?vue&type=template&id=9e752e6c&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RollStorageComponent.vue?vue&type=template&id=9e752e6c&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RollStorageComponent_vue_vue_type_template_id_9e752e6c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RollStorageComponent_vue_vue_type_template_id_9e752e6c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/RollStorageSingleComponent.vue":
+/*!****************************************************************!*\
+  !*** ./resources/js/components/RollStorageSingleComponent.vue ***!
+  \****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _RollStorageSingleComponent_vue_vue_type_template_id_5247eda2_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./RollStorageSingleComponent.vue?vue&type=template&id=5247eda2&scoped=true& */ "./resources/js/components/RollStorageSingleComponent.vue?vue&type=template&id=5247eda2&scoped=true&");
+/* harmony import */ var _RollStorageSingleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RollStorageSingleComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/RollStorageSingleComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _RollStorageSingleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _RollStorageSingleComponent_vue_vue_type_template_id_5247eda2_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _RollStorageSingleComponent_vue_vue_type_template_id_5247eda2_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "5247eda2",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/RollStorageSingleComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/RollStorageSingleComponent.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/RollStorageSingleComponent.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_RollStorageSingleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./RollStorageSingleComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RollStorageSingleComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_RollStorageSingleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/RollStorageSingleComponent.vue?vue&type=template&id=5247eda2&scoped=true&":
+/*!***********************************************************************************************************!*\
+  !*** ./resources/js/components/RollStorageSingleComponent.vue?vue&type=template&id=5247eda2&scoped=true& ***!
+  \***********************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RollStorageSingleComponent_vue_vue_type_template_id_5247eda2_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./RollStorageSingleComponent.vue?vue&type=template&id=5247eda2&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/RollStorageSingleComponent.vue?vue&type=template&id=5247eda2&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RollStorageSingleComponent_vue_vue_type_template_id_5247eda2_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RollStorageSingleComponent_vue_vue_type_template_id_5247eda2_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/SimplePriceComponent.vue":
 /*!**********************************************************!*\
   !*** ./resources/js/components/SimplePriceComponent.vue ***!
@@ -81946,6 +88624,144 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SimplePriceComponent_vue_vue_type_template_id_11d009f1_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SimplePriceComponent_vue_vue_type_template_id_11d009f1_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/VertStorageComponent.vue":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/VertStorageComponent.vue ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _VertStorageComponent_vue_vue_type_template_id_46c5b37e_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./VertStorageComponent.vue?vue&type=template&id=46c5b37e&scoped=true& */ "./resources/js/components/VertStorageComponent.vue?vue&type=template&id=46c5b37e&scoped=true&");
+/* harmony import */ var _VertStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./VertStorageComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/VertStorageComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _VertStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _VertStorageComponent_vue_vue_type_template_id_46c5b37e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _VertStorageComponent_vue_vue_type_template_id_46c5b37e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "46c5b37e",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/VertStorageComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/VertStorageComponent.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/VertStorageComponent.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_VertStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./VertStorageComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VertStorageComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_VertStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/VertStorageComponent.vue?vue&type=template&id=46c5b37e&scoped=true&":
+/*!*****************************************************************************************************!*\
+  !*** ./resources/js/components/VertStorageComponent.vue?vue&type=template&id=46c5b37e&scoped=true& ***!
+  \*****************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_VertStorageComponent_vue_vue_type_template_id_46c5b37e_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./VertStorageComponent.vue?vue&type=template&id=46c5b37e&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VertStorageComponent.vue?vue&type=template&id=46c5b37e&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_VertStorageComponent_vue_vue_type_template_id_46c5b37e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_VertStorageComponent_vue_vue_type_template_id_46c5b37e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ZebraStorageComponent.vue":
+/*!***********************************************************!*\
+  !*** ./resources/js/components/ZebraStorageComponent.vue ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ZebraStorageComponent_vue_vue_type_template_id_3c7d9ae6_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ZebraStorageComponent.vue?vue&type=template&id=3c7d9ae6&scoped=true& */ "./resources/js/components/ZebraStorageComponent.vue?vue&type=template&id=3c7d9ae6&scoped=true&");
+/* harmony import */ var _ZebraStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ZebraStorageComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/ZebraStorageComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ZebraStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ZebraStorageComponent_vue_vue_type_template_id_3c7d9ae6_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ZebraStorageComponent_vue_vue_type_template_id_3c7d9ae6_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "3c7d9ae6",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ZebraStorageComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ZebraStorageComponent.vue?vue&type=script&lang=js&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/ZebraStorageComponent.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ZebraStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ZebraStorageComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ZebraStorageComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ZebraStorageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ZebraStorageComponent.vue?vue&type=template&id=3c7d9ae6&scoped=true&":
+/*!******************************************************************************************************!*\
+  !*** ./resources/js/components/ZebraStorageComponent.vue?vue&type=template&id=3c7d9ae6&scoped=true& ***!
+  \******************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ZebraStorageComponent_vue_vue_type_template_id_3c7d9ae6_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ZebraStorageComponent.vue?vue&type=template&id=3c7d9ae6&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ZebraStorageComponent.vue?vue&type=template&id=3c7d9ae6&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ZebraStorageComponent_vue_vue_type_template_id_3c7d9ae6_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ZebraStorageComponent_vue_vue_type_template_id_3c7d9ae6_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

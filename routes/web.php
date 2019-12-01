@@ -27,24 +27,32 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
     Route::prefix('storage')->group(function () {
         Route::get('/', 'StorageController@index')->name('storage.index');
 
-        Route::resource('roll_part', 'RollPartsStorageController');
+        Route::apiResource('roll_parts', 'RollPartsStorageController');
+        Route::post('/roll_parts/getAll', 'RollPartsStorageController@getAll')->name('storage.roll_parts.getAll');
         Route::resource('roll', 'RollStorageController')->except(['create', 'edit']);
-        Route::post('/roll/get', 'RollStorageController@get')->name('storage.roll.get');
+        Route::post('/roll/getAll', 'RollStorageController@getAll')->name('storage.roll.getAll');
+        Route::post('/roll/get/{id}', 'RollStorageController@get')->name('storage.roll.get');
+
 
         Route::resource('zebra_part', 'ZebraPartsStorageController')->only(['store', 'update', 'destroy']);
         Route::resource('zebra', 'ZebraStorageController')->except(['create', 'edit']);
+        Route::post('/zebra/get', 'ZebraStorageController@get')->name('storage.zebra.get');
 
         Route::resource('vert_part', 'VertPartsStorageController')->only(['store', 'update', 'destroy']);
         Route::resource('vert', 'VertStorageController')->except(['create', 'edit']);
+        Route::post('/vert/get', 'VertStorageController@get')->name('storage.vert.get');
 
         Route::resource('goriz_part', 'GorizPartsStorageController')->only(['store', 'update', 'destroy']);
         Route::resource('goriz', 'GorizStorageController')->except(['create', 'edit']);
+        Route::post('/goriz/get', 'GorizStorageController@get')->name('storage.goriz.get');
 
         Route::resource('metal_part', 'MetalPartsStorageController')->only(['store', 'update', 'destroy']);
         Route::resource('metal', 'MetalStorageController')->except(['create', 'edit']);
+        Route::post('/metal/get', 'MetalStorageController@get')->name('storage.metal.get');
 
         Route::resource('furn_part', 'FurnPartsStorageController')->only(['store', 'update', 'destroy']);
         Route::resource('furn', 'FurnStorageController')->except(['create', 'edit']);
+        Route::post('/furn/get', 'FurnStorageController@get')->name('storage.furn.get');
     });
     Route::prefix('/price')->group(function () {
         Route::view('/', 'admin.prices.nav')->name('price.index');
@@ -146,6 +154,24 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         });
         Route::apiResource('/catalogs', 'CatalogController');
         Route::post('/catalogs/get', 'CatalogController@get')->name('other.catalogs.get');
+        Route::apiResource('/part_types', 'PartTypeController', [
+            'names' => [
+                'index' => 'part_types.index',
+                'show' => 'part_types.show',
+            ]
+        ]);
+        Route::post('/part_types/get', 'PartTypeController@get')->name('other.part_types.get');
+
+        Route::apiResource('/part_statuses', 'PartStatusController', [
+            'names' => [
+                'index' => 'part_statuses.index',
+                'show' => 'part_statuses.show',
+            ]
+        ]);
+        Route::post('/part_statuses/get', 'PartStatusController@get')->name('other.part_statuses.get');
+
+        Route::apiResource('/providers', 'ProviderController');
+        Route::post('/providers/get', 'ProviderController@get')->name('other.providers.get');
 
     });
 });

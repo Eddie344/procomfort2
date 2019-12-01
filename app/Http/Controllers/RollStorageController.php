@@ -19,10 +19,16 @@ class RollStorageController extends Controller
         return view('admin.storage.roll.index');
     }
 
-    public function get()
+    public function getAll()
     {
         $rolls = RollStorage::with(['catalog', 'category', 'picture'])->get();
         return response()->json($rolls);
+    }
+
+    public function get($id)
+    {
+        $roll = RollStorage::with(['catalog', 'category', 'picture'])->find($id);
+        return response()->json($roll);
     }
 
     /**
@@ -56,10 +62,10 @@ class RollStorageController extends Controller
      */
     public function show($id)
     {
-        $roll = RollStorage::find($id);
-        $parts = RollPartsStorage::with(['type', 'status', 'provider', 'rollStorage'])->where('roll_storage_id', $id)->orderBy('type_id')->get();
-        $actions = RollActionsStorage::index($id)->filter()->paginate('10');
-        return view('admin.storage.roll.show', compact('roll', 'parts', 'actions'));
+//        $roll = RollStorage::find($id);
+//        $parts = RollPartsStorage::with(['type', 'status', 'provider', 'rollStorage'])->where('roll_storage_id', $id)->orderBy('type_id')->get();
+//        $actions = RollActionsStorage::index($id)->filter()->paginate('10');
+        return view('admin.storage.roll.show', compact('id'));
     }
 
 
@@ -83,9 +89,9 @@ class RollStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $roll = RollStorage::find($id);
-        $roll->update($request->all());
-        return redirect(route('roll.show', ['id' => $id]))->with('status', 'Изменения сохранены!');
+        $item = $request->item;
+        RollStorage::find($id)->update($item);
+        return response()->json(RollStorage::with(['catalog', 'category', 'picture'])->find($id));
     }
 
 
@@ -98,7 +104,7 @@ class RollStorageController extends Controller
     public function destroy($id)
     {
         RollStorage::destroy($id);
-        return redirect('admin/storage/roll')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
+        return response($id);
     }
 
 }

@@ -16,8 +16,13 @@ class GorizStorageController extends Controller
      */
     public function index()
     {
-        $gorizs = GorizStorage::with(['catalog', 'category'])->filter()->paginate('10');
-        return view('admin.storage.goriz.index', compact('gorizs'));
+        return view('admin.storage.goriz.index');
+    }
+
+    public function get()
+    {
+        $items = GorizStorage::with(['catalog', 'category'])->get();
+        return response()->json($items);
     }
 
     /**
@@ -38,8 +43,9 @@ class GorizStorageController extends Controller
      */
     public function store(Request $request)
     {
-        GorizStorage::create($request->all());
-        return redirect('admin/storage/goriz')->with(['status' => 'Предмет успешно добавлен в склад!', 'color' => 'success']);
+        $item = GorizStorage::create($request->item);
+        $new_item = $item->with(['catalog', 'category'])->find($item->id);
+        return response()->json($new_item);
     }
 
     /**
@@ -50,10 +56,10 @@ class GorizStorageController extends Controller
      */
     public function show($id)
     {
-        $goriz = GorizStorage::find($id);
-        $parts = GorizPartsStorage::with(['type', 'status', 'provider', 'gorizStorage'])->where('goriz_storage_id', $id)->get();
-        $actions = GorizActionsStorage::index($id)->filter()->paginate('10');
-        return view('admin.storage.goriz.show', compact('goriz', 'parts', 'actions'));
+        $zebra = ZebraStorage::find($id);
+        $parts = ZebraPartsStorage::with(['type', 'status', 'provider', 'zebraStorage'])->where('zebra_storage_id', $id)->orderBy('type_id')->get();
+        $actions = ZebraActionsStorage::index($id)->filter()->paginate('10');
+        return view('admin.storage.zebra.show', compact('zebra', 'parts', 'actions'));
     }
 
     /**
@@ -76,9 +82,9 @@ class GorizStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $goriz = GorizStorage::find($id);
-        $goriz->update($request->all());
-        return redirect(route('goriz.show', ['id' => $id]))->with('status', 'Изменения сохранены!');
+        $item = $request->item;
+        GorizStorage::find($id)->update($item);
+        return response()->json(GorizStorage::with(['catalog', 'category'])->find($id));
     }
 
     /**
@@ -90,6 +96,6 @@ class GorizStorageController extends Controller
     public function destroy($id)
     {
         GorizStorage::destroy($id);
-        return redirect('admin/storage/goriz')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
+        return response($id);
     }
 }

@@ -10,6 +10,7 @@ window.Vue = require('vue');
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+
 Vue.use(BootstrapVue);
 /**
  * The following block of code may be used to automatically register your

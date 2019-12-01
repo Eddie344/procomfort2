@@ -16,8 +16,13 @@ class VertStorageController extends Controller
      */
     public function index()
     {
-        $verts = VertStorage::with(['catalog', 'category'])->filter()->paginate('10');
-        return view('admin.storage.vert.index', compact('verts'));
+        return view('admin.storage.vert.index');
+    }
+
+    public function get()
+    {
+        $items = VertStorage::with(['catalog', 'category'])->get();
+        return response()->json($items);
     }
 
     /**
@@ -38,8 +43,9 @@ class VertStorageController extends Controller
      */
     public function store(Request $request)
     {
-        VertStorage::create($request->all());
-        return redirect('admin/storage/vert')->with(['status' => 'Предмет успешно добавлен в склад!', 'color' => 'success']);
+        $item = VertStorage::create($request->item);
+        $new_item = $item->with(['catalog', 'category'])->find($item->id);
+        return response()->json($new_item);
     }
 
     /**
@@ -50,10 +56,10 @@ class VertStorageController extends Controller
      */
     public function show($id)
     {
-        $vert = VertStorage::find($id);
-        $parts = VertPartsStorage::with(['type', 'status', 'provider', 'vertStorage'])->where('vert_storage_id', $id)->get();
-        $actions = VertActionsStorage::index($id)->filter()->paginate('10');
-        return view('admin.storage.vert.show', compact('vert', 'parts', 'actions'));
+        $zebra = ZebraStorage::find($id);
+        $parts = ZebraPartsStorage::with(['type', 'status', 'provider', 'zebraStorage'])->where('zebra_storage_id', $id)->orderBy('type_id')->get();
+        $actions = ZebraActionsStorage::index($id)->filter()->paginate('10');
+        return view('admin.storage.zebra.show', compact('zebra', 'parts', 'actions'));
     }
 
     /**
@@ -76,9 +82,9 @@ class VertStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $vert = VertStorage::find($id);
-        $vert->update($request->all());
-        return redirect(route('vert.show', ['id' => $id]))->with('status', 'Изменения сохранены!');
+        $item = $request->item;
+        VertStorage::find($id)->update($item);
+        return response()->json(VertStorage::with(['catalog', 'category'])->find($id));
     }
 
     /**
@@ -90,6 +96,6 @@ class VertStorageController extends Controller
     public function destroy($id)
     {
         VertStorage::destroy($id);
-        return redirect('admin/storage/vert')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
+        return response($id);
     }
 }

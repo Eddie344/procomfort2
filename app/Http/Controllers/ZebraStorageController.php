@@ -16,8 +16,13 @@ class ZebraStorageController extends Controller
      */
     public function index()
     {
-        $zebras = ZebraStorage::with(['catalog', 'category'])->filter()->paginate('10');
-        return view('admin.storage.zebra.index', compact('zebras'));
+        return view('admin.storage.zebra.index');
+    }
+
+    public function get()
+    {
+        $zebras = ZebraStorage::with(['catalog', 'category'])->get();
+        return response()->json($zebras);
     }
 
     /**
@@ -38,8 +43,9 @@ class ZebraStorageController extends Controller
      */
     public function store(Request $request)
     {
-        ZebraStorage::create($request->all());
-        return redirect('admin/storage/zebra')->with(['status' => 'Предмет успешно добавлен в склад!', 'color' => 'success']);
+        $item = ZebraStorage::create($request->item);
+        $new_item = $item->with(['catalog', 'category'])->find($item->id);
+        return response()->json($new_item);
     }
 
     /**
@@ -76,9 +82,9 @@ class ZebraStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $zebra = ZebraStorage::find($id);
-        $zebra->update($request->all());
-        return redirect(route('zebra.show', ['id' => $id]))->with('status', 'Изменения сохранены!');
+        $item = $request->item;
+        ZebraStorage::find($id)->update($item);
+        return response()->json(ZebraStorage::with(['catalog', 'category'])->find($id));
     }
 
     /**
@@ -90,6 +96,6 @@ class ZebraStorageController extends Controller
     public function destroy($id)
     {
         ZebraStorage::destroy($id);
-        return redirect('admin/storage/zebra')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
+        return response($id);
     }
 }

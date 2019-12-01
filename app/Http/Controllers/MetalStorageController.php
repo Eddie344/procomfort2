@@ -16,8 +16,13 @@ class MetalStorageController extends Controller
      */
     public function index()
     {
-        $metals = MetalStorage::filter()->paginate(10);
-        return view('admin.storage.metal.index', compact('metals'));
+        return view('admin.storage.metal.index');
+    }
+
+    public function get()
+    {
+        $items = MetalStorage::all();
+        return response()->json($items);
     }
 
     /**
@@ -38,8 +43,9 @@ class MetalStorageController extends Controller
      */
     public function store(Request $request)
     {
-        MetalStorage::create($request->all());
-        return redirect('admin/storage/metal')->with(['status' => 'Предмет успешно добавлен в склад!', 'color' => 'success']);
+        $item = MetalStorage::create($request->item);
+        $new_item = $item->find($item->id);
+        return response()->json($new_item);
     }
 
     /**
@@ -50,10 +56,10 @@ class MetalStorageController extends Controller
      */
     public function show($id)
     {
-        $metal = MetalStorage::find($id);
-        $parts = MetalPartsStorage::with(['type', 'status', 'provider', 'metalStorage'])->where('metal_storage_id', $id)->get();
-        $actions = MetalActionsStorage::index($id)->filter()->paginate('10');
-        return view('admin.storage.metal.show', compact('metal', 'parts', 'actions'));
+        $zebra = ZebraStorage::find($id);
+        $parts = ZebraPartsStorage::with(['type', 'status', 'provider', 'zebraStorage'])->where('zebra_storage_id', $id)->orderBy('type_id')->get();
+        $actions = ZebraActionsStorage::index($id)->filter()->paginate('10');
+        return view('admin.storage.zebra.show', compact('zebra', 'parts', 'actions'));
     }
 
     /**
@@ -76,9 +82,9 @@ class MetalStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $metal = MetalStorage::find($id);
-        $metal->update($request->all());
-        return redirect(route('metal.show', ['id' => $id]))->with('status', 'Изменения сохранены!');
+        $item = $request->item;
+        MetalStorage::find($id)->update($item);
+        return response()->json(MetalStorage::find($id));
     }
 
     /**
@@ -90,6 +96,6 @@ class MetalStorageController extends Controller
     public function destroy($id)
     {
         MetalStorage::destroy($id);
-        return redirect('admin/storage/metal')->with(['status' => 'Предмет успешно удалён!', 'color' => 'danger']);
+        return response($id);
     }
 }
