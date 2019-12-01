@@ -3702,19 +3702,186 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "RollStorageSingleComponent",
   props: ['id'],
   data: function data() {
     return {
-      perPage: 10,
-      currentPage: 1,
-      isBusy: false,
+      partsPerPage: 10,
+      partsCurrentPage: 1,
+      partsIsBusy: false,
       actionLoad: false,
       pageOptions: [5, 10, 15],
-      filter: null,
-      filterOn: [],
+      partsFilter: null,
+      partsFilterOn: [],
       parts_fields: [{
+        key: 'type',
+        label: 'Тип',
+        sortable: true
+      }, {
+        key: 'provider',
+        label: 'Поставщик',
+        sortable: true
+      }, {
         key: 'width',
         label: 'Ширина',
         sortable: true
@@ -3724,19 +3891,11 @@ __webpack_require__.r(__webpack_exports__);
         sortable: true
       }, {
         key: 'price',
-        label: 'Категория',
-        sortable: true
-      }, {
-        key: 'provider',
-        label: 'Поставщик',
+        label: 'Цена',
         sortable: true
       }, {
         key: 'status',
         label: 'Статус',
-        sortable: true
-      }, {
-        key: 'type',
-        label: 'Тип',
         sortable: true
       }, {
         key: 'delete',
@@ -3744,21 +3903,76 @@ __webpack_require__.r(__webpack_exports__);
       }],
       item: {},
       parts: [],
-      new_part: {
-        roll_storage_id: this.id
-      },
+      new_part: {},
       providers: [],
       part_statuses: [],
-      part_types: []
+      part_types: [],
+      actions: [],
+      actionsPerPage: 10,
+      actionsCurrentPage: 1,
+      actionsIsBusy: false,
+      actions_fields: [{
+        key: 'type',
+        label: 'Действие',
+        sortable: true
+      }, {
+        key: 'user',
+        label: 'Пользователь',
+        sortable: true
+      }, {
+        key: 'reason',
+        label: 'Причина',
+        sortable: true
+      }, {
+        key: 'width',
+        label: 'Ширина',
+        sortable: true
+      }, {
+        key: 'lenght',
+        label: 'Длина',
+        sortable: true
+      }, {
+        key: 'created_at',
+        label: 'Дата, время',
+        sortable: true
+      }],
+      actionsFilter: null,
+      actionsFilterOn: [],
+      editingModal: {
+        id: 'edMod',
+        part_id: null,
+        index: null,
+        width: null,
+        lenght: null,
+        reason: ''
+      },
+      deletingModal: {
+        id: 'delMod',
+        index: null
+      }
     };
   },
   computed: {
-    rows: function rows() {
-      return this.items.length;
+    partsRows: function partsRows() {
+      return this.parts.length;
     },
-    sortOptions: function sortOptions() {
+    partsSortOptions: function partsSortOptions() {
       // Create an options list from our fields
-      return this.fields.filter(function (f) {
+      return this.parts_fields.filter(function (f) {
+        return f.sortable;
+      }).map(function (f) {
+        return {
+          text: f.label,
+          value: f.key
+        };
+      });
+    },
+    actionsRows: function actionsRows() {
+      return this.actions.length;
+    },
+    actionsSortOptions: function actionsSortOptions() {
+      // Create an options list from our fields
+      return this.actions_fields.filter(function (f) {
         return f.sortable;
       }).map(function (f) {
         return {
@@ -3768,8 +3982,9 @@ __webpack_require__.r(__webpack_exports__);
       });
     }
   },
-  mounted: function mounted() {
+  created: function created() {
     this.loadItem();
+    this.loadActions();
     this.loadParts();
     this.getPartStatuses();
     this.getPartTypes();
@@ -3783,56 +3998,149 @@ __webpack_require__.r(__webpack_exports__);
         _this.item = response.data;
       });
     },
-    loadParts: function loadParts() {
+    loadActions: function loadActions() {
       var _this2 = this;
+
+      axios.post('/admin/storage/roll_actions/getAll', {
+        roll_storage_id: this.id
+      }).then(function (response) {
+        console.log(response.data);
+        _this2.actions = response.data;
+      });
+    },
+    loadParts: function loadParts() {
+      var _this3 = this;
 
       axios.post('/admin/storage/roll_parts/getAll', {
         roll_storage_id: this.id
       }).then(function (response) {
         console.log(response.data);
-        _this2.parts = response.data;
+        _this3.parts = response.data;
       });
     },
     addPart: function addPart() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.actionLoad = true;
+      this.new_part.roll_storage_id = this.id;
       axios.post('/admin/storage/roll_parts', {
         part: this.new_part
       }).then(function (response) {
-        _this3.parts.push(response.data);
+        _this4.parts.push(response.data);
 
-        _this3.new_part = {};
-        _this3.actionLoad = false;
+        _this4.addAction(1, _this4.new_part.reason, _this4.new_part.width, _this4.new_part.lenght);
 
-        _this3.$refs['modalAddPart'].hide();
+        _this4.new_part = {};
+        _this4.actionLoad = false;
+
+        _this4.$refs['modalAddPart'].hide();
       });
     },
+    addAction: function addAction(type, reason, width, lenght) {
+      var _this5 = this;
+
+      axios.post('/admin/storage/roll_actions', {
+        action: {
+          roll_storage_id: this.id,
+          type_id: type,
+          reason: reason,
+          width: width,
+          lenght: lenght
+        }
+      }).then(function (response) {
+        console.log(response.data);
+
+        _this5.actions.push(response.data);
+      });
+    },
+    deletePart: function deletePart(index) {
+      var _this6 = this;
+
+      this.actionLoad = true;
+      axios["delete"]('/admin/storage/roll_parts/' + this.parts[index].id).then(function (response) {
+        _this6.addAction(2, _this6.deletingModal.reason, _this6.parts[index].width, _this6.parts[index].lenght);
+
+        _this6.$delete(_this6.parts, index);
+
+        _this6.actionLoad = false;
+
+        _this6.$bvModal.hide(_this6.deletingModal.id);
+
+        _this6.deletingModal.index = null;
+      });
+    },
+    deleteModal: function deleteModal(index) {
+      this.deletingModal.index = index;
+      this.$root.$emit('bv::show::modal', this.deletingModal.id);
+    },
+    editPart: function editPart(index) {
+      var _this7 = this;
+
+      this.actionLoad = true;
+      axios.put('/admin/storage/roll_parts/' + this.editingModal.part_id, {
+        part: {
+          lenght: this.parts[index].lenght - this.editingModal.lenght
+        }
+      }).then(function (response) {
+        _this7.cutPart(index);
+
+        _this7.addAction(2, _this7.editingModal.reason, _this7.editingModal.width, _this7.editingModal.lenght);
+
+        _.extend(_this7.parts[index], response.data);
+
+        _this7.actionLoad = false;
+
+        _this7.$bvModal.hide(_this7.editingModal.id);
+      });
+    },
+    cutPart: function cutPart(index) {
+      this.new_part.width = this.parts[index].width - this.editingModal.width;
+      this.new_part.lenght = this.editingModal.lenght;
+      this.new_part.price = this.parts[index].price;
+      this.new_part.reason = this.editingModal.reason;
+      this.new_part.type_id = 2;
+      this.new_part.status_id = this.parts[index].status_id;
+      this.new_part.provider_id = this.parts[index].provider_id;
+      this.addPart();
+    },
+    editModal: function editModal(index, part) {
+      this.editingModal.index = index;
+      this.editingModal.part_id = part.id;
+      this.$root.$emit('bv::show::modal', this.editingModal.id);
+    },
+    resetEditingModal: function resetEditingModal() {
+      this.editingModal.index = null;
+      this.editingModal.part_id = null;
+      this.editingModal.width = null;
+      this.editingModal.lenght = null;
+      this.editingModal.reason = '';
+    },
     getPartTypes: function getPartTypes() {
-      var _this4 = this;
+      var _this8 = this;
 
       axios.post('/admin/other/part_types/get').then(function (response) {
-        _this4.part_types = response.data;
+        _this8.part_types = response.data;
       });
     },
     getPartStatuses: function getPartStatuses() {
-      var _this5 = this;
+      var _this9 = this;
 
       axios.post('/admin/other/part_statuses/get').then(function (response) {
-        _this5.part_statuses = response.data;
+        _this9.part_statuses = response.data;
       });
     },
     getProviders: function getProviders() {
-      var _this6 = this;
+      var _this10 = this;
 
       axios.post('/admin/other/providers/get').then(function (response) {
-        _this6.providers = response.data;
+        _this10.providers = response.data;
       });
     },
     onFiltered: function onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length;
-      this.currentPage = 1;
+      this.partsCurrentPage = 1;
+      this.actionsCurrentPage = 1;
     }
   }
 });
@@ -73533,6 +73841,31 @@ var render = function() {
                                       ),
                                       _vm._v(" "),
                                       _c(
+                                        "b-form-group",
+                                        { attrs: { label: "Причина:" } },
+                                        [
+                                          _c("b-form-input", {
+                                            attrs: {
+                                              type: "text",
+                                              required: ""
+                                            },
+                                            model: {
+                                              value: _vm.new_part.reason,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.new_part,
+                                                  "reason",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "new_part.reason"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
                                         "b-button",
                                         {
                                           attrs: {
@@ -73580,7 +73913,7 @@ var render = function() {
                                     label: "Фильтр",
                                     "label-cols-sm": "3",
                                     "label-align-sm": "right",
-                                    "label-for": "filterInput"
+                                    "label-for": "partsFilterInput"
                                   }
                                 },
                                 [
@@ -73590,15 +73923,15 @@ var render = function() {
                                       _c("b-form-input", {
                                         attrs: {
                                           type: "search",
-                                          id: "filterInput",
+                                          id: "partsFilterInput",
                                           placeholder: "Введите для поиска..."
                                         },
                                         model: {
-                                          value: _vm.filter,
+                                          value: _vm.partsFilter,
                                           callback: function($$v) {
-                                            _vm.filter = $$v
+                                            _vm.partsFilter = $$v
                                           },
-                                          expression: "filter"
+                                          expression: "partsFilter"
                                         }
                                       }),
                                       _vm._v(" "),
@@ -73608,10 +73941,12 @@ var render = function() {
                                           _c(
                                             "b-button",
                                             {
-                                              attrs: { disabled: !_vm.filter },
+                                              attrs: {
+                                                disabled: !_vm.partsFilter
+                                              },
                                               on: {
                                                 click: function($event) {
-                                                  _vm.filter = ""
+                                                  _vm.partsFilter = ""
                                                 }
                                               }
                                             },
@@ -73650,36 +73985,30 @@ var render = function() {
                                     {
                                       staticClass: "mt-1",
                                       model: {
-                                        value: _vm.filterOn,
+                                        value: _vm.partsFilterOn,
                                         callback: function($$v) {
-                                          _vm.filterOn = $$v
+                                          _vm.partsFilterOn = $$v
                                         },
-                                        expression: "filterOn"
+                                        expression: "partsFilterOn"
                                       }
                                     },
                                     [
                                       _c(
                                         "b-form-checkbox",
-                                        { attrs: { value: "label" } },
-                                        [_vm._v("Наименование")]
+                                        { attrs: { value: "type" } },
+                                        [_vm._v("Тип")]
                                       ),
                                       _vm._v(" "),
                                       _c(
                                         "b-form-checkbox",
-                                        { attrs: { value: "catalog" } },
-                                        [_vm._v("Каталог")]
+                                        { attrs: { value: "provider" } },
+                                        [_vm._v("Поставщик")]
                                       ),
                                       _vm._v(" "),
                                       _c(
                                         "b-form-checkbox",
-                                        { attrs: { value: "category" } },
-                                        [_vm._v("Категория")]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "b-form-checkbox",
-                                        { attrs: { value: "picture" } },
-                                        [_vm._v("Направление рисунка")]
+                                        { attrs: { value: "status" } },
+                                        [_vm._v("Статус")]
                                       )
                                     ],
                                     1
@@ -73703,12 +74032,12 @@ var render = function() {
                           id: "my-table",
                           items: _vm.parts,
                           fields: _vm.parts_fields,
-                          "per-page": _vm.perPage,
-                          "current-page": _vm.currentPage,
+                          "per-page": _vm.partsPerPage,
+                          "current-page": _vm.partsCurrentPage,
                           striped: true,
-                          busy: _vm.isBusy,
-                          filter: _vm.filter,
-                          filterIncludedFields: _vm.filterOn
+                          busy: _vm.partsIsBusy,
+                          filter: _vm.partsFilter,
+                          filterIncludedFields: _vm.partsFilterOn
                         },
                         scopedSlots: _vm._u([
                           {
@@ -73788,7 +74117,8 @@ var render = function() {
                                   [
                                     _c("h5", { staticClass: "d-inline" }, [
                                       _c("i", {
-                                        staticClass: "fa fa-pencil text-primary"
+                                        staticClass:
+                                          "fa fa-arrow-down text-secondary"
                                       })
                                     ])
                                   ]
@@ -73817,7 +74147,291 @@ var render = function() {
                             proxy: true
                           }
                         ])
-                      })
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "b-modal",
+                        {
+                          attrs: {
+                            id: _vm.deletingModal.id,
+                            size: "sm",
+                            title: "Удаление",
+                            "hide-footer": "",
+                            centered: ""
+                          },
+                          on: {
+                            hide: function($event) {
+                              _vm.deletingModal.reason = ""
+                            }
+                          }
+                        },
+                        [
+                          _c(
+                            "b-form",
+                            {
+                              on: {
+                                submit: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.deletePart(_vm.deletingModal.index)
+                                }
+                              }
+                            },
+                            [
+                              _c(
+                                "b-form-group",
+                                { attrs: { label: "Причина:" } },
+                                [
+                                  _c("b-form-input", {
+                                    attrs: { type: "text", required: "" },
+                                    model: {
+                                      value: _vm.deletingModal.reason,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.deletingModal,
+                                          "reason",
+                                          $$v
+                                        )
+                                      },
+                                      expression: "deletingModal.reason"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "b-button",
+                                {
+                                  attrs: {
+                                    variant: "danger",
+                                    type: "submit",
+                                    disabled: _vm.actionLoad
+                                  }
+                                },
+                                [
+                                  !_vm.actionLoad
+                                    ? _c("span", [_vm._v("Удалить")])
+                                    : _c(
+                                        "span",
+                                        [
+                                          _c("b-spinner", {
+                                            attrs: { small: "" }
+                                          }),
+                                          _vm._v(
+                                            "\n                                Подождите...\n                            "
+                                          )
+                                        ],
+                                        1
+                                      )
+                                ]
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-modal",
+                        {
+                          attrs: {
+                            id: _vm.editingModal.id,
+                            size: "sm",
+                            title: "Списание",
+                            "hide-footer": "",
+                            centered: ""
+                          },
+                          on: { hide: _vm.resetEditingModal }
+                        },
+                        [
+                          _c(
+                            "b-form",
+                            {
+                              on: {
+                                submit: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.editPart(_vm.editingModal.index)
+                                }
+                              }
+                            },
+                            [
+                              _c(
+                                "b-form-group",
+                                { attrs: { label: "Ширина:" } },
+                                [
+                                  _c("b-form-input", {
+                                    attrs: {
+                                      type: "number",
+                                      step: "0.01",
+                                      required: ""
+                                    },
+                                    model: {
+                                      value: _vm.editingModal.width,
+                                      callback: function($$v) {
+                                        _vm.$set(_vm.editingModal, "width", $$v)
+                                      },
+                                      expression: "editingModal.width"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "b-form-group",
+                                { attrs: { label: "Длина:" } },
+                                [
+                                  _c("b-form-input", {
+                                    attrs: {
+                                      type: "number",
+                                      step: "0.01",
+                                      required: ""
+                                    },
+                                    model: {
+                                      value: _vm.editingModal.lenght,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.editingModal,
+                                          "lenght",
+                                          $$v
+                                        )
+                                      },
+                                      expression: "editingModal.lenght"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "b-form-group",
+                                { attrs: { label: "Причина:" } },
+                                [
+                                  _c("b-form-input", {
+                                    attrs: { type: "text", required: "" },
+                                    model: {
+                                      value: _vm.editingModal.reason,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.editingModal,
+                                          "reason",
+                                          $$v
+                                        )
+                                      },
+                                      expression: "editingModal.reason"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "b-button",
+                                {
+                                  attrs: {
+                                    variant: "danger",
+                                    type: "submit",
+                                    disabled: _vm.actionLoad
+                                  }
+                                },
+                                [
+                                  !_vm.actionLoad
+                                    ? _c("span", [_vm._v("Списать")])
+                                    : _c(
+                                        "span",
+                                        [
+                                          _c("b-spinner", {
+                                            attrs: { small: "" }
+                                          }),
+                                          _vm._v(
+                                            "\n                                    Подождите...\n                                "
+                                          )
+                                        ],
+                                        1
+                                      )
+                                ]
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "b-row",
+                        [
+                          _c(
+                            "b-col",
+                            {
+                              staticClass: "my-1",
+                              attrs: { sm: "5", md: "6" }
+                            },
+                            [
+                              !_vm.partsIsBusy
+                                ? _c("b-pagination", {
+                                    attrs: {
+                                      "total-rows": _vm.partsRows,
+                                      "per-page": _vm.partsPerPage,
+                                      "aria-controls": "my-table"
+                                    },
+                                    model: {
+                                      value: _vm.partsCurrentPage,
+                                      callback: function($$v) {
+                                        _vm.partsCurrentPage = $$v
+                                      },
+                                      expression: "partsCurrentPage"
+                                    }
+                                  })
+                                : _vm._e()
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "b-col",
+                            {
+                              staticClass: "my-1",
+                              attrs: { sm: "5", md: "6" }
+                            },
+                            [
+                              _c(
+                                "b-form-group",
+                                {
+                                  staticClass: "mb-0",
+                                  attrs: {
+                                    label: "Элементов на странице:",
+                                    "label-cols-sm": "6",
+                                    "label-cols-md": "4",
+                                    "label-cols-lg": "6",
+                                    "label-align-sm": "right",
+                                    "label-for": "perPageSelect"
+                                  }
+                                },
+                                [
+                                  _c("b-form-select", {
+                                    attrs: {
+                                      id: "perPageSelect",
+                                      options: _vm.pageOptions
+                                    },
+                                    model: {
+                                      value: _vm.partsPerPage,
+                                      callback: function($$v) {
+                                        _vm.partsPerPage = $$v
+                                      },
+                                      expression: "partsPerPage"
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
                     ],
                     1
                   )
@@ -73828,7 +74442,283 @@ var render = function() {
               _c(
                 "b-tab",
                 { attrs: { title: "Операции" } },
-                [_c("b-card-text", [_vm._v("Tab contents 2")])],
+                [
+                  _c(
+                    "b-card-text",
+                    [
+                      _c(
+                        "b-row",
+                        { staticClass: "mb-3" },
+                        [
+                          _c(
+                            "b-col",
+                            { attrs: { lg: "5" } },
+                            [
+                              _c(
+                                "b-form-group",
+                                {
+                                  staticClass: "mb-0",
+                                  attrs: {
+                                    label: "Фильтр",
+                                    "label-cols-sm": "3",
+                                    "label-align-sm": "left",
+                                    "label-for": "partsFilterInput"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "b-input-group",
+                                    [
+                                      _c("b-form-input", {
+                                        attrs: {
+                                          type: "search",
+                                          id: "partsFilterInput",
+                                          placeholder: "Введите для поиска..."
+                                        },
+                                        model: {
+                                          value: _vm.actionsFilter,
+                                          callback: function($$v) {
+                                            _vm.actionsFilter = $$v
+                                          },
+                                          expression: "actionsFilter"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "b-input-group-append",
+                                        [
+                                          _c(
+                                            "b-button",
+                                            {
+                                              attrs: {
+                                                disabled: !_vm.actionsFilter
+                                              },
+                                              on: {
+                                                click: function($event) {
+                                                  _vm.actionsFilter = ""
+                                                }
+                                              }
+                                            },
+                                            [_vm._v("Очистить")]
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "b-col",
+                            { attrs: { lg: "6" } },
+                            [
+                              _c(
+                                "b-form-group",
+                                {
+                                  staticClass: "mb-0",
+                                  attrs: {
+                                    label: "Фильтровать по",
+                                    "label-cols-sm": "3",
+                                    "label-align-sm": "right"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "b-form-checkbox-group",
+                                    {
+                                      staticClass: "mt-1",
+                                      model: {
+                                        value: _vm.actionsFilterOn,
+                                        callback: function($$v) {
+                                          _vm.actionsFilterOn = $$v
+                                        },
+                                        expression: "actionsFilterOn"
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "b-form-checkbox",
+                                        { attrs: { value: "type" } },
+                                        [_vm._v("Действие")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "b-form-checkbox",
+                                        { attrs: { value: "user" } },
+                                        [_vm._v("Пользователь")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "b-form-checkbox",
+                                        { attrs: { value: "reason" } },
+                                        [_vm._v("Причина")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "b-form-checkbox",
+                                        { attrs: { value: "created_at" } },
+                                        [_vm._v("Дата, время")]
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c("b-table", {
+                        attrs: {
+                          "show-empty": "",
+                          "empty-text": "Нет записей",
+                          "empty-filtered-text":
+                            "По данному запросу нет записей",
+                          id: "my-table",
+                          items: _vm.actions,
+                          fields: _vm.actions_fields,
+                          "per-page": _vm.actionsPerPage,
+                          "current-page": _vm.actionsCurrentPage,
+                          striped: true,
+                          busy: _vm.actionsIsBusy,
+                          filter: _vm.actionsFilter,
+                          filterIncludedFields: _vm.actionsFilterOn
+                        },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "cell(type)",
+                            fn: function(data) {
+                              return [
+                                _vm._v(
+                                  "\n                            " +
+                                    _vm._s(data.item.type.label) +
+                                    "\n                        "
+                                )
+                              ]
+                            }
+                          },
+                          {
+                            key: "cell(user)",
+                            fn: function(data) {
+                              return [
+                                _vm._v(
+                                  "\n                            " +
+                                    _vm._s(data.item.user.alias) +
+                                    "\n                        "
+                                )
+                              ]
+                            }
+                          },
+                          {
+                            key: "table-busy",
+                            fn: function() {
+                              return [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "text-center text-primary my-2"
+                                  },
+                                  [
+                                    _c("b-spinner", {
+                                      staticClass: "align-middle"
+                                    })
+                                  ],
+                                  1
+                                )
+                              ]
+                            },
+                            proxy: true
+                          }
+                        ])
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "b-row",
+                        [
+                          _c(
+                            "b-col",
+                            {
+                              staticClass: "my-1",
+                              attrs: { sm: "5", md: "6" }
+                            },
+                            [
+                              !_vm.actionsIsBusy
+                                ? _c("b-pagination", {
+                                    attrs: {
+                                      "total-rows": _vm.partsRows,
+                                      "per-page": _vm.actionsPerPage,
+                                      "aria-controls": "my-table"
+                                    },
+                                    model: {
+                                      value: _vm.actionsCurrentPage,
+                                      callback: function($$v) {
+                                        _vm.actionsCurrentPage = $$v
+                                      },
+                                      expression: "actionsCurrentPage"
+                                    }
+                                  })
+                                : _vm._e()
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "b-col",
+                            {
+                              staticClass: "my-1",
+                              attrs: { sm: "5", md: "6" }
+                            },
+                            [
+                              _c(
+                                "b-form-group",
+                                {
+                                  staticClass: "mb-0",
+                                  attrs: {
+                                    label: "Элементов на странице:",
+                                    "label-cols-sm": "6",
+                                    "label-cols-md": "4",
+                                    "label-cols-lg": "6",
+                                    "label-align-sm": "right",
+                                    "label-for": "perPageSelect"
+                                  }
+                                },
+                                [
+                                  _c("b-form-select", {
+                                    attrs: {
+                                      id: "perPageSelect",
+                                      options: _vm.pageOptions
+                                    },
+                                    model: {
+                                      value: _vm.actionsPerPage,
+                                      callback: function($$v) {
+                                        _vm.actionsPerPage = $$v
+                                      },
+                                      expression: "actionsPerPage"
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
                 1
               )
             ],

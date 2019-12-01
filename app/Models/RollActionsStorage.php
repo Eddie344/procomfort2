@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class RollActionsStorage extends Model
 {
     protected $fillable = [
-        'type_id', 'user_id', 'reason', 'width', 'lenght'
+        'roll_storage_id', 'type_id', 'user_id', 'reason', 'width', 'lenght'
     ];
 
     public function rollStorage()

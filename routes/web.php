@@ -28,7 +28,9 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         Route::get('/', 'StorageController@index')->name('storage.index');
 
         Route::apiResource('roll_parts', 'RollPartsStorageController');
-        Route::post('/roll_parts/getAll', 'RollPartsStorageController@getAll')->name('storage.roll_parts.getAll');
+        Route::post('/roll_parts/getAll', 'RollPartsStorageController@getAll')->name('storage.roll_actions.getAll');
+        Route::apiResource('roll_actions', 'RollActionsStorageController');
+        Route::post('/roll_actions/getAll', 'RollActionsStorageController@getAll')->name('storage.roll_actions.getAll');
         Route::resource('roll', 'RollStorageController')->except(['create', 'edit']);
         Route::post('/roll/getAll', 'RollStorageController@getAll')->name('storage.roll.getAll');
         Route::post('/roll/get/{id}', 'RollStorageController@get')->name('storage.roll.get');
