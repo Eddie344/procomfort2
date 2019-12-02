@@ -3914,8 +3914,7 @@ __webpack_require__.r(__webpack_exports__);
       actions_fields: [{
         key: 'type',
         label: 'Действие',
-        sortable: true,
-        variant: "type.color"
+        sortable: true
       }, {
         key: 'user',
         label: 'Пользователь',

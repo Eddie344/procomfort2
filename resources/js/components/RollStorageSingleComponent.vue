@@ -391,7 +391,6 @@
                         key: 'type',
                         label: 'Действие',
                         sortable: true,
-                        variant: "type.color",
                     },
                     {
                         key: 'user',
