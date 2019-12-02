@@ -179,10 +179,16 @@
                         <b-modal :id="editingModal.id" @hide="resetEditingModal" size="sm" title="Списание" hide-footer centered>
                             <b-form @submit.prevent="editPart(editingModal.index)">
                                 <b-form-group label="Ширина:">
-                                    <b-form-input type="number" step="0.01" v-model="editingModal.width" required></b-form-input>
+                                    <b-form-input type="number" :state="editWidthError" step="0.01" v-model="editingModal.width" required></b-form-input>
+                                    <b-form-invalid-feedback :state="editWidthError">
+                                        Недопустимое значение
+                                    </b-form-invalid-feedback>
                                 </b-form-group>
                                 <b-form-group label="Длина:">
-                                    <b-form-input type="number" step="0.01" v-model="editingModal.lenght" required></b-form-input>
+                                    <b-form-input type="number" :state="editLenghtError" step="0.01" v-model="editingModal.lenght" required></b-form-input>
+                                    <b-form-invalid-feedback :state="editLenghtError">
+                                        Недопустимое значение
+                                    </b-form-invalid-feedback>
                                 </b-form-group>
                                 <b-form-group label="Причина:">
                                     <b-form-input type="text" v-model="editingModal.reason" required></b-form-input>
@@ -281,7 +287,7 @@
                             :filterIncludedFields="actionsFilterOn"
                         >
                             <template v-slot:cell(type)="data">
-                                {{ data.item.type.label }}
+                                <b :class="'text-'+data.item.type.color">{{ data.item.type.label }}</b>
                             </template>
                             <template v-slot:cell(user)="data">
                                 {{ data.item.user.alias }}
@@ -456,6 +462,12 @@
                     .map(f => {
                         return { text: f.label, value: f.key }
                     })
+            },
+            editWidthError() {
+                return this.editingModal.width && this.editingModal.width != 0 && this.editingModal.width <= this.parts[this.editingModal.index].width
+            },
+            editLenghtError() {
+                return this.editingModal.lenght && this.editingModal.lenght != 0 && this.editingModal.lenght <= this.parts[this.editingModal.index].lenght
             }
         },
         created() {
@@ -536,15 +548,25 @@
                 this.$root.$emit('bv::show::modal', this.deletingModal.id);
             },
             editPart(index) {
+                if(!this.editWidthError || !this.editLenghtError) return false;
                 this.actionLoad = true;
+                if(this.editingModal.lenght == this.parts[index].lenght && this.editingModal.width == this.parts[index].width){
+                    this.deletingModal.reason = this.editingModal.reason;
+                    this.deletePart(index);
+                    this.actionLoad = false;
+                    this.$bvModal.hide(this.editingModal.id);
+                    return false;
+                }
                 axios.put('/admin/storage/roll_parts/'+this.editingModal.part_id, {
                     part: {
                         lenght: this.parts[index].lenght - this.editingModal.lenght,
                     }
                 })
                     .then((response) => {
-                        this.cutPart(index);
                         this.addAction(2, this.editingModal.reason, this.editingModal.width, this.editingModal.lenght);
+                        if(this.editingModal.width < this.parts[index].width){
+                            this.cutPart(index);
+                        }
                         _.extend(this.parts[index], response.data);
                         this.actionLoad = false;
                         this.$bvModal.hide(this.editingModal.id);

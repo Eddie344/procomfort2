@@ -3861,6 +3861,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "RollStorageSingleComponent",
   props: ['id'],
@@ -3980,6 +3986,12 @@ __webpack_require__.r(__webpack_exports__);
           value: f.key
         };
       });
+    },
+    editWidthError: function editWidthError() {
+      return this.editingModal.width && this.editingModal.width != 0 && this.editingModal.width <= this.parts[this.editingModal.index].width;
+    },
+    editLenghtError: function editLenghtError() {
+      return this.editingModal.lenght && this.editingModal.lenght != 0 && this.editingModal.lenght <= this.parts[this.editingModal.index].lenght;
     }
   },
   created: function created() {
@@ -4076,15 +4088,27 @@ __webpack_require__.r(__webpack_exports__);
     editPart: function editPart(index) {
       var _this7 = this;
 
+      if (!this.editWidthError || !this.editLenghtError) return false;
       this.actionLoad = true;
+
+      if (this.editingModal.lenght == this.parts[index].lenght && this.editingModal.width == this.parts[index].width) {
+        this.deletingModal.reason = this.editingModal.reason;
+        this.deletePart(index);
+        this.actionLoad = false;
+        this.$bvModal.hide(this.editingModal.id);
+        return false;
+      }
+
       axios.put('/admin/storage/roll_parts/' + this.editingModal.part_id, {
         part: {
           lenght: this.parts[index].lenght - this.editingModal.lenght
         }
       }).then(function (response) {
-        _this7.cutPart(index);
-
         _this7.addAction(2, _this7.editingModal.reason, _this7.editingModal.width, _this7.editingModal.lenght);
+
+        if (_this7.editingModal.width < _this7.parts[index].width) {
+          _this7.cutPart(index);
+        }
 
         _.extend(_this7.parts[index], response.data);
 
@@ -74263,6 +74287,7 @@ var render = function() {
                                   _c("b-form-input", {
                                     attrs: {
                                       type: "number",
+                                      state: _vm.editWidthError,
                                       step: "0.01",
                                       required: ""
                                     },
@@ -74273,7 +74298,17 @@ var render = function() {
                                       },
                                       expression: "editingModal.width"
                                     }
-                                  })
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "b-form-invalid-feedback",
+                                    { attrs: { state: _vm.editWidthError } },
+                                    [
+                                      _vm._v(
+                                        "\n                                    Недопустимое значение\n                                "
+                                      )
+                                    ]
+                                  )
                                 ],
                                 1
                               ),
@@ -74285,6 +74320,7 @@ var render = function() {
                                   _c("b-form-input", {
                                     attrs: {
                                       type: "number",
+                                      state: _vm.editLenghtError,
                                       step: "0.01",
                                       required: ""
                                     },
@@ -74299,7 +74335,17 @@ var render = function() {
                                       },
                                       expression: "editingModal.lenght"
                                     }
-                                  })
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "b-form-invalid-feedback",
+                                    { attrs: { state: _vm.editLenghtError } },
+                                    [
+                                      _vm._v(
+                                        "\n                                    Недопустимое значение\n                                "
+                                      )
+                                    ]
+                                  )
                                 ],
                                 1
                               ),
@@ -74599,10 +74645,10 @@ var render = function() {
                             key: "cell(type)",
                             fn: function(data) {
                               return [
-                                _vm._v(
-                                  "\n                            " +
-                                    _vm._s(data.item.type.label) +
-                                    "\n                        "
+                                _c(
+                                  "b",
+                                  { class: "text-" + data.item.type.color },
+                                  [_vm._v(_vm._s(data.item.type.label))]
                                 )
                               ]
                             }
