@@ -3914,7 +3914,8 @@ __webpack_require__.r(__webpack_exports__);
       actions_fields: [{
         key: 'type',
         label: 'Действие',
-        sortable: true
+        sortable: true,
+        variant: "type.color"
       }, {
         key: 'user',
         label: 'Пользователь',
@@ -74406,13 +74407,13 @@ var render = function() {
                                     "label-cols-md": "4",
                                     "label-cols-lg": "6",
                                     "label-align-sm": "right",
-                                    "label-for": "perPageSelect"
+                                    "label-for": "partsPerPageSelect"
                                   }
                                 },
                                 [
                                   _c("b-form-select", {
                                     attrs: {
-                                      id: "perPageSelect",
+                                      id: "partsPerPageSelect",
                                       options: _vm.pageOptions
                                     },
                                     model: {
@@ -74655,7 +74656,7 @@ var render = function() {
                               !_vm.actionsIsBusy
                                 ? _c("b-pagination", {
                                     attrs: {
-                                      "total-rows": _vm.partsRows,
+                                      "total-rows": _vm.actionsRows,
                                       "per-page": _vm.actionsPerPage,
                                       "aria-controls": "my-table"
                                     },
@@ -74689,13 +74690,13 @@ var render = function() {
                                     "label-cols-md": "4",
                                     "label-cols-lg": "6",
                                     "label-align-sm": "right",
-                                    "label-for": "perPageSelect"
+                                    "label-for": "actionsPerPageSelect"
                                   }
                                 },
                                 [
                                   _c("b-form-select", {
                                     attrs: {
-                                      id: "perPageSelect",
+                                      id: "actionsPerPageSelect",
                                       options: _vm.pageOptions
                                     },
                                     model: {

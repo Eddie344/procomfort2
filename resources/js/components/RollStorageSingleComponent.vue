@@ -213,12 +213,12 @@
                                     label-cols-md="4"
                                     label-cols-lg="6"
                                     label-align-sm="right"
-                                    label-for="perPageSelect"
+                                    label-for="partsPerPageSelect"
                                     class="mb-0"
                                 >
                                     <b-form-select
                                         v-model="partsPerPage"
-                                        id="perPageSelect"
+                                        id="partsPerPageSelect"
                                         :options="pageOptions"
                                     ></b-form-select>
                                 </b-form-group>
@@ -296,7 +296,7 @@
                             <b-col sm="5" md="6" class="my-1">
                                 <b-pagination
                                     v-model="actionsCurrentPage"
-                                    :total-rows="partsRows"
+                                    :total-rows="actionsRows"
                                     :per-page="actionsPerPage"
                                     aria-controls="my-table"
                                     v-if="!actionsIsBusy"
@@ -309,12 +309,12 @@
                                     label-cols-md="4"
                                     label-cols-lg="6"
                                     label-align-sm="right"
-                                    label-for="perPageSelect"
+                                    label-for="actionsPerPageSelect"
                                     class="mb-0"
                                 >
                                     <b-form-select
                                         v-model="actionsPerPage"
-                                        id="perPageSelect"
+                                        id="actionsPerPageSelect"
                                         :options="pageOptions"
                                     ></b-form-select>
                                 </b-form-group>
@@ -390,7 +390,8 @@
                     {
                         key: 'type',
                         label: 'Действие',
-                        sortable: true
+                        sortable: true,
+                        variant: "type.color",
                     },
                     {
                         key: 'user',
