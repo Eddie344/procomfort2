@@ -267,11 +267,16 @@
                                         <b-form-checkbox value="type">Действие</b-form-checkbox>
                                         <b-form-checkbox value="user">Пользователь</b-form-checkbox>
                                         <b-form-checkbox value="reason">Причина</b-form-checkbox>
-                                        <b-form-checkbox value="created_at">Дата, время</b-form-checkbox>
                                     </b-form-checkbox-group>
                                 </b-form-group>
                             </b-col>
                         </b-row>
+
+                        <date-range-picker
+                            :locale-data="{ firstDay: 1, format: 'DD-MM-YYYY' }"
+                            v-model="dateRange"
+                        >
+                        </date-range-picker>
                         <b-table
                             show-empty
                             empty-text="Нет записей"
@@ -334,8 +339,12 @@
 </template>
 
 <script>
+    import DateRangePicker from 'vue2-daterange-picker'
+    import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
+    import moment from "moment";
     export default {
         name: "RollStorageSingleComponent",
+        components: { DateRangePicker },
         props:['id'],
         data() {
             return {
@@ -438,6 +447,11 @@
                     id: 'delMod',
                     index: null,
                 },
+                //datepicker
+                dateRange: {
+                    startDate: moment().startOf('month'),
+                    endDate: moment().endOf('month'),
+                },
             }
         },
         computed: {
@@ -468,7 +482,7 @@
             },
             editLenghtError() {
                 return this.editingModal.lenght && this.editingModal.lenght != 0 && this.editingModal.lenght <= this.parts[this.editingModal.index].lenght
-            }
+            },
         },
         created() {
             this.loadItem();
