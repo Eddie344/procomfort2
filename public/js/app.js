@@ -3879,9 +3879,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 
+moment__WEBPACK_IMPORTED_MODULE_2___default.a.locale('ru');
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "RollStorageSingleComponent",
   components: {
@@ -3976,8 +3981,28 @@ __webpack_require__.r(__webpack_exports__);
       },
       //datepicker
       dateRange: {
-        startDate: moment__WEBPACK_IMPORTED_MODULE_2___default()().startOf('month'),
-        endDate: moment__WEBPACK_IMPORTED_MODULE_2___default()().endOf('month')
+        startDate: moment__WEBPACK_IMPORTED_MODULE_2___default()(),
+        endDate: moment__WEBPACK_IMPORTED_MODULE_2___default()().add(1, 'days')
+      },
+      localeData: {
+        direction: 'ltr',
+        format: moment__WEBPACK_IMPORTED_MODULE_2___default.a.localeData().longDateFormat('L'),
+        separator: ' - ',
+        applyLabel: 'Применить',
+        cancelLabel: 'Отмена',
+        weekLabel: 'W',
+        customRangeLabel: 'Custom Range',
+        daysOfWeek: moment__WEBPACK_IMPORTED_MODULE_2___default.a.weekdaysMin(),
+        monthNames: moment__WEBPACK_IMPORTED_MODULE_2___default.a.monthsShort(),
+        firstDay: moment__WEBPACK_IMPORTED_MODULE_2___default.a.localeData().firstDayOfWeek()
+      },
+      ranges: {
+        'Сегодня': [moment__WEBPACK_IMPORTED_MODULE_2___default()(), moment__WEBPACK_IMPORTED_MODULE_2___default()().add(1, 'days')],
+        'Вчера': [moment__WEBPACK_IMPORTED_MODULE_2___default()().subtract(1, 'days'), moment__WEBPACK_IMPORTED_MODULE_2___default()()],
+        'В этом месяце': [moment__WEBPACK_IMPORTED_MODULE_2___default()().startOf('month'), moment__WEBPACK_IMPORTED_MODULE_2___default()().endOf('month')],
+        'В этом году': [moment__WEBPACK_IMPORTED_MODULE_2___default()().startOf('year'), moment__WEBPACK_IMPORTED_MODULE_2___default()().endOf('year')],
+        'На прошлой неделе': [moment__WEBPACK_IMPORTED_MODULE_2___default()().subtract(1, 'week').startOf('week'), moment__WEBPACK_IMPORTED_MODULE_2___default()().subtract(1, 'week').endOf('week')],
+        'В прошлом месяце': [moment__WEBPACK_IMPORTED_MODULE_2___default()().subtract(1, 'month').startOf('month'), moment__WEBPACK_IMPORTED_MODULE_2___default()().subtract(1, 'month').endOf('month')]
       }
     };
   },
@@ -4038,7 +4063,8 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.post('/admin/storage/roll_actions/getAll', {
         roll_storage_id: this.id,
-        date_period: this.date_period
+        startDate: moment__WEBPACK_IMPORTED_MODULE_2___default.a.utc(this.dateRange.startDate).startOf('day'),
+        endDate: moment__WEBPACK_IMPORTED_MODULE_2___default.a.utc(this.dateRange.endDate).startOf('day')
       }).then(function (response) {
         console.log(response.data);
         _this2.actions = response.data;
@@ -92151,7 +92177,7 @@ var render = function() {
                               _c(
                                 "b-form-group",
                                 {
-                                  staticClass: "mb-0",
+                                  staticClass: "mb-3",
                                   attrs: {
                                     label: "Фильтр",
                                     "label-cols-sm": "3",
@@ -92261,24 +92287,37 @@ var render = function() {
                               )
                             ],
                             1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "b-col",
+                            { attrs: { lg: "6" } },
+                            [
+                              _c("date-range-picker", {
+                                attrs: {
+                                  "locale-data": {
+                                    firstDay: 1,
+                                    format: "DD-MM-YYYY"
+                                  },
+                                  localeData: _vm.localeData,
+                                  ranges: _vm.ranges,
+                                  opens: "right"
+                                },
+                                on: { update: _vm.loadActions },
+                                model: {
+                                  value: _vm.dateRange,
+                                  callback: function($$v) {
+                                    _vm.dateRange = $$v
+                                  },
+                                  expression: "dateRange"
+                                }
+                              })
+                            ],
+                            1
                           )
                         ],
                         1
                       ),
-                      _vm._v(" "),
-                      _c("date-range-picker", {
-                        attrs: {
-                          "locale-data": { firstDay: 1, format: "DD-MM-YYYY" }
-                        },
-                        on: { update: _vm.loadActions },
-                        model: {
-                          value: _vm.dateRange,
-                          callback: function($$v) {
-                            _vm.dateRange = $$v
-                          },
-                          expression: "dateRange"
-                        }
-                      }),
                       _vm._v(" "),
                       _c("b-table", {
                         attrs: {
