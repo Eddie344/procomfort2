@@ -275,6 +275,7 @@
                         <date-range-picker
                             :locale-data="{ firstDay: 1, format: 'DD-MM-YYYY' }"
                             v-model="dateRange"
+                            @update="loadActions"
                         >
                         </date-range-picker>
                         <b-table
@@ -501,7 +502,8 @@
             },
             loadActions() {
                 axios.post('/admin/storage/roll_actions/getAll', {
-                    roll_storage_id: this.id
+                    roll_storage_id: this.id,
+                    date_period: this.date_period,
                 })
                     .then((response) => {
                         console.log(response.data);

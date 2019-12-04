@@ -3878,6 +3878,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -4036,7 +4037,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       axios.post('/admin/storage/roll_actions/getAll', {
-        roll_storage_id: this.id
+        roll_storage_id: this.id,
+        date_period: this.date_period
       }).then(function (response) {
         console.log(response.data);
         _this2.actions = response.data;
@@ -92268,6 +92270,7 @@ var render = function() {
                         attrs: {
                           "locale-data": { firstDay: 1, format: "DD-MM-YYYY" }
                         },
+                        on: { update: _vm.loadActions },
                         model: {
                           value: _vm.dateRange,
                           callback: function($$v) {

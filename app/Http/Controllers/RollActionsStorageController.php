@@ -20,7 +20,7 @@ class RollActionsStorageController extends Controller
 
     public function getAll(Request $request)
     {
-        $actions = RollActionsStorage::with(['type', 'user', 'rollStorage'])->where('roll_storage_id', $request->roll_storage_id)->get();
+        $actions = RollActionsStorage::with(['type', 'user', 'rollStorage'])->filter()->get();
         return response()->json($actions);
     }
 

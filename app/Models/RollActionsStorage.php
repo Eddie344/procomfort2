@@ -33,15 +33,19 @@ class RollActionsStorage extends Model
 
     public function scopeFilter($query)
     {
-        if (request('date_period')) {
-            $dates = explode(' - ', (request('date_period')));
-            $startDate = Carbon::createFromFormat('d/m/Y', $dates[0]);
-            $endDate = Carbon::createFromFormat('d/m/Y', $dates[1]);
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+        if(request('date_period')) {
+            $dates = request('date_period');
+            $startDate = Carbon::createFromFormat('d/m/Y', $dates["startDate"]);
+            $endDate = Carbon::createFromFormat('d/m/Y', $dates["endDate"]);
+            $query->whereBetween('created_at', [ $startDate, $endDate]);
         }
-        if (request('type'))
+        if(request('type'))
         {
             $query->where('type_id', request('type'));
+        }
+        if(request('roll_storage_id'))
+        {
+            $query->where('roll_storage_id', request('roll_storage_id'));
         }
         return $query;
     }
