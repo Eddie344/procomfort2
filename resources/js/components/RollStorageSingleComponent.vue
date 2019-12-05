@@ -241,7 +241,7 @@
                                     label-cols-sm="3"
                                     label-align-sm="left"
                                     label-for="partsFilterInput"
-                                    class="mb-0"
+                                    class="mb-3"
                                 >
                                     <b-input-group>
                                         <b-form-input
@@ -270,14 +270,18 @@
                                     </b-form-checkbox-group>
                                 </b-form-group>
                             </b-col>
+                            <b-col lg="6">
+                                <date-range-picker
+                                    :locale-data="{ firstDay: 1, format: 'DD-MM-YYYY' }"
+                                    v-model="dateRange"
+                                    @update="loadActions"
+                                    :localeData="localeData"
+                                    :ranges="ranges"
+                                    opens="right"
+                                >
+                                </date-range-picker>
+                            </b-col>
                         </b-row>
-
-                        <date-range-picker
-                            :locale-data="{ firstDay: 1, format: 'DD-MM-YYYY' }"
-                            v-model="dateRange"
-                            @update="loadActions"
-                        >
-                        </date-range-picker>
                         <b-table
                             show-empty
                             empty-text="Нет записей"
@@ -343,6 +347,7 @@
     import DateRangePicker from 'vue2-daterange-picker'
     import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
     import moment from "moment";
+    moment.locale('ru');
     export default {
         name: "RollStorageSingleComponent",
         components: { DateRangePicker },
@@ -450,9 +455,29 @@
                 },
                 //datepicker
                 dateRange: {
-                    startDate: moment().startOf('month'),
-                    endDate: moment().endOf('month'),
+                    startDate: moment(),
+                    endDate: moment().add(1,'days'),
                 },
+                localeData: {
+                    direction: 'ltr',
+                    format: moment.localeData().longDateFormat('L'),
+                    separator: ' - ',
+                    applyLabel: 'Применить',
+                    cancelLabel: 'Отмена',
+                    weekLabel: 'W',
+                    customRangeLabel: 'Custom Range',
+                    daysOfWeek: moment.weekdaysMin(),
+                    monthNames: moment.monthsShort(),
+                    firstDay: moment.localeData().firstDayOfWeek()
+                },
+                ranges:{
+                    'Сегодня': [moment(), moment().add(1,'days')],
+                    'Вчера': [moment().subtract(1, 'days'), moment()],
+                    'В этом месяце': [moment().startOf('month'), moment().endOf('month')],
+                    'В этом году': [moment().startOf('year'), moment().endOf('year')],
+                    'На прошлой неделе': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+                    'В прошлом месяце': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                }
             }
         },
         computed: {
@@ -504,7 +529,8 @@
                 this.isActionsBusy = true;
                 axios.post('/admin/storage/roll_actions/getAll', {
                     roll_storage_id: this.id,
-                    date_period: this.date_period,
+                    startDate: moment.utc(this.dateRange.startDate).startOf('day'),
+                    endDate: moment.utc(this.dateRange.endDate).startOf('day'),
                 })
                     .then((response) => {
                         console.log(response.data);
