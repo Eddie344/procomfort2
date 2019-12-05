@@ -283,12 +283,12 @@
                             empty-text="Нет записей"
                             empty-filtered-text="По данному запросу нет записей"
                             id="my-table"
+                            :busy="isActionsBusy"
                             :items="actions"
                             :fields="actions_fields"
                             :per-page="actionsPerPage"
                             :current-page="actionsCurrentPage"
                             :striped="true"
-                            :busy="actionsIsBusy"
                             :filter="actionsFilter"
                             :filterIncludedFields="actionsFilterOn"
                         >
@@ -311,7 +311,7 @@
                                     :total-rows="actionsRows"
                                     :per-page="actionsPerPage"
                                     aria-controls="my-table"
-                                    v-if="!actionsIsBusy"
+                                    v-if="!isActionsBusy"
                                 ></b-pagination>
                             </b-col>
                             <b-col sm="5" md="6" class="my-1">
@@ -398,10 +398,10 @@
                 providers: [],
                 part_statuses: [],
                 part_types: [],
+                isActionsBusy: false,
                 actions: [],
                 actionsPerPage: 10,
                 actionsCurrentPage: 1,
-                actionsIsBusy: false,
                 actions_fields: [
                     {
                         key: 'type',
@@ -501,6 +501,7 @@
                     })
             },
             loadActions() {
+                this.isActionsBusy = true;
                 axios.post('/admin/storage/roll_actions/getAll', {
                     roll_storage_id: this.id,
                     date_period: this.date_period,
@@ -508,6 +509,7 @@
                     .then((response) => {
                         console.log(response.data);
                         this.actions = response.data;
+                        this.isActionsBusy = false;
                     })
             },
             loadParts() {

@@ -3931,10 +3931,10 @@ __webpack_require__.r(__webpack_exports__);
       providers: [],
       part_statuses: [],
       part_types: [],
+      isActionsBusy: false,
       actions: [],
       actionsPerPage: 10,
       actionsCurrentPage: 1,
-      actionsIsBusy: false,
       actions_fields: [{
         key: 'type',
         label: 'Действие',
@@ -4036,12 +4036,14 @@ __webpack_require__.r(__webpack_exports__);
     loadActions: function loadActions() {
       var _this2 = this;
 
+      this.isActionsBusy = true;
       axios.post('/admin/storage/roll_actions/getAll', {
         roll_storage_id: this.id,
         date_period: this.date_period
       }).then(function (response) {
         console.log(response.data);
         _this2.actions = response.data;
+        _this2.isActionsBusy = false;
       });
     },
     loadParts: function loadParts() {
@@ -92287,12 +92289,12 @@ var render = function() {
                           "empty-filtered-text":
                             "По данному запросу нет записей",
                           id: "my-table",
+                          busy: _vm.isActionsBusy,
                           items: _vm.actions,
                           fields: _vm.actions_fields,
                           "per-page": _vm.actionsPerPage,
                           "current-page": _vm.actionsCurrentPage,
                           striped: true,
-                          busy: _vm.actionsIsBusy,
                           filter: _vm.actionsFilter,
                           filterIncludedFields: _vm.actionsFilterOn
                         },
@@ -92354,7 +92356,7 @@ var render = function() {
                               attrs: { sm: "5", md: "6" }
                             },
                             [
-                              !_vm.actionsIsBusy
+                              !_vm.isActionsBusy
                                 ? _c("b-pagination", {
                                     attrs: {
                                       "total-rows": _vm.actionsRows,
