@@ -1,0 +1,151 @@
+<template>
+    <div>
+        <b-form inline class="mb-3">
+            <b-form-select class="mr-3" v-model="product_type_selected" @change="load">
+                <option :value="null" disabled selected>Выберите тип изделия...</option>
+                <option value="roll">Рулонные шторы</option>
+                <option value="zebra">День-ночь</option>
+            </b-form-select>
+            <b-button class="mr-3" variant="success" v-b-modal.modalAddCategory v-if="tableLoaded && !isBusy">Добавить</b-button>
+            <b-modal ref="modalAddPrice" id="modalAddCategory" size="sm" title="Добавление" hide-footer centered>
+                <b-form @submit.prevent="addItem">
+                    <b-form-group label="Наименование:">
+                        <b-form-input type="text" :state="validation" v-model="new_item.label" required></b-form-input>
+                        <b-form-invalid-feedback :state="validation">
+                            Данная категория уже существует
+                        </b-form-invalid-feedback>
+                    </b-form-group>
+                    <b-button variant="primary" type="submit" v-bind:disabled="actionLoad">
+                        <span v-if="!actionLoad">Добавить</span>
+                        <span v-else>
+                            <b-spinner small></b-spinner>
+                            Подождите...
+                        </span>
+                    </b-button>
+                </b-form>
+            </b-modal>
+        </b-form>
+        <b-table
+            v-if="tableLoaded"
+            show-empty
+            empty-text="Нет записей"
+            empty-filtered-text="По данному запросу нет записей"
+            id="my-table"
+            :items="categories"
+            :fields="fields"
+            :striped="true"
+            :busy="isBusy"
+        >
+            <template v-slot:cell(label)="data">
+                {{ data.item.label }}
+            </template>
+            <template v-slot:cell(delete)="data">
+                <b-button class="p-0" variant="link" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
+            </template>
+            <template v-slot:table-busy>
+                <div class="text-center text-primary my-2">
+                    <b-spinner class="align-middle"></b-spinner>
+                </div>
+            </template>
+        </b-table>
+        <!--Delete modal-->
+        <b-modal :id="deletingModal.id" size="sm" title="Вы уверены?" @hide="deletingModal.error = false" centered>
+            <b-alert variant="danger" show v-if="deletingModal.error">Нельзя удалить категорию, которой принадлежат ткани на складе</b-alert>
+            <template v-slot:modal-footer="{ ok }">
+                <b-button variant="danger" @click="deleteItem(deletingModal.index)" v-bind:disabled="actionLoad">
+                    <span v-if="!actionLoad">Удалить</span>
+                    <span v-else>
+                        <b-spinner small></b-spinner>
+                        Подождите...
+                    </span>
+                </b-button>
+            </template>
+        </b-modal>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: "CategoryComponent",
+        data() {
+            return {
+                product_type_selected: null,
+                tableLoaded: false,
+                categories: [],
+                new_item: {},
+                actionLoad: false,
+                isBusy: false,
+                fields: [
+                    {
+                        key: 'label',
+                        label: 'Наименование',
+                    },
+                    {
+                        key: 'delete',
+                        label: 'Действия'
+                    }
+                ],
+                deletingModal: {
+                    id: 'delMod',
+                    index: null,
+                    error: false,
+                },
+
+            }
+        },
+        computed: {
+            validation() {
+                return !this.categories.some(i =>  i.label == this.new_item.label);
+            }
+        },
+        methods: {
+            load(){
+                this.isBusy = true;
+                axios.post('/admin/other/categories/'+this.product_type_selected+'/get', {
+                    product_type_id: this.product_type_selected,
+                })
+                    .then((response) => {
+                        console.log(response.data);
+                        this.categories = response.data;
+                        this.isBusy = false;
+                        this.tableLoaded = true;
+                    });
+            },
+            addItem(){
+                if(!this.validation) return false;
+                this.actionLoad = true;
+                axios.post('/admin/other/categories/'+this.product_type_selected, {
+                    item: this.new_item
+                })
+                    .then((response) => {
+                        this.categories.push(response.data);
+                        this.new_item = {};
+                        this.actionLoad = false;
+                        this.$refs['modalAddPrice'].hide();
+                    });
+            },
+            deleteItem(index){
+                this.actionLoad = true;
+                axios.delete('/admin/other/categories/'+this.product_type_selected+'/'+this.categories[index].id)
+                    .then((response) => {
+                        this.$delete(this.categories, index);
+                        this.actionLoad = false;
+                        this.$bvModal.hide(this.deletingModal.id);
+                        this.deletingModal.index = null;
+                    })
+                    .catch(error => {
+                        this.actionLoad = false;
+                        this.deletingModal.error = true;
+                    });
+            },
+            deleteModal(index) {
+                this.deletingModal.index = index;
+                this.$root.$emit('bv::show::modal', this.deletingModal.id);
+            },
+        }
+    }
+</script>
+
+<style scoped>
+
+</style>

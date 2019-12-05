@@ -64,6 +64,7 @@ class ZebraCategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        ZebraCategory::destroy($id);
+        return response($id);
     }
 }

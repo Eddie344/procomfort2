@@ -55,7 +55,6 @@
             <div class="sidebar-sticky">
                 <div class="nav flex-column">
                     <div class="accordion" id="sidebar-accordion">
-
                         <div class="card">
                             <a href="#" class="card-header">
                                 <span><i class="fa fa-home"></i>Главная</span>
@@ -108,12 +107,13 @@
                         </div>
                         <div class="card">
                             <a href="#" class="card-header" id="heading5" data-toggle="collapse" data-target="#collapse5" aria-expanded="true" aria-controls="collapse5">
-                                <span><i class="fa fa-th-list"></i>Изделия</span>
+                                <span><i class="fa fa-th-list"></i>Прочее</span>
                             </a>
                             <div id="collapse5" class="collapse" aria-labelledby="heading5" data-parent="#sidebar-accordion">
                                 <div class="list-group">
-                                    <a class="list-group-item" href="{{ route('zebra.index') }}">Типы конструкций</a>
-                                    <a class="list-group-item" href="{{ route('vert.index') }}">Категории материалов</a>
+                                    <a class="list-group-item" href="{{ route('other.categories.index') }}">Категории тканей</a>
+                                    <a class="list-group-item" href="{{ route('vert.index') }}">Каталоги</a>
+                                    <a class="list-group-item" href="{{ route('vert.index') }}">Поставщики</a>
                                 </div>
                             </div>
                         </div>

@@ -126,22 +126,20 @@
                     });
             },
             addPrice(){
-                let error = this.prices.some(i =>  i.category_id == this.new_price.category_id);
-                if(!error){
-                    axios.post('/admin/price/'+this.type, {
-                        catalog_id: this.catalog_selected,
-                        category_id: this.new_price.category_id,
-                        price: this.new_price.price,
-                    })
-                        .then((response) => {
-                            console.log(response.data);
-                            this.new_price.id = response.data;
-                            this.prices.push(this.new_price);
-                            this.new_price = {};
-                        });
-                    //this.showAlert('success', 'Цена успешно добавлена');
-                    this.$refs['modalAddPrice'].hide();
-                }
+                if(!this.validation) return false;
+                axios.post('/admin/price/'+this.type, {
+                    catalog_id: this.catalog_selected,
+                    category_id: this.new_price.category_id,
+                    price: this.new_price.price,
+                })
+                    .then((response) => {
+                        console.log(response.data);
+                        this.new_price.id = response.data;
+                        this.prices.push(this.new_price);
+                        this.new_price = {};
+                    });
+                //this.showAlert('success', 'Цена успешно добавлена');
+                this.$refs['modalAddPrice'].hide();
             },
             editPrice(id, index){
                 axios.put('/admin/price/'+this.type+'/'+id, {

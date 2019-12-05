@@ -19,7 +19,7 @@ class RollCategoryController extends Controller
 
     public function get()
     {
-        return response()->json(RollCategory::all()->keyBy('id'));
+        return response()->json(RollCategory::all());
     }
 
     /**
@@ -30,7 +30,9 @@ class RollCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $item = RollCategory::create($request->item);
+        $new_item = $item->find($item->id);
+        return response()->json($new_item);
     }
 
     /**
@@ -64,6 +66,7 @@ class RollCategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        RollCategory::destroy($id);
+        return response($id);
     }
 }

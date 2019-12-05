@@ -125,6 +125,7 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         Route::post('/product_types/get', 'ProductTypeController@get')->name('other.product_types.get');
 
         Route::prefix('/categories')->group(function () {
+            Route::get('/', 'CategoryController@index')->name('other.categories.index');
             Route::apiResource('/roll', 'RollCategoryController', [
             'names' => [
                 'index' => 'categories.roll.index',
@@ -139,20 +140,6 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
             ]
         ]);
             Route::post('/zebra/get', 'ZebraCategoryController@get')->name('other.categories.zebra.get');
-            Route::apiResource('/vert', 'VertCategoryController', [
-            'names' => [
-                'index' => 'categories.vert.index',
-				'show' => 'categories.vert.show',
-            ]
-        ]);
-            Route::post('/vert/get', 'VertCategoryController@get')->name('other.categories.vert.get');
-            Route::apiResource('/goriz', 'GorizCategoryController', [
-            'names' => [
-                'index' => 'categories.goriz.index',
-				'show' => 'categories.goriz.show',
-            ]
-        ]);
-            Route::post('/goriz/get', 'GorizCategoryController@get')->name('other.categories.goriz.get');
         });
         Route::apiResource('/catalogs', 'CatalogController');
         Route::post('/catalogs/get', 'CatalogController@get')->name('other.catalogs.get');
