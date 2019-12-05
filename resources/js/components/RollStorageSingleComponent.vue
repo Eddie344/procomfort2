@@ -274,7 +274,7 @@
                                 <date-range-picker
                                     :locale-data="{ firstDay: 1, format: 'DD-MM-YYYY' }"
                                     v-model="dateRange"
-                                    @update="loadActions"
+                                    @update="applyDatePicker"
                                     :localeData="localeData"
                                     :ranges="ranges"
                                     opens="right"
@@ -455,8 +455,8 @@
                 },
                 //datepicker
                 dateRange: {
-                    startDate: moment(),
-                    endDate: moment().add(1,'days'),
+                    startDate: moment().hour(0).minute(0).second(0),
+                    endDate: moment().hour(23).minute(59).second(59),
                 },
                 localeData: {
                     direction: 'ltr',
@@ -471,8 +471,8 @@
                     firstDay: moment.localeData().firstDayOfWeek()
                 },
                 ranges:{
-                    'Сегодня': [moment(), moment().add(1,'days')],
-                    'Вчера': [moment().subtract(1, 'days'), moment()],
+                    'Сегодня': [moment(), moment()],
+                    'Вчера': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
                     'В этом месяце': [moment().startOf('month'), moment().endOf('month')],
                     'В этом году': [moment().startOf('year'), moment().endOf('year')],
                     'На прошлой неделе': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
@@ -525,12 +525,17 @@
                         this.item = response.data;
                     })
             },
+            applyDatePicker(){
+                this.dateRange.startDate = moment(this.dateRange.startDate).hour(0).minute(0).second(0);
+                this.dateRange.endDate = moment(this.dateRange.endDate).hour(23).minute(59).second(59);
+                this.loadActions();
+            },
             loadActions() {
                 this.isActionsBusy = true;
                 axios.post('/admin/storage/roll_actions/getAll', {
                     roll_storage_id: this.id,
-                    startDate: moment.utc(this.dateRange.startDate).startOf('day'),
-                    endDate: moment.utc(this.dateRange.endDate).startOf('day'),
+                    startDate: moment.utc(this.dateRange.startDate),
+                    endDate: moment.utc(this.dateRange.endDate),
                 })
                     .then((response) => {
                         console.log(response.data);

@@ -3981,8 +3981,8 @@ moment__WEBPACK_IMPORTED_MODULE_2___default.a.locale('ru');
       },
       //datepicker
       dateRange: {
-        startDate: moment__WEBPACK_IMPORTED_MODULE_2___default()(),
-        endDate: moment__WEBPACK_IMPORTED_MODULE_2___default()().add(1, 'days')
+        startDate: moment__WEBPACK_IMPORTED_MODULE_2___default()().hour(0).minute(0).second(0),
+        endDate: moment__WEBPACK_IMPORTED_MODULE_2___default()().hour(23).minute(59).second(59)
       },
       localeData: {
         direction: 'ltr',
@@ -3997,8 +3997,8 @@ moment__WEBPACK_IMPORTED_MODULE_2___default.a.locale('ru');
         firstDay: moment__WEBPACK_IMPORTED_MODULE_2___default.a.localeData().firstDayOfWeek()
       },
       ranges: {
-        'Сегодня': [moment__WEBPACK_IMPORTED_MODULE_2___default()(), moment__WEBPACK_IMPORTED_MODULE_2___default()().add(1, 'days')],
-        'Вчера': [moment__WEBPACK_IMPORTED_MODULE_2___default()().subtract(1, 'days'), moment__WEBPACK_IMPORTED_MODULE_2___default()()],
+        'Сегодня': [moment__WEBPACK_IMPORTED_MODULE_2___default()(), moment__WEBPACK_IMPORTED_MODULE_2___default()()],
+        'Вчера': [moment__WEBPACK_IMPORTED_MODULE_2___default()().subtract(1, 'days'), moment__WEBPACK_IMPORTED_MODULE_2___default()().subtract(1, 'days')],
         'В этом месяце': [moment__WEBPACK_IMPORTED_MODULE_2___default()().startOf('month'), moment__WEBPACK_IMPORTED_MODULE_2___default()().endOf('month')],
         'В этом году': [moment__WEBPACK_IMPORTED_MODULE_2___default()().startOf('year'), moment__WEBPACK_IMPORTED_MODULE_2___default()().endOf('year')],
         'На прошлой неделе': [moment__WEBPACK_IMPORTED_MODULE_2___default()().subtract(1, 'week').startOf('week'), moment__WEBPACK_IMPORTED_MODULE_2___default()().subtract(1, 'week').endOf('week')],
@@ -4058,14 +4058,19 @@ moment__WEBPACK_IMPORTED_MODULE_2___default.a.locale('ru');
         _this.item = response.data;
       });
     },
+    applyDatePicker: function applyDatePicker() {
+      this.dateRange.startDate = moment__WEBPACK_IMPORTED_MODULE_2___default()(this.dateRange.startDate).hour(0).minute(0).second(0);
+      this.dateRange.endDate = moment__WEBPACK_IMPORTED_MODULE_2___default()(this.dateRange.endDate).hour(23).minute(59).second(59);
+      this.loadActions();
+    },
     loadActions: function loadActions() {
       var _this2 = this;
 
       this.isActionsBusy = true;
       axios.post('/admin/storage/roll_actions/getAll', {
         roll_storage_id: this.id,
-        startDate: moment__WEBPACK_IMPORTED_MODULE_2___default.a.utc(this.dateRange.startDate).startOf('day'),
-        endDate: moment__WEBPACK_IMPORTED_MODULE_2___default.a.utc(this.dateRange.endDate).startOf('day')
+        startDate: moment__WEBPACK_IMPORTED_MODULE_2___default.a.utc(this.dateRange.startDate),
+        endDate: moment__WEBPACK_IMPORTED_MODULE_2___default.a.utc(this.dateRange.endDate)
       }).then(function (response) {
         console.log(response.data);
         _this2.actions = response.data;
@@ -92305,7 +92310,7 @@ var render = function() {
                                   ranges: _vm.ranges,
                                   opens: "right"
                                 },
-                                on: { update: _vm.loadActions },
+                                on: { update: _vm.applyDatePicker },
                                 model: {
                                   value: _vm.dateRange,
                                   callback: function($$v) {
