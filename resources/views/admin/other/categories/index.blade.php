@@ -2,5 +2,5 @@
 
 @section('content')
     <h2 class="mb-4">Категории тканей</h2>
-    <catalog-component></catalog-component>
+    <category-component></category-component>
 @endsection

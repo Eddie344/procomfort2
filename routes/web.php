@@ -141,7 +141,12 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         ]);
             Route::post('/zebra/get', 'ZebraCategoryController@get')->name('other.categories.zebra.get');
         });
-        Route::apiResource('/catalogs', 'CatalogController');
+        Route::apiResource('/catalogs', 'CatalogController', [
+            'names' => [
+                'index' => 'other.catalogs.index',
+                'show' => 'part_types.show',
+            ]
+        ]);
         Route::post('/catalogs/get', 'CatalogController@get')->name('other.catalogs.get');
         Route::apiResource('/part_types', 'PartTypeController', [
             'names' => [
@@ -159,7 +164,12 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         ]);
         Route::post('/part_statuses/get', 'PartStatusController@get')->name('other.part_statuses.get');
 
-        Route::apiResource('/providers', 'ProviderController');
+        Route::apiResource('/providers', 'ProviderController', [
+            'names' => [
+                'index' => 'other.providers.index',
+                'show' => 'part_types.show',
+            ]
+        ]);
         Route::post('/providers/get', 'ProviderController@get')->name('other.providers.get');
 
     });

@@ -14,12 +14,12 @@ class ProviderController extends Controller
      */
     public function index()
     {
-        //
+        return view('admin.other.providers.index');
     }
 
     public function get()
     {
-        return response()->json(Provider::all()->keyBy('id'));
+        return response()->json(Provider::all());
     }
 
     /**

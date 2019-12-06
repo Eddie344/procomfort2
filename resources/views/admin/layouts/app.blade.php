@@ -112,8 +112,8 @@
                             <div id="collapse5" class="collapse" aria-labelledby="heading5" data-parent="#sidebar-accordion">
                                 <div class="list-group">
                                     <a class="list-group-item" href="{{ route('other.categories.index') }}">Категории тканей</a>
-                                    <a class="list-group-item" href="{{ route('vert.index') }}">Каталоги</a>
-                                    <a class="list-group-item" href="{{ route('vert.index') }}">Поставщики</a>
+                                    <a class="list-group-item" href="{{ route('other.catalogs.index') }}">Каталоги</a>
+                                    <a class="list-group-item" href="{{ route('other.providers.index') }}">Поставщики</a>
                                 </div>
                             </div>
                         </div>

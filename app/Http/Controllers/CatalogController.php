@@ -14,12 +14,12 @@ class CatalogController extends Controller
      */
     public function index()
     {
-        //
+        return view('admin.other.catalogs.index');
     }
 
     public function get()
     {
-        return response()->json(Catalog::all()->keyBy('id'));
+        return response()->json(Catalog::all());
     }
 
     /**
