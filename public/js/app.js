@@ -92096,7 +92096,9 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("h2", { staticClass: "mb-4" }, [_vm._v("Ткани рулонные > L-0880")]),
+      _c("h2", { staticClass: "mb-4" }, [
+        _vm._v("Ткани рулонные > " + _vm._s(_vm.item.label))
+      ]),
       _vm._v(" "),
       _c(
         "b-card",

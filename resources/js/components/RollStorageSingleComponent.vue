@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2 class="mb-4">Ткани рулонные > L-0880</h2>
+        <h2 class="mb-4">Ткани рулонные > {{ item.label }}</h2>
         <b-card no-body>
             <b-tabs card>
                 <b-tab title="Общая информация" active>
