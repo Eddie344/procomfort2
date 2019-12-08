@@ -30,7 +30,9 @@ class CatalogController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $item = Catalog::create($request->item);
+        $new_item = $item->find($item->id);
+        return response()->json($new_item);
     }
 
     /**
@@ -64,6 +66,7 @@ class CatalogController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Catalog::destroy($id);
+        return response($id);
     }
 }

@@ -28,17 +28,21 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         Route::get('/', 'StorageController@index')->name('storage.index');
 
         Route::apiResource('roll_parts', 'RollPartsStorageController');
-        Route::post('/roll_parts/getAll', 'RollPartsStorageController@getAll')->name('storage.roll_actions.getAll');
+        Route::post('/roll_parts/getAll', 'RollPartsStorageController@getAll')->name('storage.roll_parts.getAll');
         Route::apiResource('roll_actions', 'RollActionsStorageController');
         Route::post('/roll_actions/getAll', 'RollActionsStorageController@getAll')->name('storage.roll_actions.getAll');
-        Route::resource('roll', 'RollStorageController')->except(['create', 'edit']);
+        Route::apiResource('roll', 'RollStorageController');
         Route::post('/roll/getAll', 'RollStorageController@getAll')->name('storage.roll.getAll');
         Route::post('/roll/get/{id}', 'RollStorageController@get')->name('storage.roll.get');
 
 
-        Route::resource('zebra_part', 'ZebraPartsStorageController')->only(['store', 'update', 'destroy']);
-        Route::resource('zebra', 'ZebraStorageController')->except(['create', 'edit']);
-        Route::post('/zebra/get', 'ZebraStorageController@get')->name('storage.zebra.get');
+        Route::apiResource('zebra_part', 'ZebraPartsStorageController');
+        Route::post('/zebra_parts/getAll', 'ZebraPartsStorageController@getAll')->name('storage.zebra_parts.getAll');
+        Route::apiResource('zebra_actions', 'ZebraActionsStorageController');
+        Route::post('/zebra_actions/getAll', 'ZebraActionsStorageController@getAll')->name('storage.zebra_actions.getAll');
+        Route::apiResource('zebra', 'ZebraStorageController');
+        Route::post('/zebra/getAll', 'ZebraStorageController@getAll')->name('storage.zebra.getAll');
+        Route::post('/zebra/get/{id}', 'ZebraStorageController@get')->name('storage.zebra.get');
 
         Route::resource('vert_part', 'VertPartsStorageController')->only(['store', 'update', 'destroy']);
         Route::resource('vert', 'VertStorageController')->except(['create', 'edit']);
@@ -144,7 +148,7 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         Route::apiResource('/catalogs', 'CatalogController', [
             'names' => [
                 'index' => 'other.catalogs.index',
-                'show' => 'part_types.show',
+                'show' => 'other.catalogs.show',
             ]
         ]);
         Route::post('/catalogs/get', 'CatalogController@get')->name('other.catalogs.get');

@@ -19,10 +19,16 @@ class ZebraStorageController extends Controller
         return view('admin.storage.zebra.index');
     }
 
-    public function get()
+    public function getAll()
     {
         $zebras = ZebraStorage::with(['catalog', 'category'])->get();
         return response()->json($zebras);
+    }
+
+    public function get($id)
+    {
+        $zebra = ZebraStorage::with(['catalog', 'category'])->find($id);
+        return response()->json($zebra);
     }
 
     /**
@@ -56,10 +62,7 @@ class ZebraStorageController extends Controller
      */
     public function show($id)
     {
-        $zebra = ZebraStorage::find($id);
-        $parts = ZebraPartsStorage::with(['type', 'status', 'provider', 'zebraStorage'])->where('zebra_storage_id', $id)->orderBy('type_id')->get();
-        $actions = ZebraActionsStorage::index($id)->filter()->paginate('10');
-        return view('admin.storage.zebra.show', compact('zebra', 'parts', 'actions'));
+        return view('admin.storage.zebra.show', compact('id'));
     }
 
     /**

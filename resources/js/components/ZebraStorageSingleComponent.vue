@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2 class="mb-4">Ткань рулонная: {{ item.label }}</h2>
+        <h2 class="mb-4">Ткань день-ночь: {{ item.label }}</h2>
         <b-card no-body>
             <b-tabs card>
                 <b-tab title="Общая информация" active>
@@ -14,10 +14,6 @@
 
                             <dt class="col-sm-3">Категория:</dt>
                             <dd class="col-sm-9">{{ item.category.label }}</dd>
-
-                            <dt class="col-sm-3">Направление рисунка:</dt>
-                            <dd class="col-sm-9">{{ item.picture.label }}</dd>
-
                         </dl>
                     </b-card-text>
                 </b-tab>
@@ -349,7 +345,7 @@
     import moment from "moment";
     moment.locale('ru');
     export default {
-        name: "RollStorageSingleComponent",
+        name: "ZebraStorageSingleComponent",
         components: { DateRangePicker },
         props:['id'],
         data() {
@@ -520,7 +516,7 @@
         },
         methods: {
             loadItem() {
-                axios.post('/admin/storage/roll/get/'+this.id)
+                axios.post('/admin/storage/zebra/get/'+this.id)
                     .then((response) => {
                         this.item = response.data;
                     })
@@ -532,8 +528,8 @@
             },
             loadActions() {
                 this.isActionsBusy = true;
-                axios.post('/admin/storage/roll_actions/getAll', {
-                    roll_storage_id: this.id,
+                axios.post('/admin/storage/zebra_actions/getAll', {
+                    zebra_storage_id: this.id,
                     startDate: moment.utc(this.dateRange.startDate),
                     endDate: moment.utc(this.dateRange.endDate),
                 })
@@ -544,8 +540,8 @@
                     })
             },
             loadParts() {
-                axios.post('/admin/storage/roll_parts/getAll', {
-                    roll_storage_id: this.id
+                axios.post('/admin/storage/zebra_parts/getAll', {
+                    zebra_storage_id: this.id
                 })
                     .then((response) => {
                         console.log(response.data);
@@ -554,8 +550,8 @@
             },
             addPart(){
                 this.actionLoad = true;
-                this.new_part.roll_storage_id = this.id;
-                axios.post('/admin/storage/roll_parts', {
+                this.new_part.zebra_storage_id = this.id;
+                axios.post('/admin/storage/zebra_parts', {
                     part: this.new_part,
                 })
                     .then((response) => {
@@ -567,9 +563,9 @@
                     });
             },
             addAction(type, reason, width, lenght){
-                axios.post('/admin/storage/roll_actions', {
+                axios.post('/admin/storage/zebra_actions', {
                     action: {
-                        roll_storage_id: this.id,
+                        zebra_storage_id: this.id,
                         type_id: type,
                         reason: reason,
                         width: width,
@@ -583,7 +579,7 @@
             },
             deletePart(index){
                 this.actionLoad = true;
-                axios.delete('/admin/storage/roll_parts/'+this.parts[index].id)
+                axios.delete('/admin/storage/zebra_parts/'+this.parts[index].id)
                     .then((response) => {
                         this.addAction(2, this.deletingModal.reason, this.parts[index].width, this.parts[index].lenght);
                         this.$delete(this.parts, index);
@@ -606,7 +602,7 @@
                     this.$bvModal.hide(this.editingModal.id);
                     return false;
                 }
-                axios.put('/admin/storage/roll_parts/'+this.editingModal.part_id, {
+                axios.put('/admin/storage/zebra_parts/'+this.editingModal.part_id, {
                     part: {
                         lenght: this.parts[index].lenght - this.editingModal.lenght,
                     }

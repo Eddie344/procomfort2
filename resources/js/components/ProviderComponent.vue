@@ -1,18 +1,13 @@
 <template>
     <div>
         <b-form inline class="mb-3">
-            <b-form-select class="mr-3" v-model="product_type_selected" @change="load">
-                <option :value="null" disabled selected>Выберите тип изделия...</option>
-                <option value="roll">Рулонные шторы</option>
-                <option value="zebra">День-ночь</option>
-            </b-form-select>
-            <b-button class="mr-3" variant="success" v-b-modal.modalAddCategory v-if="tableLoaded && !isBusy">Добавить</b-button>
-            <b-modal ref="modalAddCategory" id="modalAddCategory" size="sm" title="Добавление" hide-footer centered>
+            <b-button class="mr-3" variant="success" v-b-modal.modalAddProvider v-if="tableLoaded && !isBusy">Добавить</b-button>
+            <b-modal ref="modalAddProvider" id="modalAddProvider" size="sm" title="Добавление" hide-footer centered>
                 <b-form @submit.prevent="addItem">
                     <b-form-group label="Наименование:">
                         <b-form-input type="text" :state="validation" v-model="new_item.label" required></b-form-input>
                         <b-form-invalid-feedback :state="validation">
-                            Данная категория уже существует
+                            Данный поставщик уже существует
                         </b-form-invalid-feedback>
                     </b-form-group>
                     <b-button variant="primary" type="submit" v-bind:disabled="actionLoad">
@@ -31,7 +26,7 @@
             empty-text="Нет записей"
             empty-filtered-text="По данному запросу нет записей"
             id="my-table"
-            :items="categories"
+            :items="providers"
             :fields="fields"
             :striped="true"
             :busy="isBusy"
@@ -50,7 +45,7 @@
         </b-table>
         <!--Delete modal-->
         <b-modal :id="deletingModal.id" size="sm" title="Вы уверены?" @hide="deletingModal.error = false" centered>
-            <b-alert variant="danger" show v-if="deletingModal.error">Нельзя удалить категорию, которой принадлежат ткани на складе</b-alert>
+            <b-alert variant="danger" show v-if="deletingModal.error">Нельзя удалить поставщика, которому принадлежат ткани на складе</b-alert>
             <template v-slot:modal-footer="{ ok }">
                 <b-button variant="danger" @click="deleteItem(deletingModal.index)" v-bind:disabled="actionLoad">
                     <span v-if="!actionLoad">Удалить</span>
@@ -69,9 +64,8 @@
         name: "CategoryComponent",
         data() {
             return {
-                product_type_selected: null,
                 tableLoaded: false,
-                categories: [],
+                providers: [],
                 new_item: {},
                 actionLoad: false,
                 isBusy: false,
@@ -95,18 +89,19 @@
         },
         computed: {
             validation() {
-                return !this.categories.some(i =>  i.label == this.new_item.label);
+                return !this.providers.some(i =>  i.label == this.new_item.label);
             }
+        },
+        mounted() {
+            this.load();
         },
         methods: {
             load(){
                 this.isBusy = true;
-                axios.post('/admin/other/categories/'+this.product_type_selected+'/get', {
-                    product_type_id: this.product_type_selected,
-                })
+                axios.post('/admin/other/providers/get')
                     .then((response) => {
                         console.log(response.data);
-                        this.categories = response.data;
+                        this.providers = response.data;
                         this.isBusy = false;
                         this.tableLoaded = true;
                     });
@@ -114,21 +109,21 @@
             addItem(){
                 if(!this.validation) return false;
                 this.actionLoad = true;
-                axios.post('/admin/other/categories/'+this.product_type_selected, {
+                axios.post('/admin/other/providers', {
                     item: this.new_item
                 })
                     .then((response) => {
-                        this.categories.push(response.data);
+                        this.providers.push(response.data);
                         this.new_item = {};
                         this.actionLoad = false;
-                        this.$refs['modalAddCategory'].hide();
+                        this.$refs['modalAddProvider'].hide();
                     });
             },
             deleteItem(index){
                 this.actionLoad = true;
-                axios.delete('/admin/other/categories/'+this.product_type_selected+'/'+this.categories[index].id)
+                axios.delete('/admin/other/providers/'+this.providers[index].id)
                     .then((response) => {
-                        this.$delete(this.categories, index);
+                        this.$delete(this.providers, index);
                         this.actionLoad = false;
                         this.$bvModal.hide(this.deletingModal.id);
                         this.deletingModal.index = null;

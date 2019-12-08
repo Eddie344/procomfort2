@@ -62,9 +62,6 @@ class RollStorageController extends Controller
      */
     public function show($id)
     {
-//        $roll = RollStorage::find($id);
-//        $parts = RollPartsStorage::with(['type', 'status', 'provider', 'rollStorage'])->where('roll_storage_id', $id)->orderBy('type_id')->get();
-//        $actions = RollActionsStorage::index($id)->filter()->paginate('10');
         return view('admin.storage.roll.show', compact('id'));
     }
 

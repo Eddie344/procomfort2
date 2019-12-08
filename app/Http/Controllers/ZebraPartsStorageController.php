@@ -21,6 +21,12 @@ class ZebraPartsStorageController extends Controller
         //
     }
 
+    public function getAll(Request $request)
+    {
+        $parts = ZebraPartsStorage::with(['type', 'status', 'provider', 'zebraStorage'])->where('zebra_storage_id', $request->zebra_storage_id)->get();
+        return response()->json($parts);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -39,16 +45,9 @@ class ZebraPartsStorageController extends Controller
      */
     public function store(Request $request)
     {
-        ZebraPartsStorage::create($request->all());
-        $action = new ZebraActionsStorage;
-        $action -> zebra_storage_id = $request->zebra_storage_id;
-        $action -> type_id = 1;
-        $action -> user_id = Auth::id();
-        $action -> reason = $request->reason;
-        $action -> width = $request->width;
-        $action -> lenght = $request->lenght;
-        $action->save();
-        return redirect(route('zebra.show', ['id' => $request->zebra_storage_id]))->with(['part_status' => 'Партия успешно добавлена!', 'part_color' => 'success']);
+        $item = ZebraPartsStorage::create($request->part);
+        $new_item = $item->with(['type', 'status', 'provider', 'zebraStorage'])->find($item->id);
+        return response()->json($new_item);
     }
 
     /**
@@ -82,11 +81,9 @@ class ZebraPartsStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $part = ZebraPartsStorage::find($id);
-        ZebraPartsStorageService::cutPart($request, $part);
-        ZebraPartsStorageService::createPiece($request, $part->width);
-        ZebraActionsStorageService::createAction($request);
-        return redirect(route('zebra.show', ['id' => $request->zebra_storage_id]))->with(['part_status' => 'Изменения сохранены!', 'part_color' => 'success']);
+        $part = $request->part;
+        ZebraPartsStorage::find($id)->update($part);
+        return response()->json(ZebraPartsStorage::with(['type', 'status', 'provider', 'zebraStorage'])->find($id));
     }
 
     /**
@@ -96,17 +93,9 @@ class ZebraPartsStorageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
-        $action = new ZebraActionsStorage;
-        $action -> zebra_storage_id = $request->zebra_storage_id;
-        $action -> type_id = $request->type_id;
-        $action -> user_id = Auth::id();
-        $action -> reason = $request->reason;
-        $action -> width = $request->width;
-        $action -> lenght = $request->lenght;
-        $action->save();
         ZebraPartsStorage::destroy($id);
-        return redirect(route('zebra.show', ['id' => $request->zebra_storage_id]))->with(['part_status' => 'Предмет успешно удален!', 'part_color' => 'danger']);
+        return response($id);
     }
 }

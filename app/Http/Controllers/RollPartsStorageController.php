@@ -63,11 +63,6 @@ class RollPartsStorageController extends Controller
         $part = $request->part;
         RollPartsStorage::find($id)->update($part);
         return response()->json(RollPartsStorage::with(['type', 'status', 'provider', 'rollStorage'])->find($id));
-//        $part = RollPartsStorage::find($id);
-//        RollPartsStorageService::cutPart($request, $part);
-//        RollPartsStorageService::createPiece($request, $part->width);
-//        RollActionsStorageService::createAction($request);
-//        return redirect(route('roll.show', ['id' => $request->roll_storage_id]))->with(['part_status' => 'Изменения сохранены!', 'part_color' => 'success']);
     }
 
     /**

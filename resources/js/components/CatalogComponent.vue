@@ -1,13 +1,13 @@
 <template>
     <div>
         <b-form inline class="mb-3">
-            <b-button class="mr-3" variant="success" v-b-modal.modalAddCategory v-if="tableLoaded && !isBusy">Добавить</b-button>
-            <b-modal ref="modalAddPrice" id="modalAddCategory" size="sm" title="Добавление" hide-footer centered>
+            <b-button class="mr-3" variant="success" v-b-modal.modalAddCatalog v-if="tableLoaded && !isBusy">Добавить</b-button>
+            <b-modal ref="modalAddCatalog" id="modalAddCatalog" size="sm" title="Добавление" hide-footer centered>
                 <b-form @submit.prevent="addItem">
                     <b-form-group label="Наименование:">
                         <b-form-input type="text" :state="validation" v-model="new_item.label" required></b-form-input>
                         <b-form-invalid-feedback :state="validation">
-                            Данная категория уже существует
+                            Данный каталог уже существует
                         </b-form-invalid-feedback>
                     </b-form-group>
                     <b-button variant="primary" type="submit" v-bind:disabled="actionLoad">
@@ -45,7 +45,7 @@
         </b-table>
         <!--Delete modal-->
         <b-modal :id="deletingModal.id" size="sm" title="Вы уверены?" @hide="deletingModal.error = false" centered>
-            <b-alert variant="danger" show v-if="deletingModal.error">Нельзя удалить категорию, которой принадлежат ткани на складе</b-alert>
+            <b-alert variant="danger" show v-if="deletingModal.error">Нельзя удалить каталог, которому принадлежат ткани на складе</b-alert>
             <template v-slot:modal-footer="{ ok }">
                 <b-button variant="danger" @click="deleteItem(deletingModal.index)" v-bind:disabled="actionLoad">
                     <span v-if="!actionLoad">Удалить</span>
@@ -64,7 +64,6 @@
         name: "CategoryComponent",
         data() {
             return {
-                product_type_selected: null,
                 tableLoaded: false,
                 catalogs: [],
                 new_item: {},
@@ -110,21 +109,21 @@
             addItem(){
                 if(!this.validation) return false;
                 this.actionLoad = true;
-                axios.post('/admin/other/categories/'+this.product_type_selected, {
+                axios.post('/admin/other/catalogs', {
                     item: this.new_item
                 })
                     .then((response) => {
-                        this.categories.push(response.data);
+                        this.catalogs.push(response.data);
                         this.new_item = {};
                         this.actionLoad = false;
-                        this.$refs['modalAddPrice'].hide();
+                        this.$refs['modalAddCatalog'].hide();
                     });
             },
             deleteItem(index){
                 this.actionLoad = true;
-                axios.delete('/admin/other/categories/'+this.product_type_selected+'/'+this.categories[index].id)
+                axios.delete('/admin/other/catalogs/'+this.catalogs[index].id)
                     .then((response) => {
-                        this.$delete(this.categories, index);
+                        this.$delete(this.catalogs, index);
                         this.actionLoad = false;
                         this.$bvModal.hide(this.deletingModal.id);
                         this.deletingModal.index = null;

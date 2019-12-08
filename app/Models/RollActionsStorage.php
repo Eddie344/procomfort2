@@ -36,8 +36,6 @@ class RollActionsStorage extends Model
         if(request('startDate') && request('endDate')) {
             $startDate = Carbon::create(request('startDate'));
             $endDate = Carbon::create(request('endDate'));
-//            $startDate = Carbon::createFromFormat('d-m-Y', request('startDate'));
-//            $endDate = Carbon::createFromFormat('d-m-Y', request('endDate'));
             $query->whereBetween('created_at', [$startDate, $endDate]);
         }
         if(request('type'))

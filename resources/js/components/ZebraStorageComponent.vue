@@ -96,6 +96,9 @@
             :filter="filter"
             :filterIncludedFields="filterOn"
         >
+            <template v-slot:cell(label)="data">
+                <a :href="'/admin/storage/zebra/'+ data.item.id">{{ data.item.label }}</a>
+            </template>
             <template v-slot:cell(catalog)="data">
                 {{ data.item.catalog.label }}
             </template>
@@ -267,7 +270,7 @@
         methods:{
             load(){
                 this.isBusy = true;
-                axios.post('/admin/storage/zebra/get')
+                axios.post('/admin/storage/zebra/getAll')
                     .then((response) => {
                         this.items = response.data;
                         this.isBusy = false;

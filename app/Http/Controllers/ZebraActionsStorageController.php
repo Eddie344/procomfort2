@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Provider;
+use App\Models\ZebraActionsStorage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class ProviderController extends Controller
+class ZebraActionsStorageController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,12 +15,13 @@ class ProviderController extends Controller
      */
     public function index()
     {
-        return view('admin.other.providers.index');
+        //
     }
 
-    public function get()
+    public function getAll(Request $request)
     {
-        return response()->json(Provider::all());
+        $actions = ZebraActionsStorage::with(['type', 'user', 'zebraStorage'])->filter()->get();
+        return response()->json($actions);
     }
 
     /**
@@ -30,8 +32,10 @@ class ProviderController extends Controller
      */
     public function store(Request $request)
     {
-        $item = Provider::create($request->item);
-        $new_item = $item->find($item->id);
+        $new_action = $request->action;
+        $new_action['user_id'] = Auth::id();
+        $item = ZebraActionsStorage::create($new_action);
+        $new_item = $item->with(['type', 'user', 'zebraStorage'])->find($item->id);
         return response()->json($new_item);
     }
 
@@ -66,7 +70,7 @@ class ProviderController extends Controller
      */
     public function destroy($id)
     {
-        Provider::destroy($id);
+        ZebraActionsStorage::destroy($id);
         return response($id);
     }
 }
