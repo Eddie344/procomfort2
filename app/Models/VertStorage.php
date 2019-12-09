@@ -17,7 +17,7 @@ class VertStorage extends Model
 
     public function category()
     {
-        return $this->belongsTo('App\Models\VertCategory', 'category_id', 'id');
+        return $this->belongsTo('App\Models\VertPrice', 'category_id', 'id');
     }
 
     public function scopeFilter($query)

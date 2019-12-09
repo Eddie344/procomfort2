@@ -16,6 +16,8 @@ class CreateZebraCategoriesTable extends Migration
         Schema::create('zebra_categories', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('label');
+            $table->unsignedBigInteger('catalog_id');
+            $table->foreign('catalog_id')->references('id')->on('catalogs');
             $table->timestamps();
         });
     }

@@ -16,6 +16,12 @@ class FurnPartsStorageController extends Controller
         //
     }
 
+    public function getAll(Request $request)
+    {
+        $parts = FurnPartsStorage::with(['type', 'status', 'provider', 'furnStorage'])->where('furn_storage_id', $request->furn_storage_id)->get();
+        return response()->json($parts);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -34,15 +40,9 @@ class FurnPartsStorageController extends Controller
      */
     public function store(Request $request)
     {
-        FurnPartsStorage::create($request->all());
-        $action = new FurnActionsStorage;
-        $action -> furn_storage_id = $request->furn_storage_id;
-        $action -> type_id = 1;
-        $action -> user_id = Auth::id();
-        $action -> reason = $request->reason;
-        $action -> count = $request->count;
-        $action->save();
-        return redirect(route('furn.show', ['id' => $request->furn_storage_id]))->with(['part_status' => 'Партия успешно добавлена!', 'part_color' => 'success']);
+        $item = FurnPartsStorage::create($request->part);
+        $new_item = $item->with(['type', 'status', 'provider', 'furnStorage'])->find($item->id);
+        return response()->json($new_item);
     }
 
     /**
@@ -76,10 +76,9 @@ class FurnPartsStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $part = FurnPartsStorage::find($id);
-        FurnPartsStorageService::cutPart($request, $part);
-        FurnActionsStorageService::createAction($request);
-        return redirect(route('furn.show', ['id' => $request->furn_storage_id]))->with(['part_status' => 'Изменения сохранены!', 'part_color' => 'success']);
+        $part = $request->part;
+        FurnPartsStorage::find($id)->update($part);
+        return response()->json(FurnPartsStorage::with(['type', 'status', 'provider', 'furnStorage'])->find($id));
     }
 
     /**
@@ -88,16 +87,9 @@ class FurnPartsStorageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
-        $action = new FurnActionsStorage;
-        $action -> furn_storage_id = $request->furn_storage_id;
-        $action -> type_id = $request->type_id;
-        $action -> user_id = Auth::id();
-        $action -> reason = $request->reason;
-        $action -> count = $request->count;
-        $action->save();
         FurnPartsStorage::destroy($id);
-        return redirect(route('furn.show', ['id' => $request->furn_storage_id]))->with(['part_status' => 'Предмет успешно удален!', 'part_color' => 'danger']);
+        return response($id);
     }
 }

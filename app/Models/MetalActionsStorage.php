@@ -32,15 +32,18 @@ class MetalActionsStorage extends Model
 
     public function scopeFilter($query)
     {
-        if (request('date_period')) {
-            $dates = explode(' - ', (request('date_period')));
-            $startDate = Carbon::createFromFormat('d/m/Y', $dates[0]);
-            $endDate = Carbon::createFromFormat('d/m/Y', $dates[1]);
+        if(request('startDate') && request('endDate')) {
+            $startDate = Carbon::create(request('startDate'));
+            $endDate = Carbon::create(request('endDate'));
             $query->whereBetween('created_at', [$startDate, $endDate]);
         }
         if (request('type'))
         {
             $query->where('type_id', request('type'));
+        }
+        if(request('metal_storage_id'))
+        {
+            $query->where('metal_storage_id', request('metal_storage_id'));
         }
         return $query;
     }

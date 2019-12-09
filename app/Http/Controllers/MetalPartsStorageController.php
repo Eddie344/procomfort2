@@ -16,6 +16,12 @@ class MetalPartsStorageController extends Controller
         //
     }
 
+    public function getAll(Request $request)
+    {
+        $parts = MetalPartsStorage::with(['type', 'status', 'provider', 'metalStorage'])->where('metal_storage_id', $request->metal_storage_id)->get();
+        return response()->json($parts);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -34,15 +40,9 @@ class MetalPartsStorageController extends Controller
      */
     public function store(Request $request)
     {
-        MetalPartsStorage::create($request->all());
-        $action = new MetalActionsStorage;
-        $action -> metal_storage_id = $request->metal_storage_id;
-        $action -> type_id = 1;
-        $action -> user_id = Auth::id();
-        $action -> reason = $request->reason;
-        $action -> lenght = $request->lenght;
-        $action->save();
-        return redirect(route('metal.show', ['id' => $request->metal_storage_id]))->with(['part_status' => 'Партия успешно добавлена!', 'part_color' => 'success']);
+        $item = MetalPartsStorage::create($request->part);
+        $new_item = $item->with(['type', 'status', 'provider', 'metalStorage'])->find($item->id);
+        return response()->json($new_item);
     }
 
     /**
@@ -76,10 +76,9 @@ class MetalPartsStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $part = MetalPartsStorage::find($id);
-        MetalPartsStorageService::cutPart($request, $part);
-        MetalActionsStorageService::createAction($request);
-        return redirect(route('metal.show', ['id' => $request->metal_storage_id]))->with(['part_status' => 'Изменения сохранены!', 'part_color' => 'success']);
+        $part = $request->part;
+        MetalPartsStorage::find($id)->update($part);
+        return response()->json(MetalPartsStorage::with(['type', 'status', 'provider', 'metalStorage'])->find($id));
     }
 
     /**
@@ -88,16 +87,9 @@ class MetalPartsStorageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
-        $action = new MetalActionsStorage;
-        $action -> metal_storage_id = $request->metal_storage_id;
-        $action -> type_id = $request->type_id;
-        $action -> user_id = Auth::id();
-        $action -> reason = $request->reason;
-        $action -> lenght = $request->lenght;
-        $action->save();
         MetalPartsStorage::destroy($id);
-        return redirect(route('metal.show', ['id' => $request->metal_storage_id]))->with(['part_status' => 'Предмет успешно удален!', 'part_color' => 'danger']);
+        return response($id);
     }
 }

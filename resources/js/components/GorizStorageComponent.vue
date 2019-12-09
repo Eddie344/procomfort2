@@ -16,19 +16,22 @@
                                 class="mb-3"
                                 value-field="id"
                                 text-field="label"
+                                @change="getCategories"
+                                required
                             >
                                 <template v-slot:first>
                                     <option :value="null" disabled selected>Выберите каталог...</option>
                                 </template>
                             </b-form-select>
                         </b-form-group>
-                        <b-form-group label="Категория:">
+                        <b-form-group label="Категория:" v-if="new_item.catalog_id">
                             <b-form-select
                                 v-model="new_item.category_id"
                                 :options="categories"
                                 class="mb-3"
                                 value-field="id"
-                                text-field="label"
+                                text-field="category"
+                                required
                             >
                                 <template v-slot:first>
                                     <option :value="null" disabled selected>Выберите категорию...</option>
@@ -96,11 +99,14 @@
             :filter="filter"
             :filterIncludedFields="filterOn"
         >
+            <template v-slot:cell(label)="data">
+                <a :href="'/admin/storage/goriz/'+ data.item.id">{{ data.item.label }}</a>
+            </template>
             <template v-slot:cell(catalog)="data">
                 {{ data.item.catalog.label }}
             </template>
             <template v-slot:cell(category)="data">
-                {{ data.item.category.label }}
+                {{ data.item.category.category }}
             </template>
             <template v-slot:cell(delete)="data">
                 <b-button class="p-0" variant="link" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
@@ -267,7 +273,7 @@
         methods:{
             load(){
                 this.isBusy = true;
-                axios.post('/admin/storage/goriz/get')
+                axios.post('/admin/storage/goriz/getAll')
                     .then((response) => {
                         this.items = response.data;
                         this.isBusy = false;
@@ -330,10 +336,13 @@
                 this.editingModal.category = null;
             },
             getCategories(){
-                axios.post('/admin/other/categories/goriz/get')
+                axios.post('/admin/price/goriz/get', {
+                    catalog_id: this.new_item.catalog_id,
+                })
                     .then((response) => {
                         this.categories = response.data;
                     });
+                this.new_item.category_id = null;
             },
             getCatalogs(){
                 axios.post('/admin/other/catalogs/get')

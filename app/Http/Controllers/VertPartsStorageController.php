@@ -21,6 +21,12 @@ class VertPartsStorageController extends Controller
         //
     }
 
+    public function getAll(Request $request)
+    {
+        $parts = VertPartsStorage::with(['type', 'status', 'provider', 'vertStorage'])->where('vert_storage_id', $request->vert_storage_id)->get();
+        return response()->json($parts);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -39,15 +45,9 @@ class VertPartsStorageController extends Controller
      */
     public function store(Request $request)
     {
-        VertPartsStorage::create($request->all());
-        $action = new VertActionsStorage;
-        $action -> vert_storage_id = $request->vert_storage_id;
-        $action -> type_id = 1;
-        $action -> user_id = Auth::id();
-        $action -> reason = $request->reason;
-        $action -> lenght = $request->lenght;
-        $action->save();
-        return redirect(route('vert.show', ['id' => $request->vert_storage_id]))->with(['part_status' => 'Партия успешно добавлена!', 'part_color' => 'success']);
+        $item = VertPartsStorage::create($request->part);
+        $new_item = $item->with(['type', 'status', 'provider', 'vertStorage'])->find($item->id);
+        return response()->json($new_item);
     }
 
     /**
@@ -81,10 +81,9 @@ class VertPartsStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $part = VertPartsStorage::find($id);
-        VertPartsStorageService::cutPart($request, $part);
-        VertActionsStorageService::createAction($request);
-        return redirect(route('vert.show', ['id' => $request->vert_storage_id]))->with(['part_status' => 'Изменения сохранены!', 'part_color' => 'success']);
+        $part = $request->part;
+        VertPartsStorage::find($id)->update($part);
+        return response()->json(VertPartsStorage::with(['type', 'status', 'provider', 'vertStorage'])->find($id));
     }
 
     /**
@@ -93,16 +92,9 @@ class VertPartsStorageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
-        $action = new VertActionsStorage;
-        $action -> vert_storage_id = $request->vert_storage_id;
-        $action -> type_id = $request->type_id;
-        $action -> user_id = Auth::id();
-        $action -> reason = $request->reason;
-        $action -> lenght = $request->lenght;
-        $action->save();
         VertPartsStorage::destroy($id);
-        return redirect(route('vert.show', ['id' => $request->vert_storage_id]))->with(['part_status' => 'Предмет успешно удален!', 'part_color' => 'danger']);
+        return response($id);
     }
 }

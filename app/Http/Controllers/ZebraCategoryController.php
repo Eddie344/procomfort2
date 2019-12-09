@@ -19,7 +19,8 @@ class ZebraCategoryController extends Controller
 
     public function get()
     {
-        return response()->json(ZebraCategory::all());
+        $categories = ZebraCategory::filter()->get();
+        return response()->json($categories);
     }
 
     /**
@@ -30,7 +31,9 @@ class ZebraCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $item = ZebraCategory::create($request->item);
+        $new_item = $item->find($item->id);
+        return response()->json($new_item);
     }
 
     /**

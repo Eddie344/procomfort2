@@ -1,10 +1,21 @@
 <template>
     <div>
         <b-form inline class="mb-3">
-            <b-form-select class="mr-3" v-model="product_type_selected" @change="load">
+            <b-form-select class="mr-3" v-model="product_type_selected" @change="resetCatalogSelect">
                 <option :value="null" disabled selected>Выберите тип изделия...</option>
                 <option value="roll">Рулонные шторы</option>
                 <option value="zebra">День-ночь</option>
+            </b-form-select>
+            <b-form-select class="mr-3"
+                           v-model="catalog_selected"
+                           v-if="product_type_selected"
+                           :options="catalogs"
+                           value-field="id"
+                           text-field="label"
+                           @change="load">
+                <template v-slot:first>
+                    <option :value="null" disabled selected>Выберите каталог...</option>
+                </template>
             </b-form-select>
             <b-button class="mr-3" variant="success" v-b-modal.modalAddCategory v-if="tableLoaded && !isBusy">Добавить</b-button>
             <b-modal ref="modalAddCategory" id="modalAddCategory" size="sm" title="Добавление" hide-footer centered>
@@ -70,7 +81,9 @@
         data() {
             return {
                 product_type_selected: null,
+                catalog_selected: null,
                 tableLoaded: false,
+                catalogs: [],
                 categories: [],
                 new_item: {},
                 actionLoad: false,
@@ -98,11 +111,15 @@
                 return !this.categories.some(i =>  i.label == this.new_item.label);
             }
         },
+        mounted(){
+            this.getCatalogs();
+        },
         methods: {
             load(){
                 this.isBusy = true;
                 axios.post('/admin/other/categories/'+this.product_type_selected+'/get', {
                     product_type_id: this.product_type_selected,
+                    catalog_id: this.catalog_selected,
                 })
                     .then((response) => {
                         console.log(response.data);
@@ -114,6 +131,7 @@
             addItem(){
                 if(!this.validation) return false;
                 this.actionLoad = true;
+                this.new_item.catalog_id = this.catalog_selected;
                 axios.post('/admin/other/categories/'+this.product_type_selected, {
                     item: this.new_item
                 })
@@ -141,6 +159,16 @@
             deleteModal(index) {
                 this.deletingModal.index = index;
                 this.$root.$emit('bv::show::modal', this.deletingModal.id);
+            },
+            getCatalogs(){
+                axios.post('/admin/other/catalogs/get')
+                    .then((response) => {
+                        this.catalogs = response.data;
+                    });
+            },
+            resetCatalogSelect(){
+                this.catalog_selected = null;
+                this.tableLoaded = false;
             },
         }
     }

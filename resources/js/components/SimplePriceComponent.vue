@@ -11,7 +11,7 @@
             <b-modal ref="modalAddPrice" id="modalAddPrice" size="sm" title="Добавление цены" hide-footer centered>
                 <b-form @submit.prevent="addPrice">
                     <b-form-group label="Категория:">
-                        <b-form-input type="number" :state="validation" v-model="new_price.category_id" required></b-form-input>
+                        <b-form-input type="number" :state="validation" v-model="new_price.category" required></b-form-input>
                         <b-form-invalid-feedback :state="validation">
                             Укажите уникальную категорию
                         </b-form-invalid-feedback>
@@ -44,7 +44,7 @@
                 <transition-group name="row-fade" tag="tbody" mode="out-in">
                     <caption v-show="!Object.keys(prices).length" key="empty">Таблица пуста</caption>
                     <tr v-for="(price, index) in prices" v-bind:key="price.id">
-                        <th scope="row">{{ price.category_id }}</th>
+                        <th scope="row">{{ price.category }}</th>
                         <td>{{ price.price }}</td>
                         <td>
                             <b-button class="p-0" variant="link" v-b-modal ="'modalDeletePrice'+price.id"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
@@ -60,7 +60,7 @@
                             <b-modal ref="modalEditPrice" :id="'modalEditPrice'+price.id" size="sm" title="Редактирование" hide-footer centered>
                                 <b-form @submit.prevent="editPrice(price.id, index)">
                                     <b-form-group label="Категория:">
-                                        <b-form-input type="number" v-model="price.category_id" readonly></b-form-input>
+                                        <b-form-input type="number" v-model="price.category" readonly></b-form-input>
                                     </b-form-group>
                                     <b-form-group label="Цена:">
                                         <b-form-input type="number" v-model="price.price" required></b-form-input>
@@ -103,7 +103,7 @@
         },
         computed: {
             validation() {
-                return !this.prices.some(i =>  i.category_id == this.new_price.category_id);
+                return !this.prices.some(i =>  i.category == this.new_price.category);
             }
         },
         methods:{
@@ -129,7 +129,7 @@
                 if(!this.validation) return false;
                 axios.post('/admin/price/'+this.type, {
                     catalog_id: this.catalog_selected,
-                    category_id: this.new_price.category_id,
+                    category: this.new_price.category,
                     price: this.new_price.price,
                 })
                     .then((response) => {

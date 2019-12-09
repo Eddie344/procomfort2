@@ -16,13 +16,15 @@
                                 class="mb-3"
                                 value-field="id"
                                 text-field="label"
+                                @change="getCategories"
+                                required
                             >
                                 <template v-slot:first>
                                     <option :value="null" disabled selected>Выберите каталог...</option>
                                 </template>
                             </b-form-select>
                         </b-form-group>
-                        <b-form-group label="Категория:">
+                        <b-form-group label="Категория:" v-if="new_item.catalog_id">
                             <b-form-select
                                 v-model="new_item.category_id"
                                 :options="categories"
@@ -333,10 +335,13 @@
                 this.editingModal.category = null;
             },
             getCategories(){
-                axios.post('/admin/other/categories/zebra/get')
+                axios.post('/admin/other/categories/zebra/get', {
+                    catalog_id: this.new_item.catalog_id
+                })
                     .then((response) => {
                         this.categories = response.data;
                     });
+                this.new_item.category_id = null;
             },
             getCatalogs(){
                 axios.post('/admin/other/catalogs/get')

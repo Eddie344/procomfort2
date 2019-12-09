@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RollCategory;
+use App\Models\FurnActionsStorage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class RollCategoryController extends Controller
+class FurnActionsStorageController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,10 +18,10 @@ class RollCategoryController extends Controller
         //
     }
 
-    public function get()
+    public function getAll(Request $request)
     {
-        $categories = RollCategory::filter()->get();
-        return response()->json($categories);
+        $actions = FurnActionsStorage::with(['type', 'user', 'furnStorage'])->filter()->get();
+        return response()->json($actions);
     }
 
     /**
@@ -31,8 +32,10 @@ class RollCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $item = RollCategory::create($request->item);
-        $new_item = $item->find($item->id);
+        $new_action = $request->action;
+        $new_action['user_id'] = Auth::id();
+        $item = FurnActionsStorage::create($new_action);
+        $new_item = $item->with(['type', 'user', 'furnStorage'])->find($item->id);
         return response()->json($new_item);
     }
 
@@ -67,7 +70,7 @@ class RollCategoryController extends Controller
      */
     public function destroy($id)
     {
-        RollCategory::destroy($id);
+        FurnActionsStorage::destroy($id);
         return response($id);
     }
 }

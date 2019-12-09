@@ -19,10 +19,16 @@ class VertStorageController extends Controller
         return view('admin.storage.vert.index');
     }
 
-    public function get()
+    public function getAll()
     {
-        $items = VertStorage::with(['catalog', 'category'])->get();
-        return response()->json($items);
+        $verts = VertStorage::with(['catalog', 'category'])->get();
+        return response()->json($verts);
+    }
+
+    public function get($id)
+    {
+        $vert = VertStorage::with(['catalog', 'category'])->find($id);
+        return response()->json($vert);
     }
 
     /**
@@ -56,10 +62,7 @@ class VertStorageController extends Controller
      */
     public function show($id)
     {
-        $zebra = ZebraStorage::find($id);
-        $parts = ZebraPartsStorage::with(['type', 'status', 'provider', 'zebraStorage'])->where('zebra_storage_id', $id)->orderBy('type_id')->get();
-        $actions = ZebraActionsStorage::index($id)->filter()->paginate('10');
-        return view('admin.storage.zebra.show', compact('zebra', 'parts', 'actions'));
+        return view('admin.storage.vert.show', compact('id'));
     }
 
     /**

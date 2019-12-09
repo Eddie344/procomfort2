@@ -19,7 +19,7 @@ class CreateGorizStoragesTable extends Migration
             $table->unsignedBigInteger('catalog_id');
             $table->foreign('catalog_id')->references('id')->on('catalogs');
             $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('goriz_categories');
+            $table->foreign('category_id')->references('id')->on('goriz_prices');
             $table->timestamps();
         });
     }

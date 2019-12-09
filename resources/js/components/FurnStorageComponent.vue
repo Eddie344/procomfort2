@@ -72,6 +72,9 @@
             :filter="filter"
             :filterIncludedFields="filterOn"
         >
+            <template v-slot:cell(label)="data">
+                <a :href="'/admin/storage/furn/'+ data.item.id">{{ data.item.label }}</a>
+            </template>
             <template v-slot:cell(delete)="data">
                 <b-button class="p-0" variant="link" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
                 <b-button class="p-0" variant="link" @click="editModal(data.index, data.item)" ><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
@@ -203,7 +206,7 @@
         methods:{
             load(){
                 this.isBusy = true;
-                axios.post('/admin/storage/furn/get')
+                axios.post('/admin/storage/furn/getAll')
                     .then((response) => {
                         this.items = response.data;
                         this.isBusy = false;

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGorizCategoriesTable extends Migration
+class CreateVertPricesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreateGorizCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('goriz_categories', function (Blueprint $table) {
+        Schema::create('vert_prices', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('label');
-            $table->timestamps();
+            $table->unsignedBigInteger('catalog_id');
+            $table->foreign('catalog_id')->references('id')->on('catalogs');
+            $table->string('category');
+            $table->float('price', 8, 2);
         });
     }
 
@@ -27,6 +29,6 @@ class CreateGorizCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('goriz_categories');
+        Schema::dropIfExists('vert_prices');
     }
 }

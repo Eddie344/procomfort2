@@ -19,10 +19,16 @@ class MetalStorageController extends Controller
         return view('admin.storage.metal.index');
     }
 
-    public function get()
+    public function getAll()
     {
-        $items = MetalStorage::all();
-        return response()->json($items);
+        $metals = MetalStorage::all();
+        return response()->json($metals);
+    }
+
+    public function get($id)
+    {
+        $metal = MetalStorage::find($id);
+        return response()->json($metal);
     }
 
     /**
@@ -56,10 +62,7 @@ class MetalStorageController extends Controller
      */
     public function show($id)
     {
-        $zebra = ZebraStorage::find($id);
-        $parts = ZebraPartsStorage::with(['type', 'status', 'provider', 'zebraStorage'])->where('zebra_storage_id', $id)->orderBy('type_id')->get();
-        $actions = ZebraActionsStorage::index($id)->filter()->paginate('10');
-        return view('admin.storage.zebra.show', compact('zebra', 'parts', 'actions'));
+        return view('admin.storage.metal.show', compact('id'));
     }
 
     /**

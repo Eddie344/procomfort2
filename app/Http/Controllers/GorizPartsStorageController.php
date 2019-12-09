@@ -21,6 +21,12 @@ class GorizPartsStorageController extends Controller
         //
     }
 
+    public function getAll(Request $request)
+    {
+        $parts = GorizPartsStorage::with(['type', 'status', 'provider', 'gorizStorage'])->where('goriz_storage_id', $request->goriz_storage_id)->get();
+        return response()->json($parts);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -39,15 +45,9 @@ class GorizPartsStorageController extends Controller
      */
     public function store(Request $request)
     {
-        GorizPartsStorage::create($request->all());
-        $action = new GorizActionsStorage;
-        $action -> goriz_storage_id = $request->goriz_storage_id;
-        $action -> type_id = 1;
-        $action -> user_id = Auth::id();
-        $action -> reason = $request->reason;
-        $action -> lenght = $request->lenght;
-        $action->save();
-        return redirect(route('goriz.show', ['id' => $request->goriz_storage_id]))->with(['part_status' => 'Партия успешно добавлена!', 'part_color' => 'success']);
+        $item = GorizPartsStorage::create($request->part);
+        $new_item = $item->with(['type', 'status', 'provider', 'gorizStorage'])->find($item->id);
+        return response()->json($new_item);
     }
 
     /**
@@ -81,10 +81,9 @@ class GorizPartsStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $part = GorizPartsStorage::find($id);
-        GorizPartsStorageService::cutPart($request, $part);
-        GorizActionsStorageService::createAction($request);
-        return redirect(route('goriz.show', ['id' => $request->goriz_storage_id]))->with(['part_status' => 'Изменения сохранены!', 'part_color' => 'success']);
+        $part = $request->part;
+        GorizPartsStorage::find($id)->update($part);
+        return response()->json(GorizPartsStorage::with(['type', 'status', 'provider', 'gorizStorage'])->find($id));
     }
 
     /**
@@ -93,16 +92,9 @@ class GorizPartsStorageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
-        $action = new GorizActionsStorage;
-        $action -> goriz_storage_id = $request->goriz_storage_id;
-        $action -> type_id = $request->type_id;
-        $action -> user_id = Auth::id();
-        $action -> reason = $request->reason;
-        $action -> lenght = $request->lenght;
-        $action->save();
         GorizPartsStorage::destroy($id);
-        return redirect(route('goriz.show', ['id' => $request->goriz_storage_id]))->with(['part_status' => 'Предмет успешно удален!', 'part_color' => 'danger']);
+        return response($id);
     }
 }

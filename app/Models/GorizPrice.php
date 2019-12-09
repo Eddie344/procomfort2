@@ -20,10 +20,6 @@ class GorizPrice extends Model
         {
             $query->where('catalog_id', request('catalog_id'));
         }
-        if(request('category_id'))
-        {
-            $query->where('category_id', request('category_id'));
-        }
         return $query;
     }
 }

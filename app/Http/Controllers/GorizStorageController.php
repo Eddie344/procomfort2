@@ -19,10 +19,16 @@ class GorizStorageController extends Controller
         return view('admin.storage.goriz.index');
     }
 
-    public function get()
+    public function getAll()
     {
-        $items = GorizStorage::with(['catalog', 'category'])->get();
-        return response()->json($items);
+        $gorizs = GorizStorage::with(['catalog', 'category'])->get();
+        return response()->json($gorizs);
+    }
+
+    public function get($id)
+    {
+        $goriz = GorizStorage::with(['catalog', 'category'])->find($id);
+        return response()->json($goriz);
     }
 
     /**
@@ -56,10 +62,7 @@ class GorizStorageController extends Controller
      */
     public function show($id)
     {
-        $zebra = ZebraStorage::find($id);
-        $parts = ZebraPartsStorage::with(['type', 'status', 'provider', 'zebraStorage'])->where('zebra_storage_id', $id)->orderBy('type_id')->get();
-        $actions = ZebraActionsStorage::index($id)->filter()->paginate('10');
-        return view('admin.storage.zebra.show', compact('zebra', 'parts', 'actions'));
+        return view('admin.storage.goriz.show', compact('id'));
     }
 
     /**

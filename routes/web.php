@@ -27,38 +27,53 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
     Route::prefix('storage')->group(function () {
         Route::get('/', 'StorageController@index')->name('storage.index');
 
-        Route::apiResource('roll_parts', 'RollPartsStorageController');
-        Route::post('/roll_parts/getAll', 'RollPartsStorageController@getAll')->name('storage.roll_parts.getAll');
-        Route::apiResource('roll_actions', 'RollActionsStorageController');
-        Route::post('/roll_actions/getAll', 'RollActionsStorageController@getAll')->name('storage.roll_actions.getAll');
         Route::apiResource('roll', 'RollStorageController');
-        Route::post('/roll/getAll', 'RollStorageController@getAll')->name('storage.roll.getAll');
-        Route::post('/roll/get/{id}', 'RollStorageController@get')->name('storage.roll.get');
+        Route::post('/roll/getAll', 'RollStorageController@getAll');
+        Route::post('/roll/get/{id}', 'RollStorageController@get');
+        Route::apiResource('roll_parts', 'RollPartsStorageController');
+        Route::post('/roll_parts/getAll', 'RollPartsStorageController@getAll');
+        Route::apiResource('roll_actions', 'RollActionsStorageController');
+        Route::post('/roll_actions/getAll', 'RollActionsStorageController@getAll');
 
-
-        Route::apiResource('zebra_part', 'ZebraPartsStorageController');
-        Route::post('/zebra_parts/getAll', 'ZebraPartsStorageController@getAll')->name('storage.zebra_parts.getAll');
-        Route::apiResource('zebra_actions', 'ZebraActionsStorageController');
-        Route::post('/zebra_actions/getAll', 'ZebraActionsStorageController@getAll')->name('storage.zebra_actions.getAll');
         Route::apiResource('zebra', 'ZebraStorageController');
-        Route::post('/zebra/getAll', 'ZebraStorageController@getAll')->name('storage.zebra.getAll');
-        Route::post('/zebra/get/{id}', 'ZebraStorageController@get')->name('storage.zebra.get');
+        Route::post('/zebra/getAll', 'ZebraStorageController@getAll');
+        Route::post('/zebra/get/{id}', 'ZebraStorageController@get');
+        Route::apiResource('zebra_part', 'ZebraPartsStorageController');
+        Route::post('/zebra_parts/getAll', 'ZebraPartsStorageController@getAll');
+        Route::apiResource('zebra_actions', 'ZebraActionsStorageController');
+        Route::post('/zebra_actions/getAll', 'ZebraActionsStorageController@getAll');
 
-        Route::resource('vert_part', 'VertPartsStorageController')->only(['store', 'update', 'destroy']);
-        Route::resource('vert', 'VertStorageController')->except(['create', 'edit']);
-        Route::post('/vert/get', 'VertStorageController@get')->name('storage.vert.get');
+        Route::apiResource('vert', 'VertStorageController');
+        Route::post('/vert/getAll', 'VertStorageController@getAll');
+        Route::post('/vert/get/{id}', 'VertStorageController@get');
+        Route::apiResource('vert_part', 'VertPartsStorageController');
+        Route::post('/vert_parts/getAll', 'VertPartsStorageController@getAll');
+        Route::apiResource('vert_actions', 'VertActionsStorageController');
+        Route::post('/vert_actions/getAll', 'VertActionsStorageController@getAll');
 
-        Route::resource('goriz_part', 'GorizPartsStorageController')->only(['store', 'update', 'destroy']);
-        Route::resource('goriz', 'GorizStorageController')->except(['create', 'edit']);
-        Route::post('/goriz/get', 'GorizStorageController@get')->name('storage.goriz.get');
+        Route::apiResource('goriz', 'GorizStorageController');
+        Route::post('/goriz/getAll', 'GorizStorageController@getAll');
+        Route::post('/goriz/get/{id}', 'GorizStorageController@get');
+        Route::apiResource('goriz_part', 'GorizPartsStorageController');
+        Route::post('/goriz_parts/getAll', 'GorizPartsStorageController@getAll');
+        Route::apiResource('goriz_actions', 'GorizActionsStorageController');
+        Route::post('/goriz_actions/getAll', 'GorizActionsStorageController@getAll');
 
-        Route::resource('metal_part', 'MetalPartsStorageController')->only(['store', 'update', 'destroy']);
-        Route::resource('metal', 'MetalStorageController')->except(['create', 'edit']);
-        Route::post('/metal/get', 'MetalStorageController@get')->name('storage.metal.get');
+        Route::apiResource('metal', 'MetalStorageController');
+        Route::post('/metal/getAll', 'MetalStorageController@getAll');
+        Route::post('/metal/get/{id}', 'MetalStorageController@get');
+        Route::apiResource('metal_part', 'MetalPartsStorageController');
+        Route::post('/metal_parts/getAll', 'MetalPartsStorageController@getAll');
+        Route::apiResource('metal_actions', 'MetalActionsStorageController');
+        Route::post('/metal_actions/getAll', 'MetalActionsStorageController@getAll');
 
-        Route::resource('furn_part', 'FurnPartsStorageController')->only(['store', 'update', 'destroy']);
-        Route::resource('furn', 'FurnStorageController')->except(['create', 'edit']);
-        Route::post('/furn/get', 'FurnStorageController@get')->name('storage.furn.get');
+        Route::apiResource('furn', 'FurnStorageController');
+        Route::post('/furn/getAll', 'FurnStorageController@getAll');
+        Route::post('/furn/get/{id}', 'FurnStorageController@get');
+        Route::apiResource('furn_part', 'FurnPartsStorageController');
+        Route::post('/furn_parts/getAll', 'FurnPartsStorageController@getAll');
+        Route::apiResource('furn_actions', 'FurnActionsStorageController');
+        Route::post('/furn_actions/getAll', 'FurnActionsStorageController@getAll');
     });
     Route::prefix('/price')->group(function () {
         Route::view('/', 'admin.prices.nav')->name('price.index');

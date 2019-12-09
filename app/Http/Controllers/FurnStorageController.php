@@ -19,10 +19,16 @@ class FurnStorageController extends Controller
         return view('admin.storage.furn.index');
     }
 
-    public function get()
+    public function getAll()
     {
-        $items = FurnStorage::all();
-        return response()->json($items);
+        $furns = FurnStorage::all();
+        return response()->json($furns);
+    }
+
+    public function get($id)
+    {
+        $furn = FurnStorage::find($id);
+        return response()->json($furn);
     }
 
     /**
@@ -56,10 +62,7 @@ class FurnStorageController extends Controller
      */
     public function show($id)
     {
-        $zebra = ZebraStorage::find($id);
-        $parts = ZebraPartsStorage::with(['type', 'status', 'provider', 'zebraStorage'])->where('zebra_storage_id', $id)->orderBy('type_id')->get();
-        $actions = ZebraActionsStorage::index($id)->filter()->paginate('10');
-        return view('admin.storage.zebra.show', compact('zebra', 'parts', 'actions'));
+        return view('admin.storage.furn.show', compact('id'));
     }
 
     /**

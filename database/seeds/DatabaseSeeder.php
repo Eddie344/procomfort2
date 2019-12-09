@@ -17,12 +17,7 @@ class DatabaseSeeder extends Seeder
             ProvidersTableSeeder::class,
             CatalogsTableSeeder::class,
             RollPicturesTableSeeder::class,
-            RollCategoriesTableSeeder::class,
-            ZebraCategoriesTableSeeder::class,
-            VertCategoriesTableSeeder::class,
-            GorizCategoriesTableSeeder::class,
             StoragesTableSeeder::class,
-            RollStoragesTableSeeder::class,
             OrderStatusesTableSeeder::class,
             ProductTypesTableSeeder::class,
             ConstructionTypesTableSeeder::class,
@@ -36,10 +31,7 @@ class DatabaseSeeder extends Seeder
             StoragesTypesTableSeeder::class,
             PartStatusesTableSeeder::class,
             PartTypesTableSeeder::class,
-            RollPartsStoragesTableSeeder::class,
             StorageActionTypesTableSeeder::class,
-            RollActionsStoragesTableSeeder::class,
-            RollPricesTableSeeder::class,
         ]);
     }
 }
