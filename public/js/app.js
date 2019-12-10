@@ -4911,8 +4911,7 @@ __webpack_require__.r(__webpack_exports__);
         _this4.prices.push(_this4.new_price);
 
         _this4.new_price = {};
-      }); //this.showAlert('success', 'Цена успешно добавлена');
-
+      });
       this.$refs['modalAddPrice'].hide();
     },
     editPrice: function editPrice(id, index) {
@@ -4924,8 +4923,7 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response.data);
 
         _this5.load();
-      }); //this.showAlert('success', 'Цена успешно добавлена');
-
+      });
       this.$bvModal.hide('modalEditPrice' + id);
     },
     deletePrice: function deletePrice(index, id) {
@@ -4934,8 +4932,7 @@ __webpack_require__.r(__webpack_exports__);
       axios["delete"]('/admin/price/' + this.type + '/' + id).then(function (response) {
         console.log(response.data);
 
-        _this6.$delete(_this6.prices, index); //this.showAlert('danger', 'Цена успешно удалена');
-
+        _this6.$delete(_this6.prices, index);
       });
       this.$bvModal.hide('modalDeletePrice' + id);
     },
@@ -5663,22 +5660,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -5699,10 +5680,6 @@ moment__WEBPACK_IMPORTED_MODULE_2___default.a.locale('ru');
       partsFilter: null,
       partsFilterOn: [],
       parts_fields: [{
-        key: 'type',
-        label: 'Тип',
-        sortable: true
-      }, {
         key: 'provider',
         label: 'Поставщик',
         sortable: true
@@ -5900,8 +5877,6 @@ moment__WEBPACK_IMPORTED_MODULE_2___default.a.locale('ru');
           lenght: lenght
         }
       }).then(function (response) {
-        console.log(response.data);
-
         _this5.actions.push(response.data);
       });
     },
@@ -96586,7 +96561,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("dd", { staticClass: "col-sm-9" }, [
-                        _vm._v(_vm._s(_vm.item.category.label))
+                        _vm._v(_vm._s(_vm.item.category.category))
                       ])
                     ])
                   ])
@@ -96649,60 +96624,6 @@ var render = function() {
                                       }
                                     },
                                     [
-                                      _c(
-                                        "b-form-group",
-                                        { attrs: { label: "Тип:" } },
-                                        [
-                                          _c("b-form-select", {
-                                            staticClass: "mb-3",
-                                            attrs: {
-                                              options: _vm.part_types,
-                                              "value-field": "id",
-                                              "text-field": "label"
-                                            },
-                                            scopedSlots: _vm._u([
-                                              {
-                                                key: "first",
-                                                fn: function() {
-                                                  return [
-                                                    _c(
-                                                      "option",
-                                                      {
-                                                        attrs: {
-                                                          disabled: "",
-                                                          selected: ""
-                                                        },
-                                                        domProps: {
-                                                          value: null
-                                                        }
-                                                      },
-                                                      [
-                                                        _vm._v(
-                                                          "Выберите тип..."
-                                                        )
-                                                      ]
-                                                    )
-                                                  ]
-                                                },
-                                                proxy: true
-                                              }
-                                            ]),
-                                            model: {
-                                              value: _vm.new_part.type_id,
-                                              callback: function($$v) {
-                                                _vm.$set(
-                                                  _vm.new_part,
-                                                  "type_id",
-                                                  $$v
-                                                )
-                                              },
-                                              expression: "new_part.type_id"
-                                            }
-                                          })
-                                        ],
-                                        1
-                                      ),
-                                      _vm._v(" "),
                                       _c(
                                         "b-form-group",
                                         { attrs: { label: "Поставщик:" } },
@@ -97082,18 +97003,6 @@ var render = function() {
                                 _vm._v(
                                   "\n                            " +
                                     _vm._s(data.item.status.label) +
-                                    "\n                        "
-                                )
-                              ]
-                            }
-                          },
-                          {
-                            key: "cell(type)",
-                            fn: function(data) {
-                              return [
-                                _vm._v(
-                                  "\n                            " +
-                                    _vm._s(data.item.type.label) +
                                     "\n                        "
                                 )
                               ]

@@ -38,7 +38,7 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         Route::apiResource('zebra', 'ZebraStorageController');
         Route::post('/zebra/getAll', 'ZebraStorageController@getAll');
         Route::post('/zebra/get/{id}', 'ZebraStorageController@get');
-        Route::apiResource('zebra_part', 'ZebraPartsStorageController');
+        Route::apiResource('zebra_parts', 'ZebraPartsStorageController');
         Route::post('/zebra_parts/getAll', 'ZebraPartsStorageController@getAll');
         Route::apiResource('zebra_actions', 'ZebraActionsStorageController');
         Route::post('/zebra_actions/getAll', 'ZebraActionsStorageController@getAll');
@@ -46,7 +46,7 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         Route::apiResource('vert', 'VertStorageController');
         Route::post('/vert/getAll', 'VertStorageController@getAll');
         Route::post('/vert/get/{id}', 'VertStorageController@get');
-        Route::apiResource('vert_part', 'VertPartsStorageController');
+        Route::apiResource('vert_parts', 'VertPartsStorageController');
         Route::post('/vert_parts/getAll', 'VertPartsStorageController@getAll');
         Route::apiResource('vert_actions', 'VertActionsStorageController');
         Route::post('/vert_actions/getAll', 'VertActionsStorageController@getAll');
@@ -54,7 +54,7 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         Route::apiResource('goriz', 'GorizStorageController');
         Route::post('/goriz/getAll', 'GorizStorageController@getAll');
         Route::post('/goriz/get/{id}', 'GorizStorageController@get');
-        Route::apiResource('goriz_part', 'GorizPartsStorageController');
+        Route::apiResource('goriz_parts', 'GorizPartsStorageController');
         Route::post('/goriz_parts/getAll', 'GorizPartsStorageController@getAll');
         Route::apiResource('goriz_actions', 'GorizActionsStorageController');
         Route::post('/goriz_actions/getAll', 'GorizActionsStorageController@getAll');
@@ -62,7 +62,7 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         Route::apiResource('metal', 'MetalStorageController');
         Route::post('/metal/getAll', 'MetalStorageController@getAll');
         Route::post('/metal/get/{id}', 'MetalStorageController@get');
-        Route::apiResource('metal_part', 'MetalPartsStorageController');
+        Route::apiResource('metal_parts', 'MetalPartsStorageController');
         Route::post('/metal_parts/getAll', 'MetalPartsStorageController@getAll');
         Route::apiResource('metal_actions', 'MetalActionsStorageController');
         Route::post('/metal_actions/getAll', 'MetalActionsStorageController@getAll');
@@ -70,7 +70,7 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         Route::apiResource('furn', 'FurnStorageController');
         Route::post('/furn/getAll', 'FurnStorageController@getAll');
         Route::post('/furn/get/{id}', 'FurnStorageController@get');
-        Route::apiResource('furn_part', 'FurnPartsStorageController');
+        Route::apiResource('furn_parts', 'FurnPartsStorageController');
         Route::post('/furn_parts/getAll', 'FurnPartsStorageController@getAll');
         Route::apiResource('furn_actions', 'FurnActionsStorageController');
         Route::post('/furn_actions/getAll', 'FurnActionsStorageController@getAll');

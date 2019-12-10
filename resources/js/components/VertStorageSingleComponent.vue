@@ -13,7 +13,7 @@
                             <dd class="col-sm-9">{{ item.catalog.label }}</dd>
 
                             <dt class="col-sm-3">Категория:</dt>
-                            <dd class="col-sm-9">{{ item.category.label }}</dd>
+                            <dd class="col-sm-9">{{ item.category.category }}</dd>
                         </dl>
                     </b-card-text>
                 </b-tab>
@@ -25,19 +25,6 @@
 
                                 <b-modal ref="modalAddPart" id="modalAddPart" size="sm" title="Добавление" hide-footer centered>
                                     <b-form @submit.prevent="addPart">
-                                        <b-form-group label="Тип:">
-                                            <b-form-select
-                                                v-model="new_part.type_id"
-                                                :options="part_types"
-                                                class="mb-3"
-                                                value-field="id"
-                                                text-field="label"
-                                            >
-                                                <template v-slot:first>
-                                                    <option :value="null" disabled selected>Выберите тип...</option>
-                                                </template>
-                                            </b-form-select>
-                                        </b-form-group>
                                         <b-form-group label="Поставщик:">
                                             <b-form-select
                                                 v-model="new_part.provider_id"
@@ -139,9 +126,6 @@
                             </template>
                             <template v-slot:cell(status)="data">
                                 {{ data.item.status.label }}
-                            </template>
-                            <template v-slot:cell(type)="data">
-                                {{ data.item.type.label }}
                             </template>
                             <template v-slot:cell(delete)="data">
                                 <b-button class="p-0" variant="link" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
@@ -350,11 +334,6 @@
                 partsFilterOn: [],
                 parts_fields: [
                     {
-                        key: 'type',
-                        label: 'Тип',
-                        sortable: true
-                    },
-                    {
                         key: 'provider',
                         label: 'Поставщик',
                         sortable: true
@@ -549,7 +528,6 @@
                     }
                 })
                     .then((response) => {
-                        console.log(response.data);
                         this.actions.push(response.data);
                     })
             },
@@ -571,7 +549,7 @@
             editPart(index) {
                 if(!this.editLenghtError) return false;
                 this.actionLoad = true;
-                if(this.editingModal.lenght == this.parts[index].lenght){
+                if(this.editingModal.lenght == this.parts[index].lenght) {
                     this.deletingModal.reason = this.editingModal.reason;
                     this.deletePart(index);
                     this.actionLoad = false;

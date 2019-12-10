@@ -79,7 +79,7 @@
 <script>
     export default {
         name: "SimplePriceComponent",
-        props:[
+        props: [
             'type'
         ],
         data: function () {
@@ -138,7 +138,6 @@
                         this.prices.push(this.new_price);
                         this.new_price = {};
                     });
-                //this.showAlert('success', 'Цена успешно добавлена');
                 this.$refs['modalAddPrice'].hide();
             },
             editPrice(id, index){
@@ -149,7 +148,6 @@
                         console.log(response.data);
                         this.load();
                     });
-                //this.showAlert('success', 'Цена успешно добавлена');
                 this.$bvModal.hide('modalEditPrice'+id);
             },
             deletePrice(index, id){
@@ -157,7 +155,6 @@
                     .then((response) => {
                         console.log(response.data);
                         this.$delete(this.prices, index);
-                        //this.showAlert('danger', 'Цена успешно удалена');
                     });
                 this.$bvModal.hide('modalDeletePrice'+id);
             },
