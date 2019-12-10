@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2 class="mb-4">Ткань вертикальная: {{ item.label }}</h2>
+        <h2 class="mb-4">Лента горизонтальная: {{ item.label }}</h2>
         <b-card no-body>
             <b-tabs card>
                 <b-tab title="Общая информация" active>
@@ -329,7 +329,7 @@
     import moment from "moment";
     moment.locale('ru');
     export default {
-        name: "VertStorageSingleComponent",
+        name: "GorizStorageSingleComponent",
         components: { DateRangePicker },
         props:['id'],
         data() {
@@ -481,7 +481,7 @@
         },
         methods: {
             loadItem() {
-                axios.post('/admin/storage/vert/get/'+this.id)
+                axios.post('/admin/storage/goriz/get/'+this.id)
                     .then((response) => {
                         this.item = response.data;
                     })
@@ -493,8 +493,8 @@
             },
             loadActions() {
                 this.isActionsBusy = true;
-                axios.post('/admin/storage/vert_actions/getAll', {
-                    vert_storage_id: this.id,
+                axios.post('/admin/storage/goriz_actions/getAll', {
+                    goriz_storage_id: this.id,
                     startDate: moment(this.dateRange.startDate),
                     endDate: moment(this.dateRange.endDate),
                 })
@@ -505,8 +505,8 @@
                     })
             },
             loadParts() {
-                axios.post('/admin/storage/vert_parts/getAll', {
-                    vert_storage_id: this.id
+                axios.post('/admin/storage/goriz_parts/getAll', {
+                    goriz_storage_id: this.id
                 })
                     .then((response) => {
                         console.log(response.data);
@@ -515,8 +515,8 @@
             },
             addPart(){
                 this.actionLoad = true;
-                this.new_part.vert_storage_id = this.id;
-                axios.post('/admin/storage/vert_parts', {
+                this.new_part.goriz_storage_id = this.id;
+                axios.post('/admin/storage/goriz_parts', {
                     part: this.new_part,
                 })
                     .then((response) => {
@@ -528,9 +528,9 @@
                     });
             },
             addAction(type, reason, lenght){
-                axios.post('/admin/storage/vert_actions', {
+                axios.post('/admin/storage/goriz_actions', {
                     action: {
-                        vert_storage_id: this.id,
+                        goriz_storage_id: this.id,
                         type_id: type,
                         reason: reason,
                         lenght: lenght,
@@ -542,7 +542,7 @@
             },
             deletePart(index){
                 this.actionLoad = true;
-                axios.delete('/admin/storage/vert_parts/'+this.parts[index].id)
+                axios.delete('/admin/storage/goriz_parts/'+this.parts[index].id)
                     .then((response) => {
                         this.addAction(2, this.deletingModal.reason, this.parts[index].lenght);
                         this.$delete(this.parts, index);
@@ -567,7 +567,7 @@
                 let index = this.editingModal.index;
                 if(!this.editLenghtError) return false;
                 this.actionLoad = true;
-                axios.put('/admin/storage/vert_parts/'+this.editingModal.part_id, {
+                axios.put('/admin/storage/goriz_parts/'+this.editingModal.part_id, {
                     part: {
                         lenght: parseInt(this.parts[index].lenght) + parseInt(this.editingModal.lenght),
                     }
@@ -590,7 +590,7 @@
                     this.$bvModal.hide(this.editingModal.id);
                     return false;
                 }
-                axios.put('/admin/storage/vert_parts/'+this.editingModal.part_id, {
+                axios.put('/admin/storage/goriz_parts/'+this.editingModal.part_id, {
                     part: {
                         lenght: parseInt(this.parts[index].lenght) - parseInt(this.editingModal.lenght),
                     }

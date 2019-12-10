@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class GorizPartsStorage extends Model
 {
     protected $fillable = [
-        'status_id', 'lenght', 'price', 'provider_id', 'goriz_storage_id'
+        'goriz_storage_id', 'status_id', 'lenght', 'price', 'provider_id'
     ];
 
     public function gorizStorage()

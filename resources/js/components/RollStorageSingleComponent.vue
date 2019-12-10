@@ -140,6 +140,8 @@
                             :busy="partsIsBusy"
                             :filter="partsFilter"
                             :filterIncludedFields="partsFilterOn"
+                            sort-by="created_at"
+                            sort-desc
                         >
                             <template v-slot:cell(provider)="data">
                                 {{ data.item.provider.label }}
@@ -295,6 +297,8 @@
                             :striped="true"
                             :filter="actionsFilter"
                             :filterIncludedFields="actionsFilterOn"
+                            sort-by="created_at"
+                            sort-desc
                         >
                             <template v-slot:cell(type)="data">
                                 <b :class="'text-'+data.item.type.color">{{ data.item.type.label }}</b>
@@ -534,8 +538,8 @@
                 this.isActionsBusy = true;
                 axios.post('/admin/storage/roll_actions/getAll', {
                     roll_storage_id: this.id,
-                    startDate: moment.utc(this.dateRange.startDate),
-                    endDate: moment.utc(this.dateRange.endDate),
+                    startDate: moment(this.dateRange.startDate),
+                    endDate: moment(this.dateRange.endDate),
                 })
                     .then((response) => {
                         console.log(response.data);
