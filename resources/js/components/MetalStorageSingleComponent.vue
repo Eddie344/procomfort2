@@ -1,19 +1,14 @@
 <template>
     <div>
-        <h2 class="mb-4">Ткань вертикальная: {{ item.label }}</h2>
+        <h2 class="mb-4">Метал: {{ item.label }}</h2>
         <b-card no-body>
             <b-tabs card>
                 <b-tab title="Общая информация" active>
                     <b-card-text>
                         <dl class="row">
                             <dt class="col-sm-3">Наименование:</dt>
-                            <dd class="col-sm-9"><h4>{{ item.label }}</h4></dd>
+                            <dd class="col-sm-9">{{ item.label }}</dd>
 
-                            <dt class="col-sm-3">Каталог:</dt>
-                            <dd class="col-sm-9">{{ item.catalog.label }}</dd>
-
-                            <dt class="col-sm-3">Категория:</dt>
-                            <dd class="col-sm-9">{{ item.category.category }}</dd>
                         </dl>
                     </b-card-text>
                 </b-tab>
@@ -329,7 +324,7 @@
     import moment from "moment";
     moment.locale('ru');
     export default {
-        name: "VertStorageSingleComponent",
+        name: "MetalStorageSingleComponent",
         components: { DateRangePicker },
         props:['id'],
         data() {
@@ -481,7 +476,7 @@
         },
         methods: {
             loadItem() {
-                axios.post('/admin/storage/vert/get/'+this.id)
+                axios.post('/admin/storage/metal/get/'+this.id)
                     .then((response) => {
                         this.item = response.data;
                     })
@@ -493,8 +488,8 @@
             },
             loadActions() {
                 this.isActionsBusy = true;
-                axios.post('/admin/storage/vert_actions/getAll', {
-                    vert_storage_id: this.id,
+                axios.post('/admin/storage/metal_actions/getAll', {
+                    metal_storage_id: this.id,
                     startDate: moment(this.dateRange.startDate),
                     endDate: moment(this.dateRange.endDate),
                 })
@@ -505,8 +500,8 @@
                     })
             },
             loadParts() {
-                axios.post('/admin/storage/vert_parts/getAll', {
-                    vert_storage_id: this.id
+                axios.post('/admin/storage/metal_parts/getAll', {
+                    metal_storage_id: this.id
                 })
                     .then((response) => {
                         console.log(response.data);
@@ -515,8 +510,8 @@
             },
             addPart(){
                 this.actionLoad = true;
-                this.new_part.vert_storage_id = this.id;
-                axios.post('/admin/storage/vert_parts', {
+                this.new_part.metal_storage_id = this.id;
+                axios.post('/admin/storage/metal_parts', {
                     part: this.new_part,
                 })
                     .then((response) => {
@@ -528,9 +523,9 @@
                     });
             },
             addAction(type, reason, lenght){
-                axios.post('/admin/storage/vert_actions', {
+                axios.post('/admin/storage/metal_actions', {
                     action: {
-                        vert_storage_id: this.id,
+                        metal_storage_id: this.id,
                         type_id: type,
                         reason: reason,
                         lenght: lenght,
@@ -542,7 +537,7 @@
             },
             deletePart(index){
                 this.actionLoad = true;
-                axios.delete('/admin/storage/vert_parts/'+this.parts[index].id)
+                axios.delete('/admin/storage/metal_parts/'+this.parts[index].id)
                     .then((response) => {
                         this.addAction(2, this.deletingModal.reason, this.parts[index].lenght);
                         this.$delete(this.parts, index);
@@ -567,7 +562,7 @@
                 let index = this.editingModal.index;
                 if(!this.editLenghtError) return false;
                 this.actionLoad = true;
-                axios.put('/admin/storage/vert_parts/'+this.editingModal.part_id, {
+                axios.put('/admin/storage/metal_parts/'+this.editingModal.part_id, {
                     part: {
                         lenght: parseInt(this.parts[index].lenght) + parseInt(this.editingModal.lenght),
                     }
@@ -590,7 +585,7 @@
                     this.$bvModal.hide(this.editingModal.id);
                     return false;
                 }
-                axios.put('/admin/storage/vert_parts/'+this.editingModal.part_id, {
+                axios.put('/admin/storage/metal_parts/'+this.editingModal.part_id, {
                     part: {
                         lenght: parseInt(this.parts[index].lenght) - parseInt(this.editingModal.lenght),
                     }

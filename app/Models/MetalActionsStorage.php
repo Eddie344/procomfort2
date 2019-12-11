@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class MetalActionsStorage extends Model
 {
     protected $fillable = [
-        'type_id', 'user_id', 'reason', 'lenght'
+        'metal_storage_id', 'type_id', 'user_id', 'reason', 'lenght'
     ];
 
     public function metalStorage()
