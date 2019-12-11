@@ -7,7 +7,7 @@
                     <b-card-text>
                         <dl class="row">
                             <dt class="col-sm-3">Наименование:</dt>
-                            <dd class="col-sm-9"><h4>{{ item.label }}</h4></dd>
+                            <dd class="col-sm-9">{{ item.label }}</dd>
 
                             <dt class="col-sm-3">Каталог:</dt>
                             <dd class="col-sm-9">{{ item.catalog.label }}</dd>
@@ -55,13 +55,13 @@
                                                 </template>
                                             </b-form-select>
                                         </b-form-group>
-                                        <b-form-group label="Ширина:">
+                                        <b-form-group label="Ширина, м:">
                                             <b-form-input type="number" step="0.01" v-model="new_part.width" required></b-form-input>
                                         </b-form-group>
-                                        <b-form-group label="Длина:">
+                                        <b-form-group label="Длина, м:">
                                             <b-form-input type="number" step="0.01" v-model="new_part.lenght" required></b-form-input>
                                         </b-form-group>
-                                        <b-form-group label="Цена:">
+                                        <b-form-group label="Цена, $:">
                                             <b-form-input type="number" step="0.01" v-model="new_part.price" required></b-form-input>
                                         </b-form-group>
                                         <b-form-group label="Статус:">
@@ -152,6 +152,15 @@
                             <template v-slot:cell(type)="data">
                                 {{ data.item.type.label }}
                             </template>
+                            <template v-slot:cell(lenght)="data">
+                                {{ data.item.lenght }} м
+                            </template>
+                            <template v-slot:cell(width)="data">
+                                {{ data.item.width }} м
+                            </template>
+                            <template v-slot:cell(price)="data">
+                                {{ data.item.price }} $
+                            </template>
                             <template v-slot:cell(delete)="data">
                                 <b-button class="p-0" variant="link" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
                                 <b-button class="p-0" variant="link" @click="editModal(data.index, data.item)" ><h5 class="d-inline"><i class="fa fa-arrow-down text-secondary"></i></h5></b-button>
@@ -180,13 +189,13 @@
                         <!--Edit modal-->
                         <b-modal :id="editingModal.id" @hide="resetEditingModal" size="sm" title="Списание" hide-footer centered>
                             <b-form @submit.prevent="editPart(editingModal.index)">
-                                <b-form-group label="Ширина:">
+                                <b-form-group label="Ширина, м:">
                                     <b-form-input type="number" :state="editWidthError" step="0.01" v-model="editingModal.width" required></b-form-input>
                                     <b-form-invalid-feedback :state="editWidthError">
                                         Недопустимое значение
                                     </b-form-invalid-feedback>
                                 </b-form-group>
-                                <b-form-group label="Длина:">
+                                <b-form-group label="Длина, м:">
                                     <b-form-input type="number" :state="editLenghtError" step="0.01" v-model="editingModal.lenght" required></b-form-input>
                                     <b-form-invalid-feedback :state="editLenghtError">
                                         Недопустимое значение
@@ -305,6 +314,12 @@
                             </template>
                             <template v-slot:cell(user)="data">
                                 {{ data.item.user.alias }}
+                            </template>
+                            <template v-slot:cell(lenght)="data">
+                                {{ data.item.lenght }} м
+                            </template>
+                            <template v-slot:cell(width)="data">
+                                {{ data.item.width }} м
                             </template>
                             <template v-slot:table-busy>
                                 <div class="text-center text-primary my-2">

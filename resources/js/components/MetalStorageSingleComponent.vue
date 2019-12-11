@@ -33,10 +33,10 @@
                                                 </template>
                                             </b-form-select>
                                         </b-form-group>
-                                        <b-form-group label="Длина:">
+                                        <b-form-group label="Длина, м:">
                                             <b-form-input type="number" step="0.01" v-model="new_part.lenght" required></b-form-input>
                                         </b-form-group>
-                                        <b-form-group label="Цена:">
+                                        <b-form-group label="Цена, $:">
                                             <b-form-input type="number" step="0.01" v-model="new_part.price" required></b-form-input>
                                         </b-form-group>
                                         <b-form-group label="Статус:">
@@ -123,6 +123,12 @@
                             <template v-slot:cell(status)="data">
                                 {{ data.item.status.label }}
                             </template>
+                            <template v-slot:cell(lenght)="data">
+                                {{ data.item.lenght }} м
+                            </template>
+                            <template v-slot:cell(price)="data">
+                                {{ data.item.price }} $
+                            </template>
                             <template v-slot:cell(delete)="data">
                                 <b-button class="p-0" variant="link" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
                                 <b-button class="p-0" variant="link" @click="editModal(data.index, data.item)" ><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
@@ -157,7 +163,7 @@
                                         <span v-else>Списание</span>
                                     </b-form-checkbox>
                                 </b-form-group>
-                                <b-form-group label="Длина:">
+                                <b-form-group label="Длина, м:">
                                     <b-form-input type="number" :state="editLenghtError" step="0.01" v-model="editingModal.lenght" required></b-form-input>
                                     <b-form-invalid-feedback :state="editLenghtError">
                                         Недопустимое значение
@@ -276,6 +282,9 @@
                             </template>
                             <template v-slot:cell(user)="data">
                                 {{ data.item.user.alias }}
+                            </template>
+                            <template v-slot:cell(lenght)="data">
+                                {{ data.item.lenght }} м
                             </template>
                             <template v-slot:table-busy>
                                 <div class="text-center text-primary my-2">

@@ -28,7 +28,7 @@ class RollActionsStorage extends Model
     }
 
     public function getCreatedAtAttribute($timestamp) {
-        return Carbon::parse($timestamp)->format('d.m.Y H:i');
+        return Carbon::parse($timestamp)->format('d.m.Y H:i:s');
     }
 
     public function scopeFilter($query)
