@@ -69,7 +69,7 @@
         @foreach ($orders as $order)
             <tr>
                 <th scope="row"><a href="{{ route('orders.show', ['id' => $order->id]) }}">{{ $order->id }}</a></th>
-                <td><a href="{{ route('customers.show', ['id' => $order->diller->id]) }}">{{ $order->diller->getFullName() }}</a></td>
+                <td><a href="{{ route('users.show', ['id' => $order->diller->id]) }}">{{ $order->diller->getFullName() }}</a></td>
                 <td>{{ $order->prefix }}</td>
                 <td>{{ $order->productType->label }}</td>
                 <td>{{ $order->paymentType->label }}</td>

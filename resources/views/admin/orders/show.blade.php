@@ -13,7 +13,7 @@
                         <dd class="col-sm-6">{{ $order->id }}</dd>
 
                         <dt class="col-sm-6">Заказчик:</dt>
-                        <dd class="col-sm-6"><a href="{{ route('customers.show', ['id' => $order->diller->id]) }}">{{ $order->diller->getFullName() }}</a></dd>
+                        <dd class="col-sm-6"><a href="{{ route('users.show', ['id' => $order->diller->id]) }}">{{ $order->diller->getFullName() }}</a></dd>
 
                         <dt class="col-sm-6">Префикс заказчика:</dt>
                         <dd class="col-sm-6">{{ $order->prefix }}</dd>

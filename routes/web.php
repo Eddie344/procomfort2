@@ -22,7 +22,10 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
     Route::view('/', 'admin.home')->name('admin');
     Route::view('rollstorage', 'admin.storage.roll')->name('rollstorage');
-    Route::resource('customers', 'UserController');
+
+    Route::resource('users', 'UserController');
+    Route::post('/users/getAll', 'UserController@getAll');
+
     Route::resource('orders', 'OrderController');
     Route::prefix('storage')->group(function () {
         Route::get('/', 'StorageController@index')->name('storage.index');

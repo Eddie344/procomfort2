@@ -10,10 +10,6 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
 
     <!-- Fonts -->
@@ -69,13 +65,13 @@
                         </div>
 
                         <div class="card">
-                            <a href="{{ route('customers.index') }}" class="card-header">
-                                <span><i class="fa fa-users"></i>Заказчики</span>
+                            <a href="{{ route('users.index') }}" class="card-header">
+                                <span><i class="fa fa-users"></i>Пользователи</span>
                             </a>
                         </div>
 
                         <div class="card">
-                            <a href="#" class="card-header" id="heading3" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                            <a href="#collapse3" class="card-header" id="heading3" data-toggle="collapse" aria-expanded="false" aria-controls="collapse3">
                                 <span><i class="fa fa-th-list"></i>Склад</span>
                             </a>
                             <div id="collapse3" class="collapse" aria-labelledby="heading3" data-parent="#sidebar-accordion">
@@ -91,10 +87,10 @@
                         </div>
                         <div class="card">
                             <div class="accordion" id="sidebar-prices">
-                                <a href="#" class="card-header" id="heading4" data-toggle="collapse" data-target="#collapse4" aria-expanded="true" aria-controls="collapse4">
+                                <a href="#collapse4" class="card-header" id="heading4" data-toggle="collapse" aria-expanded="false" aria-controls="collapse4">
                                     <span><i class="fa fa-money"></i>Прайсы</span>
                                 </a>
-                                <div id="collapse4" class="collapse" aria-labelledby="heading4" data-parent="#sidebar-prices">
+                                <div id="collapse4" class="collapse" aria-labelledby="heading4" data-parent="#sidebar-accordion">
                                     <div class="list-group">
                                         <a class="list-group-item" href="{{ route('price.roll.index') }}">Рулонные шторы</a>
                                         <a class="list-group-item" href="{{ route('price.zebra.index') }}">День-ночь</a>
@@ -106,7 +102,7 @@
                             </div>
                         </div>
                         <div class="card">
-                            <a href="#" class="card-header" id="heading5" data-toggle="collapse" data-target="#collapse5" aria-expanded="true" aria-controls="collapse5">
+                            <a href="#collapse5" class="card-header" id="heading5" data-toggle="collapse" data-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
                                 <span><i class="fa fa-th-list"></i>Прочее</span>
                             </a>
                             <div id="collapse5" class="collapse" aria-labelledby="heading5" data-parent="#sidebar-accordion">

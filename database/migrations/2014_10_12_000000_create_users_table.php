@@ -29,10 +29,10 @@ class CreateUsersTable extends Migration
 
             $table->boolean('is_admin')->default(false);
             $table->unsignedBigInteger('role_id')->default('1');
-
-            $table->timestamps();
-
             $table->foreign('role_id')->references('id')->on('roles');
+
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 
