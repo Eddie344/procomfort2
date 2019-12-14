@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2 class="mb-4">Метал: {{ item.label }}</h2>
+        <h2 class="mb-4">Фурнитура: {{ item.label }}</h2>
         <b-card no-body>
             <b-tabs card>
                 <b-tab title="Общая информация" active>
@@ -33,8 +33,8 @@
                                                 </template>
                                             </b-form-select>
                                         </b-form-group>
-                                        <b-form-group label="Длина, м:">
-                                            <b-form-input type="number" step="0.01" v-model="new_part.lenght" required></b-form-input>
+                                        <b-form-group label="Количество:">
+                                            <b-form-input type="number" step="0.01" v-model="new_part.count" required></b-form-input>
                                         </b-form-group>
                                         <b-form-group label="Цена, $:">
                                             <b-form-input type="number" step="0.01" v-model="new_part.price" required></b-form-input>
@@ -123,11 +123,11 @@
                             <template v-slot:cell(status)="data">
                                 {{ data.item.status.label }}
                             </template>
-                            <template v-slot:cell(lenght)="data">
-                                {{ data.item.lenght }} м
-                            </template>
                             <template v-slot:cell(price)="data">
                                 {{ data.item.price }} $
+                            </template>
+                            <template v-slot:cell(count)="data">
+                                {{ data.item.count }} {{ item.unit }}
                             </template>
                             <template v-slot:cell(delete)="data">
                                 <b-button class="p-0" variant="link" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
@@ -163,9 +163,9 @@
                                         <span v-else>Списание</span>
                                     </b-form-checkbox>
                                 </b-form-group>
-                                <b-form-group label="Длина, м:">
-                                    <b-form-input type="number" :state="editLenghtError" step="0.01" v-model="editingModal.lenght" required></b-form-input>
-                                    <b-form-invalid-feedback :state="editLenghtError">
+                                <b-form-group label="'Количество:">
+                                    <b-form-input type="number" :state="editCountError" step="0.01" v-model="editingModal.count" required></b-form-input>
+                                    <b-form-invalid-feedback :state="editCountError">
                                         Недопустимое значение
                                     </b-form-invalid-feedback>
                                 </b-form-group>
@@ -283,8 +283,8 @@
                             <template v-slot:cell(user)="data">
                                 {{ data.item.user.alias }}
                             </template>
-                            <template v-slot:cell(lenght)="data">
-                                {{ data.item.lenght }} м
+                            <template v-slot:cell(count)="data">
+                                {{ data.item.count }} {{ item.unit }}
                             </template>
                             <template v-slot:table-busy>
                                 <div class="text-center text-primary my-2">
@@ -333,7 +333,7 @@
     import moment from "moment";
     moment.locale('ru');
     export default {
-        name: "MetalStorageSingleComponent",
+        name: "FurnStorageSingleComponent",
         components: { DateRangePicker },
         props:['id'],
         data() {
@@ -352,8 +352,8 @@
                         sortable: true
                     },
                     {
-                        key: 'lenght',
-                        label: 'Длина',
+                        key: 'count',
+                        label: 'Количество',
                         sortable: true,
                     },
                     {
@@ -398,8 +398,8 @@
                         sortable: true
                     },
                     {
-                        key: 'lenght',
-                        label: 'Длина',
+                        key: 'count',
+                        label: 'Количество',
                         sortable: true,
                     },
                     {
@@ -414,7 +414,7 @@
                     id: 'edMod',
                     part_id: null,
                     index: null,
-                    lenght: null,
+                    count: null,
                     reason: '',
                     checked: true,
                 },
@@ -472,8 +472,8 @@
                         return { text: f.label, value: f.key }
                     })
             },
-            editLenghtError() {
-                return this.editingModal.lenght && this.editingModal.lenght != 0 && this.editingModal.lenght <= this.parts[this.editingModal.index].lenght
+            editCountError() {
+                return this.editingModal.count && this.editingModal.count != 0 && this.editingModal.count <= this.parts[this.editingModal.index].count
             },
         },
         created() {
@@ -485,7 +485,7 @@
         },
         methods: {
             loadItem() {
-                axios.post('/admin/storage/metal/get/'+this.id)
+                axios.post('/admin/storage/furn/get/'+this.id)
                     .then((response) => {
                         this.item = response.data;
                     })
@@ -497,8 +497,8 @@
             },
             loadActions() {
                 this.isActionsBusy = true;
-                axios.post('/admin/storage/metal_actions/getAll', {
-                    metal_storage_id: this.id,
+                axios.post('/admin/storage/furn_actions/getAll', {
+                    furn_storage_id: this.id,
                     startDate: moment(this.dateRange.startDate),
                     endDate: moment(this.dateRange.endDate),
                 })
@@ -509,8 +509,8 @@
                     })
             },
             loadParts() {
-                axios.post('/admin/storage/metal_parts/getAll', {
-                    metal_storage_id: this.id
+                axios.post('/admin/storage/furn_parts/getAll', {
+                    furn_storage_id: this.id
                 })
                     .then((response) => {
                         console.log(response.data);
@@ -519,25 +519,25 @@
             },
             addPart(){
                 this.actionLoad = true;
-                this.new_part.metal_storage_id = this.id;
-                axios.post('/admin/storage/metal_parts', {
+                this.new_part.furn_storage_id = this.id;
+                axios.post('/admin/storage/furn_parts', {
                     part: this.new_part,
                 })
                     .then((response) => {
                         this.parts.push(response.data);
-                        this.addAction(1, this.new_part.reason, this.new_part.lenght);
+                        this.addAction(1, this.new_part.reason, this.new_part.count);
                         this.new_part = {};
                         this.actionLoad = false;
                         this.$refs['modalAddPart'].hide();
                     });
             },
-            addAction(type, reason, lenght){
-                axios.post('/admin/storage/metal_actions', {
+            addAction(type, reason, count){
+                axios.post('/admin/storage/furn_actions', {
                     action: {
-                        metal_storage_id: this.id,
+                        furn_storage_id: this.id,
                         type_id: type,
                         reason: reason,
-                        lenght: lenght,
+                        count: count,
                     }
                 })
                     .then((response) => {
@@ -546,9 +546,9 @@
             },
             deletePart(index){
                 this.actionLoad = true;
-                axios.delete('/admin/storage/metal_parts/'+this.parts[index].id)
+                axios.delete('/admin/storage/furn_parts/'+this.parts[index].id)
                     .then((response) => {
-                        this.addAction(2, this.deletingModal.reason, this.parts[index].lenght);
+                        this.addAction(2, this.deletingModal.reason, this.parts[index].count);
                         this.$delete(this.parts, index);
                         this.actionLoad = false;
                         this.$bvModal.hide(this.deletingModal.id);
@@ -569,15 +569,15 @@
             },
             editPartOn() {
                 let index = this.editingModal.index;
-                if(!this.editLenghtError) return false;
+                if(!this.editCountError) return false;
                 this.actionLoad = true;
-                axios.put('/admin/storage/metal_parts/'+this.editingModal.part_id, {
+                axios.put('/admin/storage/furn_parts/'+this.editingModal.part_id, {
                     part: {
-                        lenght: parseInt(this.parts[index].lenght) + parseInt(this.editingModal.lenght),
+                        count: parseInt(this.parts[index].count) + parseInt(this.editingModal.count),
                     }
                 })
                     .then((response) => {
-                        this.addAction(1, this.editingModal.reason, this.editingModal.lenght);
+                        this.addAction(1, this.editingModal.reason, this.editingModal.count);
                         _.extend(this.parts[index], response.data);
                         this.actionLoad = false;
                         this.$bvModal.hide(this.editingModal.id);
@@ -585,22 +585,22 @@
             },
             editPartOff() {
                 let index = this.editingModal.index;
-                if(!this.editLenghtError) return false;
+                if(!this.editCountError) return false;
                 this.actionLoad = true;
-                if(this.editingModal.lenght == this.parts[index].lenght) {
+                if(this.editingModal.count == this.parts[index].count) {
                     this.deletingModal.reason = this.editingModal.reason;
                     this.deletePart(index);
                     this.actionLoad = false;
                     this.$bvModal.hide(this.editingModal.id);
                     return false;
                 }
-                axios.put('/admin/storage/metal_parts/'+this.editingModal.part_id, {
+                axios.put('/admin/storage/furn_parts/'+this.editingModal.part_id, {
                     part: {
-                        lenght: parseInt(this.parts[index].lenght) - parseInt(this.editingModal.lenght),
+                        count: parseInt(this.parts[index].count) - parseInt(this.editingModal.count),
                     }
                 })
                     .then((response) => {
-                        this.addAction(2, this.editingModal.reason, this.editingModal.lenght);
+                        this.addAction(2, this.editingModal.reason, this.editingModal.count);
                         _.extend(this.parts[index], response.data);
                         this.actionLoad = false;
                         this.$bvModal.hide(this.editingModal.id);
@@ -615,7 +615,7 @@
                 this.editingModal.index = null;
                 this.editingModal.part_id = null;
                 this.editingModal.width = null;
-                this.editingModal.lenght = null;
+                this.editingModal.count = null;
                 this.editingModal.reason = '';
             },
             getPartStatuses(){
