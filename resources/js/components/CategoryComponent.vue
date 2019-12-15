@@ -140,6 +140,7 @@
                         this.new_item = {};
                         this.actionLoad = false;
                         this.$refs['modalAddCategory'].hide();
+                        this.makeToast('Категория успешно добавлена', 'success');
                     });
             },
             deleteItem(index){
@@ -150,6 +151,7 @@
                         this.actionLoad = false;
                         this.$bvModal.hide(this.deletingModal.id);
                         this.deletingModal.index = null;
+                        this.makeToast('Категория успешно удалена', 'danger');
                     })
                     .catch(error => {
                         this.actionLoad = false;
@@ -170,6 +172,15 @@
                 this.catalog_selected = null;
                 this.tableLoaded = false;
             },
+            makeToast(message, color) {
+                this.$bvToast.toast(message, {
+                    title: 'Уведомление',
+                    autoHideDelay: 3000,
+                    variant: color,
+                    appendToast: false,
+                    toaster: 'b-toaster-top-right',
+                })
+            }
         }
     }
 </script>

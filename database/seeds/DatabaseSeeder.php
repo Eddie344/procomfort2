@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
             StoragesTypesTableSeeder::class,
             PartStatusesTableSeeder::class,
             PartTypesTableSeeder::class,
-            StorageActionTypesTableSeeder::class,
+            ActionTypesTableSeeder::class,
         ]);
     }
 }

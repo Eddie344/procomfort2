@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'surname', 'alias', 'city', 'email', 'phone', 'password',
+        'name', 'surname', 'alias', 'city', 'email', 'phone', 'password', 'balance'
     ];
 
     /**
@@ -50,6 +50,15 @@ class User extends Authenticatable
     public function ordersDiller()
     {
         return $this->hasMany('App\Models\Order');
+    }
+
+    public function scopeFilter($query)
+    {
+        if(request('deleted'))
+        {
+            $query->onlyTrashed();
+        }
+        return $query;
     }
 
 }

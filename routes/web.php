@@ -25,6 +25,9 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
 
     Route::resource('users', 'UserController');
     Route::post('/users/getAll', 'UserController@getAll');
+    Route::post('/users/get/{id}', 'UserController@get');
+    Route::resource('users/operations', 'UserBalanceOperationController');
+    Route::post('users/operations/getAll', 'UserBalanceOperationController@getAll');
 
     Route::resource('orders', 'OrderController');
     Route::prefix('storage')->group(function () {

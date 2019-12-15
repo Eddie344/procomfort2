@@ -222,6 +222,7 @@
                         this.new_item = {};
                         this.actionLoad = false;
                         this.$refs['modalAddPrice'].hide();
+                        this.makeToast('Предмет успешно добавлен', 'success');
                     });
             },
             editItem(index) {
@@ -236,6 +237,7 @@
                         _.extend(this.items[index], response.data);
                         this.actionLoad = false;
                         this.$bvModal.hide(this.editingModal.id);
+                        this.makeToast('Предмет успешно изменен', 'primary');
                     });
             },
             deleteItem(index){
@@ -246,6 +248,7 @@
                         this.actionLoad = false;
                         this.$bvModal.hide(this.deletingModal.id);
                         this.deletingModal.index = null;
+                        this.makeToast('Предмет успешно удален', 'danger');
                     });
             },
             deleteModal(index) {
@@ -269,6 +272,15 @@
                 // Trigger pagination to update the number of buttons/pages due to filtering
                 this.totalRows = filteredItems.length;
                 this.currentPage = 1;
+            },
+            makeToast(message, color) {
+                this.$bvToast.toast(message, {
+                    title: 'Уведомление',
+                    autoHideDelay: 3000,
+                    variant: color,
+                    appendToast: false,
+                    toaster: 'b-toaster-top-right',
+                })
             }
         }
     }

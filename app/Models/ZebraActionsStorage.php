@@ -18,7 +18,7 @@ class ZebraActionsStorage extends Model
 
     public function type()
     {
-        return $this->belongsTo('App\Models\StorageActionType', 'type_id');
+        return $this->belongsTo('App\Models\ActionType', 'type_id');
     }
 
     public function user()

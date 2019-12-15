@@ -137,6 +137,7 @@
                         this.new_price.id = response.data;
                         this.prices.push(this.new_price);
                         this.new_price = {};
+                        this.makeToast('Категория и цена успешно добавлены', 'success');
                     });
                 this.$refs['modalAddPrice'].hide();
             },
@@ -147,6 +148,7 @@
                     .then((response) => {
                         console.log(response.data);
                         this.load();
+                        this.makeToast('Категория и цена успешно обновлены', 'primary');
                     });
                 this.$bvModal.hide('modalEditPrice'+id);
             },
@@ -155,16 +157,21 @@
                     .then((response) => {
                         console.log(response.data);
                         this.$delete(this.prices, index);
+                        this.makeToast('Категория и цена успешно удалены', 'danger');
                     });
                 this.$bvModal.hide('modalDeletePrice'+id);
             },
             countDownChanged(dismissCountDown) {
                 this.dismissCountDown = dismissCountDown
             },
-            showAlert(color, text) {
-                this.alertColor = color;
-                this.alertText = text;
-                this.dismissCountDown = this.dismissSecs
+            makeToast(message, color) {
+                this.$bvToast.toast(message, {
+                    title: 'Уведомление',
+                    autoHideDelay: 3000,
+                    variant: color,
+                    appendToast: false,
+                    toaster: 'b-toaster-top-right',
+                })
             }
         },
     }

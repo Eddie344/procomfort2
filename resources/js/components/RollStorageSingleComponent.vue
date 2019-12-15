@@ -583,6 +583,7 @@
                         this.new_part = {};
                         this.actionLoad = false;
                         this.$refs['modalAddPart'].hide();
+                        this.makeToast('Остаток успешно добавлен', 'success');
                     });
             },
             addAction(type, reason, width, lenght){
@@ -609,6 +610,7 @@
                         this.actionLoad = false;
                         this.$bvModal.hide(this.deletingModal.id);
                         this.deletingModal.index = null;
+                        this.makeToast('Остаток успешно удален', 'danger');
                     });
             },
             deleteModal(index) {
@@ -638,6 +640,7 @@
                         _.extend(this.parts[index], response.data);
                         this.actionLoad = false;
                         this.$bvModal.hide(this.editingModal.id);
+                        this.makeToast('Успешное списание', 'danger');
                     });
             },
             cutPart(index){
@@ -686,6 +689,15 @@
                 this.partsCurrentPage = 1;
                 this.actionsCurrentPage = 1;
             },
+            makeToast(message, color) {
+                this.$bvToast.toast(message, {
+                    title: 'Уведомление',
+                    autoHideDelay: 3000,
+                    variant: color,
+                    appendToast: false,
+                    toaster: 'b-toaster-top-right',
+                })
+            }
         }
     }
 </script>

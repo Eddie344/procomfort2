@@ -18,7 +18,7 @@ class CreateFurnActionsStoragesTable extends Migration
             $table->unsignedBigInteger('furn_storage_id');
             $table->foreign('furn_storage_id')->references('id')->on('furn_storages')->onDelete('cascade');
             $table->unsignedBigInteger('type_id');
-            $table->foreign('type_id')->references('id')->on('storage_action_types');
+            $table->foreign('type_id')->references('id')->on('action_types');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('reason');

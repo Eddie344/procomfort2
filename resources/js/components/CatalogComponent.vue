@@ -117,6 +117,7 @@
                         this.new_item = {};
                         this.actionLoad = false;
                         this.$refs['modalAddCatalog'].hide();
+                        this.makeToast('Каталог успешно добавлен', 'success');
                     });
             },
             deleteItem(index){
@@ -127,6 +128,7 @@
                         this.actionLoad = false;
                         this.$bvModal.hide(this.deletingModal.id);
                         this.deletingModal.index = null;
+                        this.makeToast('Каталог успешно удален', 'danger');
                     })
                     .catch(error => {
                         this.actionLoad = false;
@@ -137,6 +139,15 @@
                 this.deletingModal.index = index;
                 this.$root.$emit('bv::show::modal', this.deletingModal.id);
             },
+            makeToast(message, color) {
+                this.$bvToast.toast(message, {
+                    title: 'Уведомление',
+                    autoHideDelay: 3000,
+                    variant: color,
+                    appendToast: false,
+                    toaster: 'b-toaster-top-right',
+                })
+            }
         }
     }
 </script>

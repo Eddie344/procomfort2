@@ -16,8 +16,14 @@ class UserController extends Controller
 
     public function getAll()
     {
-        $users = User::all();
+        $users = User::filter()->get();
         return response()->json($users);
+    }
+
+    public function get($id)
+    {
+        $user = User::find($id);
+        return response()->json($user);
     }
 
     public function store(Request $request)
@@ -28,8 +34,7 @@ class UserController extends Controller
     }
     public function show($id)
     {
-        $user = User::find($id);
-        return view('admin.users.show', compact('user'));
+        return view('admin.users.show', compact('id'));
     }
 
     public function update(Request $request, $id)

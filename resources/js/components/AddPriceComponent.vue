@@ -110,6 +110,7 @@
                         this.new_price.id = response.data;
                         this.prices.push(this.new_price);
                         this.new_price = {};
+                        this.makeToast('Цена успешно добавлена', 'success');
                     });
                 this.$refs['modalAddPrice'].hide();
             },
@@ -120,6 +121,7 @@
                     .then((response) => {
                         console.log(response.data);
                         this.load();
+                        this.makeToast('Цена успешно обновлена', 'primary');
                     });
                 this.$bvModal.hide('modalEditPrice'+id);
             },
@@ -128,9 +130,19 @@
                     .then((response) => {
                         console.log(response.data);
                         this.$delete(this.prices, index);
+                        this.makeToast('Цена успешно удалена', 'danger');
                     });
                 this.$bvModal.hide('modalDeletePrice'+id);
             },
+            makeToast(message, color) {
+                this.$bvToast.toast(message, {
+                    title: 'Уведомление',
+                    autoHideDelay: 3000,
+                    variant: color,
+                    appendToast: false,
+                    toaster: 'b-toaster-top-right',
+                })
+            }
         }
     }
 </script>

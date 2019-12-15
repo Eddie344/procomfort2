@@ -56,12 +56,18 @@
                     </b-input-group>
                 </b-form-group>
             </b-col>
+            <b-col lg="3" align-self="center">
+                <b-form-checkbox v-model="deleted" name="check-button" switch @change="load">
+                    Удаленные пользователи
+                </b-form-checkbox>
+            </b-col>
+        </b-row>
 
-            <b-col lg="6">
+        <b-row class="mb-3">
+            <b-col lg="7">
                 <b-form-group
                     label="Фильтровать по"
                     label-cols-sm="3"
-                    label-align-sm="right"
                     class="mb-0">
                     <b-form-checkbox-group v-model="filterOn" class="mt-1">
                         <b-form-checkbox value="fullName">Имя</b-form-checkbox>
@@ -94,7 +100,7 @@
                 {{ data.item.balance }} $
             </template>
             <template v-slot:cell(delete)="data">
-                <b-button class="p-0" variant="link" @click="editModal(data.index)" ><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
+                <b-button class="p-0" variant="link" @click="editModal(data.index)"><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
                 <b-button class="p-0" variant="link" v-if="users[data.index].id !== auth_user" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
             </template>
             <template v-slot:table-busy>
@@ -215,6 +221,7 @@
                     }
                 ],
                 users: [],
+                deleted: false,
                 categories: [],
                 catalogs: [],
                 pictures: [],
@@ -252,7 +259,10 @@
         methods:{
             load(){
                 this.isBusy = true;
-                axios.post('/admin/users/getAll')
+                console.log(this.deleted);
+                axios.post('/admin/users/getAll', {
+                    deleted: this.deleted
+                })
                     .then((response) => {
                         this.users = response.data;
                         this.isBusy = false;
@@ -330,7 +340,7 @@
                     autoHideDelay: 3000,
                     variant: color,
                     appendToast: false,
-                    toaster: 'b-toaster-bottom-right',
+                    toaster: 'b-toaster-top-right',
                 })
             }
         }

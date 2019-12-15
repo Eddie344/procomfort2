@@ -18,7 +18,7 @@ class CreateRollActionsStoragesTable extends Migration
             $table->unsignedBigInteger('roll_storage_id');
             $table->foreign('roll_storage_id')->references('id')->on('roll_storages')->onDelete('cascade');
             $table->unsignedBigInteger('type_id');
-            $table->foreign('type_id')->references('id')->on('storage_action_types');
+            $table->foreign('type_id')->references('id')->on('action_types');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('reason');

@@ -252,8 +252,7 @@
                     .then((response) => {
                         this.catalogs = response.data;
                     });
-            }
-
+            },
         }
     }
 </script>
