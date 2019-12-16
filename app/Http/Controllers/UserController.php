@@ -49,4 +49,10 @@ class UserController extends Controller
         User::destroy($id);
         return response($id);
     }
+
+    public function restore($id)
+    {
+        User::withTrashed()->find($id)->restore();
+        return response($id);
+    }
 }

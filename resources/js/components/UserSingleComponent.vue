@@ -66,7 +66,7 @@
                                             <b-form-input type="text" v-model="new_operation.reason" required></b-form-input>
                                         </b-form-group>
                                         <b-button variant="primary" type="submit" v-bind:disabled="operationLoad">
-                                            <span v-if="!operationLoad">Добавить</span>
+                                            <span v-if="!operationLoad">Изменить</span>
                                             <span v-else>
                                                 <b-spinner small></b-spinner>
                                                 Подождите...

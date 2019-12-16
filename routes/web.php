@@ -26,6 +26,7 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
     Route::resource('users', 'UserController');
     Route::post('/users/getAll', 'UserController@getAll');
     Route::post('/users/get/{id}', 'UserController@get');
+    Route::post('/users/restore/{id}', 'UserController@restore');
     Route::resource('users/operations', 'UserBalanceOperationController');
     Route::post('users/operations/getAll', 'UserBalanceOperationController@getAll');
 

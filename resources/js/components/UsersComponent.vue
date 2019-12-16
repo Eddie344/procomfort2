@@ -57,19 +57,19 @@
                 </b-form-group>
             </b-col>
             <b-col lg="3" align-self="center">
-                <b-form-checkbox v-model="deleted" name="check-button" switch @change="load">
+                <b-form-checkbox name="check-button" switch @change="switchDeleted">
                     Удаленные пользователи
                 </b-form-checkbox>
             </b-col>
         </b-row>
 
         <b-row class="mb-3">
-            <b-col lg="7">
+            <b-col lg="12">
                 <b-form-group
-                    label="Фильтровать по"
-                    label-cols-sm="3"
+                    label="Фильтровать по:"
+                    label-cols-sm="2"
                     class="mb-0">
-                    <b-form-checkbox-group v-model="filterOn" class="mt-1">
+                    <b-form-checkbox-group v-model="filterOn" class="mt-2">
                         <b-form-checkbox value="fullName">Имя</b-form-checkbox>
                         <b-form-checkbox value="alias">Псевдоним</b-form-checkbox>
                         <b-form-checkbox value="city">Город</b-form-checkbox>
@@ -100,8 +100,13 @@
                 {{ data.item.balance }} $
             </template>
             <template v-slot:cell(delete)="data">
-                <b-button class="p-0" variant="link" @click="editModal(data.index)"><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
-                <b-button class="p-0" variant="link" v-if="users[data.index].id !== auth_user" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
+                <div v-if="!users[data.index].deleted_at">
+                    <b-button class="p-0" variant="link" @click="editModal(data.index)"><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
+                    <b-button class="p-0" variant="link" v-if="users[data.index].id !== auth_user" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
+                </div>
+                <div v-else>
+                    <b-button class="p-0" variant="link" @click="restoreUser(data.index)"><h5 class="d-inline"><i class="fa fa-arrow-up text-success"></i></h5></b-button>
+                </div>
             </template>
             <template v-slot:table-busy>
                 <div class="text-center text-primary my-2">
@@ -268,6 +273,10 @@
                         this.isBusy = false;
                     });
             },
+            switchDeleted() {
+                this.deleted = !this.deleted;
+                this.load();
+            },
             addUser(){
                 this.actionLoad = true;
                 axios.post('/admin/users', {
@@ -302,6 +311,15 @@
                         this.$bvModal.hide(this.deletingModal.id);
                         this.deletingModal.index = null;
                         this.makeToast('Пользователь усешно удален', 'danger');
+                    });
+            },
+            restoreUser(index) {
+                this.actionLoad = true;
+                axios.post(`/admin/users/restore/${this.users[index].id}`)
+                    .then((response) => {
+                        this.load();
+                        this.actionLoad = false;
+                        this.makeToast('Пользователь усешно восстановлен', 'success');
                     });
             },
             deleteModal(index) {
