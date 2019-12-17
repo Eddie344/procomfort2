@@ -242,6 +242,13 @@
                 },
                 editingModal: {
                     id: 'edMod',
+                    user_id: null,
+                    name: '',
+                    surname: '',
+                    alias: '',
+                    city: '',
+                    phone: '',
+                    email: '',
                 }
             }
         },
