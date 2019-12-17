@@ -242,6 +242,13 @@
                 },
                 editingModal: {
                     id: 'edMod',
+                    user_id: null,
+                    name: '',
+                    surname: '',
+                    alias: '',
+                    city: '',
+                    phone: '',
+                    email: '',
                 }
             }
         },
@@ -319,7 +326,7 @@
                     .then((response) => {
                         this.load();
                         this.actionLoad = false;
-                        this.makeToast('Пользователь усешно восстановлен', 'success');
+                        this.makeToast('Пользователь успешно восстановлен', 'success');
                     });
             },
             deleteModal(index) {
