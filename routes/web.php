@@ -31,6 +31,10 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
     Route::post('users/operations/getAll', 'UserBalanceOperationController@getAll');
 
     Route::resource('orders', 'OrderController');
+    Route::post('/orders/getAll', 'OrderController@getAll');
+    Route::post('/orders/get/{id}', 'OrderController@get');
+    Route::post('/orders/restore/{id}', 'OrderController@restore');
+
     Route::prefix('storage')->group(function () {
         Route::get('/', 'StorageController@index')->name('storage.index');
 
@@ -197,6 +201,12 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
             ]
         ]);
         Route::post('/providers/get', 'ProviderController@get')->name('other.providers.get');
+
+        //
+        Route::post('/product_types/get', 'ProductTypeController@get');
+        Route::post('/construction_types/get', 'ConstructionTypeController@get');
+        Route::post('/payment_types/get', 'PaymentTypeController@get');
+        Route::post('/order_statuses/get', 'OrderStatusController@get');
 
     });
 });

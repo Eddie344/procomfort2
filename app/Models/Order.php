@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
+    use SoftDeletes;
     /**
      * The attributes that are mass assignable.
      *
@@ -44,5 +46,14 @@ class Order extends Model
 
     public function getCreatedAtAttribute($timestamp) {
         return Carbon::parse($timestamp)->format('d.m.Y H:i');
+    }
+
+    public function scopeFilter($query)
+    {
+        if(request('deleted'))
+        {
+            $query->onlyTrashed();
+        }
+        return $query;
     }
 }

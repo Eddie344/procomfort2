@@ -378,7 +378,10 @@
                 ],
                 item: {},
                 parts: [],
-                new_part: {},
+                new_part: {
+                    provider_id: null,
+                    status_id: null,
+                },
                 providers: [],
                 part_statuses: [],
                 part_types: [],

@@ -418,7 +418,11 @@
                 ],
                 item: {},
                 parts: [],
-                new_part: {},
+                new_part: {
+                    type_id: null,
+                    provider_id: null,
+                    status_id: null,
+                },
                 providers: [],
                 part_statuses: [],
                 part_types: [],
