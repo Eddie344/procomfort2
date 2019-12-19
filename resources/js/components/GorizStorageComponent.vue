@@ -232,7 +232,10 @@
                 items: [],
                 categories: [],
                 catalogs: [],
-                new_item: {},
+                new_item: {
+                    catalog_id: null,
+                    category_id: null,
+                },
                 isBusy: false,
                 actionLoad: false,
                 pageOptions: [5, 10, 15],

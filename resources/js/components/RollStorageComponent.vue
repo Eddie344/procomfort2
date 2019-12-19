@@ -269,7 +269,11 @@
                 categories: [],
                 catalogs: [],
                 pictures: [],
-                new_item: {},
+                new_item: {
+                    catalog_id: null,
+                    category_id: null,
+                    picture_id: null,
+                },
                 isBusy: false,
                 actionLoad: false,
                 pageOptions: [5, 10, 15],
@@ -385,8 +389,8 @@
                 })
                     .then((response) => {
                         this.categories = response.data;
+                        this.new_item.category_id = null;
                     });
-                this.new_item.category_id = null;
             },
             getCatalogs(){
                 axios.post('/admin/other/catalogs/get')

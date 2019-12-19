@@ -19,9 +19,7 @@ class ConstructionTypeController extends Controller
 
     public function get(Request $request)
     {
-        $constructions = ConstructionType::where([
-            ['product_type_id', '=', $request->product_type_id],
-        ])->get();
+        $constructions = ConstructionType::filter()->get();
         return response()->json($constructions);
     }
 

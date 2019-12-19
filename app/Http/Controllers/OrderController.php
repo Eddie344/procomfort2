@@ -15,9 +15,21 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::with(['productType', 'status', 'diller', 'paymentType'])->paginate(10);
-        return view('admin.orders.index', compact('orders'));
+        return view('admin.orders.index');
     }
+
+    public function getAll()
+    {
+        $orders = Order::with(['user', 'productType', 'status', 'diller', 'paymentType'])->filter()->get();
+        return response()->json($orders);
+    }
+
+    public function get($id)
+    {
+        $order = Order::with(['user', 'productType', 'status', 'diller', 'paymentType'])->find($id);
+        return response()->json($order);
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -37,8 +49,9 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        Order::create($request->all());
-        return redirect('admin/orders');
+        $order = Order::create($request->order);
+        $new_order = $order->with(['user', 'productType', 'status', 'diller', 'paymentType'])->find($order->id);
+        return response()->json($new_order);
     }
 
     /**
@@ -73,12 +86,9 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $order = Order::find($id);
-        $order->prefix = $request->input('prefix');
-        $order->status_id = $request->input('status_id');
-        $order->admin_msg = $request->input('admin_msg');
-        $order->save();
-        return view('admin.orders.show', compact('order'));
+        $order = Order::with(['user', 'productType', 'status', 'diller', 'paymentType'])->find($id);
+        $order->update($request->order);
+        return response()->json($order);
     }
 
     /**
@@ -89,6 +99,13 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Order::destroy($id);
+        return response($id);
+    }
+
+    public function restore($id)
+    {
+        Order::withTrashed()->find($id)->restore();
+        return response($id);
     }
 }
