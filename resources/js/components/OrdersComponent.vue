@@ -30,7 +30,7 @@
                                 class="mb-3"
                                 value-field="id"
                                 text-field="label"
-                                @change="getConstructionTypes"
+                                @change="getConstructionTypes(new_order.product_type_id, new_order.construction_type_id)"
                                 required
                             >
                                 <template v-slot:first>
@@ -191,7 +191,7 @@
                     </b-form-select>
                 </b-form-group>
                 <b-form-group label="Префикс:">
-                    <b-form-input type="text" v-model="new_order.prefix" required></b-form-input>
+                    <b-form-input type="text" v-model="editingModal.prefix" required></b-form-input>
                 </b-form-group>
                 <b-form-group label="Тип изделия:">
                     <b-form-select
@@ -200,7 +200,7 @@
                         class="mb-3"
                         value-field="id"
                         text-field="label"
-                        @change="getConstructionTypes"
+                        @change="changeEditingProductType(editingModal.product_type_id)"
                         required
                     >
                         <template v-slot:first>
@@ -208,7 +208,7 @@
                         </template>
                     </b-form-select>
                 </b-form-group>
-                <b-form-group label="Тип конструкции:" v-if="new_order.product_type_id && construction_types.length>0">
+                <b-form-group label="Тип конструкции:" v-if="editingModal.product_type_id && construction_types.length">
                     <b-form-select
                         v-model="editingModal.construction_type_id"
                         :options="construction_types"
@@ -306,6 +306,10 @@
                         label: 'Тип оплаты',
                     },
                     {
+                        key: 'created_at',
+                        label: 'Время создания',
+                    },
+                    {
                         key: 'status.label',
                         label: 'Статус',
                     },
@@ -320,6 +324,7 @@
                     diller_id: null,
                     product_type_id: null,
                     payment_type_id: null,
+                    construction_type_id: null,
                 },
                 isBusy: false,
                 actionLoad: false,
@@ -363,7 +368,6 @@
             this.load();
             this.getUsers();
             this.getProductTypes();
-            this.getConstructionTypes();
             this.getPaymentTypes();
             this.getStatuses();
         },
@@ -401,7 +405,7 @@
                     order: this.editingModal
                 })
                     .then((response) => {
-                        _.extend(this.users[index], response.data);
+                        _.extend(this.orders[index], response.data);
                         this.actionLoad = false;
                         this.$bvModal.hide(this.editingModal.id);
                         this.makeToast('Данные заказа успешно сохранены', 'success');
@@ -439,6 +443,7 @@
                 this.editingModal.product_type_id = this.orders[index].product_type_id;
                 this.editingModal.construction_type_id = this.orders[index].construction_type_id;
                 this.editingModal.payment_type_id = this.orders[index].payment_type_id;
+                this.getConstructionTypes(this.orders[index].product_type_id);
                 this.$root.$emit('bv::show::modal', this.editingModal.id);
             },
             resetEditingModal() {
@@ -449,6 +454,7 @@
                 this.editingModal.product_type_id = null;
                 this.editingModal.construction_type_id = null;
                 this.editingModal.payment_type_id = null;
+                this.construction_types = [];
             },
             onFiltered(filteredItems) {
                 // Trigger pagination to update the number of buttons/pages due to filtering
@@ -476,13 +482,12 @@
                         this.product_types = response.data;
                     });
             },
-            getConstructionTypes(){
+            getConstructionTypes(product_type){
                 axios.post('/admin/other/construction_types/get', {
-                    product_type_id: this.new_order.product_type_id
+                    product_type_id: product_type
                 })
                     .then((response) => {
                         this.construction_types = response.data;
-                        this.new_order.construction_type_id = null;
                     });
             },
             getPaymentTypes(){
@@ -496,6 +501,10 @@
                     .then((response) => {
                         this.statuses = response.data;
                     });
+            },
+            changeEditingProductType(product_type){
+                this.getConstructionTypes(product_type);
+                this.editingModal.construction_type_id = null;
             },
         }
     }

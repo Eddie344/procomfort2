@@ -14,7 +14,9 @@ class Order extends Model
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $fillable = [
+        'creator_id', 'diller_id', 'prefix', 'product_type_id', 'construction_type_id', 'status_id', 'payment_type_id', 'admin_msg', 'diller_msg'
+    ];
 
 
     public function user()
@@ -48,7 +50,7 @@ class Order extends Model
     }
 
     public function getCreatedAtAttribute($timestamp) {
-        return Carbon::parse($timestamp)->format('d.m.Y H:i');
+        return Carbon::parse($timestamp)->format('d.m.Y H:i:s');
     }
 
     public function scopeFilter($query)
