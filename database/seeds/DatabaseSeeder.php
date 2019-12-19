@@ -27,7 +27,6 @@ class DatabaseSeeder extends Seeder
             MountTypesTableSeeder::class,
             ProductRuleTypesTableSeeder::class,
             PaymentTypesTableSeeder::class,
-            OrdersTableSeeder::class,
             StoragesTypesTableSeeder::class,
             PartStatusesTableSeeder::class,
             PartTypesTableSeeder::class,

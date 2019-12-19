@@ -24,8 +24,11 @@ class CreateOrdersTable extends Migration
 
             $table->string('prefix')->nullable(); //Либо номер заказа заказчика, либо имя заказчика, которое ставит админ, если заказчика нет в бд
 
-            $table->unsignedBigInteger('product_type');
-            $table->foreign('product_type')->references('id')->on('product_types');
+            $table->unsignedBigInteger('product_type_id');
+            $table->foreign('product_type_id')->references('id')->on('product_types');
+
+            $table->unsignedBigInteger('construction_type_id')->nullable();
+            $table->foreign('construction_type_id')->references('id')->on('construction_types');
 
             $table->unsignedBigInteger('status_id')->default('1');
             $table->foreign('status_id')->references('id')->on('order_statuses');

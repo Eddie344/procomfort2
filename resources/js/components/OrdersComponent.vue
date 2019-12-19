@@ -25,7 +25,7 @@
                         </b-form-group>
                         <b-form-group label="Тип изделия:">
                             <b-form-select
-                                v-model="new_order.product_type"
+                                v-model="new_order.product_type_id"
                                 :options="product_types"
                                 class="mb-3"
                                 value-field="id"
@@ -38,9 +38,9 @@
                                 </template>
                             </b-form-select>
                         </b-form-group>
-                        <b-form-group label="Тип конструкции:" v-if="new_order.product_type && construction_types">
+                        <b-form-group label="Тип конструкции:" v-if="new_order.product_type_id && construction_types.length">
                             <b-form-select
-                                v-model="new_order.construction_type"
+                                v-model="new_order.construction_type_id"
                                 :options="construction_types"
                                 class="mb-3"
                                 value-field="id"
@@ -143,6 +143,9 @@
             <template v-slot:cell(status.label)="data">
                 <b :class="'text-'+data.item.status.color">{{ data.item.status.label }}</b>
             </template>
+            <template v-slot:cell(product_type)="data">
+                {{ data.item.product_type.label }} <span v-if="data.item.construction_type_id">{{ data.item.construction_type.label }}</span>
+            </template>
             <template v-slot:cell(delete)="data">
                 <div v-if="!orders[data.index].deleted_at">
                     <b-button class="p-0" variant="link" @click="editModal(data.index)"><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
@@ -192,7 +195,7 @@
                 </b-form-group>
                 <b-form-group label="Тип изделия:">
                     <b-form-select
-                        v-model="editingModal.product_type"
+                        v-model="editingModal.product_type_id"
                         :options="product_types"
                         class="mb-3"
                         value-field="id"
@@ -205,9 +208,9 @@
                         </template>
                     </b-form-select>
                 </b-form-group>
-                <b-form-group label="Тип конструкции:" v-if="new_order.product_type && construction_types.length>0">
+                <b-form-group label="Тип конструкции:" v-if="new_order.product_type_id && construction_types.length>0">
                     <b-form-select
-                        v-model="editingModal.construction_type"
+                        v-model="editingModal.construction_type_id"
                         :options="construction_types"
                         class="mb-3"
                         value-field="id"
@@ -295,7 +298,7 @@
                         label: 'Заказчик',
                     },
                     {
-                        key: 'product_type.label',
+                        key: 'product_type',
                         label: 'Вид изделия',
                     },
                     {
@@ -315,7 +318,7 @@
                 deleted: false,
                 new_order: {
                     diller_id: null,
-                    product_type: null,
+                    product_type_id: null,
                     payment_type_id: null,
                 },
                 isBusy: false,
@@ -332,8 +335,8 @@
                     order_id: null,
                     diller_id: null,
                     prefix: '',
-                    product_type: null,
-                    construction_type: null,
+                    product_type_id: null,
+                    construction_type_id: null,
                     payment_type_id: null,
                 },
                 users: [],
@@ -433,8 +436,8 @@
                 this.editingModal.order_id = this.orders[index].id;
                 this.editingModal.diller_id = this.orders[index].diller_id;
                 this.editingModal.prefix = this.orders[index].prefix;
-                this.editingModal.product_type = this.orders[index].product_type;
-                this.editingModal.construction_type = this.orders[index].construction_type;
+                this.editingModal.product_type_id = this.orders[index].product_type_id;
+                this.editingModal.construction_type_id = this.orders[index].construction_type_id;
                 this.editingModal.payment_type_id = this.orders[index].payment_type_id;
                 this.$root.$emit('bv::show::modal', this.editingModal.id);
             },
@@ -443,8 +446,8 @@
                 this.editingModal.order_id = null;
                 this.editingModal.diller_id = null;
                 this.editingModal.prefix = '';
-                this.editingModal.product_type = null;
-                this.editingModal.construction_type = null;
+                this.editingModal.product_type_id = null;
+                this.editingModal.construction_type_id = null;
                 this.editingModal.payment_type_id = null;
             },
             onFiltered(filteredItems) {
@@ -475,11 +478,11 @@
             },
             getConstructionTypes(){
                 axios.post('/admin/other/construction_types/get', {
-                    product_type_id: this.new_order.product_type
+                    product_type_id: this.new_order.product_type_id
                 })
                     .then((response) => {
                         this.construction_types = response.data;
-                        this.new_order.construction_type = null;
+                        this.new_order.construction_type_id = null;
                     });
             },
             getPaymentTypes(){

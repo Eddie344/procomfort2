@@ -14,9 +14,7 @@ class Order extends Model
      *
      * @var array
      */
-    protected $fillable = [
-        'creator_id', 'diller_id', 'product_type', 'prefix', 'payment_type_id',
-    ];
+    protected $guarded = [];
 
 
     public function user()
@@ -26,7 +24,12 @@ class Order extends Model
 
     public function productType()
     {
-        return $this->belongsTo('App\Models\ProductType', 'product_type', 'id');
+        return $this->belongsTo('App\Models\ProductType', 'product_type_id', 'id');
+    }
+
+    public function constructionType()
+    {
+        return $this->belongsTo('App\Models\ConstructionType', 'construction_type_id', 'id');
     }
 
     public function status()

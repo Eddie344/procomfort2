@@ -20,13 +20,13 @@ class OrderController extends Controller
 
     public function getAll()
     {
-        $orders = Order::with(['user', 'productType', 'status', 'diller', 'paymentType'])->filter()->get();
+        $orders = Order::with(['user', 'productType', 'constructionType', 'status', 'diller', 'paymentType'])->filter()->get();
         return response()->json($orders);
     }
 
     public function get($id)
     {
-        $order = Order::with(['user', 'productType', 'status', 'diller', 'paymentType'])->find($id);
+        $order = Order::with(['user', 'productType', 'constructionType', 'status', 'diller', 'paymentType'])->find($id);
         return response()->json($order);
     }
 
@@ -50,7 +50,7 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $order = Order::create($request->order);
-        $new_order = $order->with(['user', 'productType', 'status', 'diller', 'paymentType'])->find($order->id);
+        $new_order = $order->with(['user', 'productType', 'constructionType', 'status', 'diller', 'paymentType'])->find($order->id);
         return response()->json($new_order);
     }
 
@@ -86,7 +86,7 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $order = Order::with(['user', 'productType', 'status', 'diller', 'paymentType'])->find($id);
+        $order = Order::with(['user', 'productType', 'constructionType', 'status', 'diller', 'paymentType'])->find($id);
         $order->update($request->order);
         return response()->json($order);
     }
