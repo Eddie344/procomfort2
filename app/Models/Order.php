@@ -55,6 +55,11 @@ class Order extends Model
 
     public function scopeFilter($query)
     {
+        if(request('startDate') && request('endDate')) {
+            $startDate = Carbon::create(request('startDate'))->tz('Europe/Minsk');
+            $endDate = Carbon::create(request('endDate'))->tz('Europe/Minsk');
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
         if(request('deleted'))
         {
             $query->onlyTrashed();

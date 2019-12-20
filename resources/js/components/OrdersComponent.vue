@@ -106,10 +106,10 @@
         </b-row>
 
         <b-row class="mb-3">
-            <b-col lg="12">
+            <b-col lg="9">
                 <b-form-group
                     label="Фильтровать по:"
-                    label-cols-sm="2"
+                    label-cols-sm="3"
                     class="mb-0">
                     <b-form-checkbox-group v-model="filterOn" class="mt-2">
                         <b-form-checkbox value="id">Номер заказа</b-form-checkbox>
@@ -118,6 +118,17 @@
                         <b-form-checkbox value="paymentType.label">Тип оплаты</b-form-checkbox>
                     </b-form-checkbox-group>
                 </b-form-group>
+            </b-col>
+            <b-col lg="3">
+                <date-range-picker
+                    :locale-data="{ firstDay: 1, format: 'DD-MM-YYYY' }"
+                    v-model="dateRange"
+                    @update="applyDatePicker"
+                    :localeData="localeData"
+                    :ranges="ranges"
+                    opens="left"
+                >
+                </date-range-picker>
             </b-col>
         </b-row>
         <b-table
@@ -133,9 +144,11 @@
             :busy="isBusy"
             :filter="filter"
             :filterIncludedFields="filterOn"
+            sort-by="created_at"
+            sort-desc
         >
-            <template v-slot:cell(id)="data">
-                <a :href="'/admin/orders/'+ data.item.id">{{ data.item.id }}</a>
+            <template v-slot:cell(prefix)="data">
+                <a :href="'/admin/orders/'+ data.item.id"><strong>{{ data.item.prefix }}</strong></a>
             </template>
             <template v-slot:cell(diller.alias)="data">
                 <a :href="'/admin/users/'+ data.item.diller.id">{{ data.item.diller.alias }}</a>
@@ -144,7 +157,7 @@
                 <b :class="'text-'+data.item.status.color">{{ data.item.status.label }}</b>
             </template>
             <template v-slot:cell(product_type)="data">
-                {{ data.item.product_type.label }} <span v-if="data.item.construction_type_id">{{ data.item.construction_type.label }}ин </span>
+                {{ data.item.product_type.label }} <span v-if="data.item.construction_type_id">{{ data.item.construction_type.label }}</span>
             </template>
             <template v-slot:cell(delete)="data">
                 <div v-if="!orders[data.index].deleted_at">
@@ -277,8 +290,13 @@
 </template>
 
 <script>
+    import DateRangePicker from 'vue2-daterange-picker'
+    import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
+    import moment from "moment";
+    moment.locale('ru');
     export default {
         name: "OrdersComponent",
+        components: { DateRangePicker },
         props: ['auth_user'],
         data() {
             return {
@@ -288,30 +306,37 @@
                     {
                         key: 'id',
                         label: '№',
+                        sortable: true,
                     },
                     {
                         key: 'prefix',
                         label: 'Префикс',
+                        sortable: true,
                     },
                     {
                         key: 'diller.alias',
                         label: 'Заказчик',
+                        sortable: true,
                     },
                     {
                         key: 'product_type',
                         label: 'Вид изделия',
+                        sortable: true,
                     },
                     {
                         key: 'payment_type.label',
                         label: 'Тип оплаты',
+                        sortable: true,
                     },
                     {
                         key: 'created_at',
                         label: 'Время создания',
+                        sortable: true,
                     },
                     {
                         key: 'status.label',
                         label: 'Статус',
+                        sortable: true,
                     },
                     {
                         key: 'delete',
@@ -349,6 +374,31 @@
                 construction_types: [],
                 payment_types: [],
                 statuses: [],
+                //datepicker
+                dateRange: {
+                    startDate: moment().startOf('month').hour(0).minute(0).second(0),
+                    endDate: moment().endOf('month').hour(23).minute(59).second(59),
+                },
+                localeData: {
+                    direction: 'ltr',
+                    format: moment.localeData().longDateFormat('L'),
+                    separator: ' - ',
+                    applyLabel: 'Применить',
+                    cancelLabel: 'Отмена',
+                    weekLabel: 'W',
+                    customRangeLabel: 'Custom Range',
+                    daysOfWeek: moment.weekdaysMin(),
+                    monthNames: moment.monthsShort(),
+                    firstDay: moment.localeData().firstDayOfWeek()
+                },
+                ranges:{
+                    'Сегодня': [moment(), moment()],
+                    'Вчера': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'В этом месяце': [moment().startOf('month'), moment().endOf('month')],
+                    'В этом году': [moment().startOf('year'), moment().endOf('year')],
+                    'На прошлой неделе': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+                    'В прошлом месяце': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                }
             }
         },
         computed: {
@@ -372,10 +422,17 @@
             this.getStatuses();
         },
         methods:{
+            applyDatePicker(){
+                this.dateRange.startDate = moment(this.dateRange.startDate).hour(0).minute(0).second(0);
+                this.dateRange.endDate = moment(this.dateRange.endDate).hour(23).minute(59).second(59);
+                this.load();
+            },
             load(){
                 this.isBusy = true;
                 axios.post('/admin/orders/getAll', {
-                    deleted: this.deleted
+                    deleted: this.deleted,
+                    startDate: moment(this.dateRange.startDate),
+                    endDate: moment(this.dateRange.endDate),
                 })
                     .then((response) => {
                         this.orders = response.data;
