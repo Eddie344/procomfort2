@@ -144,7 +144,7 @@
                 <b :class="'text-'+data.item.status.color">{{ data.item.status.label }}</b>
             </template>
             <template v-slot:cell(product_type)="data">
-                {{ data.item.product_type.label }} <span v-if="data.item.construction_type_id">{{ data.item.construction_type.label }}</span>
+                {{ data.item.product_type.label }} <span v-if="data.item.construction_type_id">{{ data.item.construction_type.label }}ин </span>
             </template>
             <template v-slot:cell(delete)="data">
                 <div v-if="!orders[data.index].deleted_at">
