@@ -86,9 +86,9 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $order = Order::with(['user', 'productType', 'constructionType', 'status', 'diller', 'paymentType'])->find($id);
+        $order = Order::find($id);
         $order->update($request->order);
-        return response()->json($order);
+        return response()->json(Order::with(['user', 'productType', 'constructionType', 'status', 'diller', 'paymentType'])->find($id));
     }
 
     /**
