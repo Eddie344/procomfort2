@@ -20,7 +20,12 @@ class OrderController extends Controller
 
     public function getAll()
     {
-        $orders = Order::with(['user', 'productType', 'constructionType', 'status', 'diller', 'paymentType'])->filter()->get();
+        $orders = Order::with(['user', 'productType', 'constructionType', 'status', 'diller', 'paymentType'])
+            ->filter()
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($orders);
     }
 
@@ -49,9 +54,8 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $order = Order::create($request->order);
-        $new_order = $order->with(['user', 'productType', 'constructionType', 'status', 'diller', 'paymentType'])->find($order->id);
-        return response()->json($new_order);
+        Order::create($request->order);
+        return response('ok');
     }
 
     /**

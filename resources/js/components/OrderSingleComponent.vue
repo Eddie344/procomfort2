@@ -34,7 +34,7 @@
                 </b-tab>
                 <b-tab title="Изделия">
                     <b-card-text>
-                        <order-roll-mini></order-roll-mini>
+                        <order-roll-mini :order="order" ></order-roll-mini>
                     </b-card-text>
                 </b-tab>
             </b-tabs>

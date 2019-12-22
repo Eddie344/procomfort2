@@ -55,6 +55,10 @@ class Order extends Model
 
     public function scopeFilter($query)
     {
+        if(request('order_id'))
+        {
+            $query->where('order_id', request('order_id'));
+        }
         if(request('startDate') && request('endDate')) {
             $startDate = Carbon::create(request('startDate'))->tz('Europe/Minsk');
             $endDate = Carbon::create(request('endDate'))->tz('Europe/Minsk');

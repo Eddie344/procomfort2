@@ -2,11 +2,34 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class RollProduct extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'order_id',
+        'type_id',
+        'construction_id',
+        'rule_type_id',
+        'rule_lenght',
+        'price',
+        'width',
+        'height',
+        'note',
+        'material_id',
+        'complectation_type_id',
+        'furn_color_id',
+        'measurement_type_id',
+        'mount_type_id',
+        'chain_lock',
+        'chain_tensioner',
+        'fishing_line',
+        'magnets',
+        'without_drilling',
+        'mounting_profile',
+        'cover_box'
+    ];
 
     public function order()
     {
@@ -50,5 +73,13 @@ class RollProduct extends Model
     public function furnColor()
     {
         return $this->belongsTo('App\Models\FurnColor', 'furn_color_id');
+    }
+    public function scopeFilter($query)
+    {
+        if(request('order_id'))
+        {
+            $query->where('order_id', request('order_id'));
+        }
+        return $query;
     }
 }

@@ -144,8 +144,6 @@
             :busy="isBusy"
             :filter="filter"
             :filterIncludedFields="filterOn"
-            sort-by="created_at"
-            sort-desc
         >
             <template v-slot:cell(prefix)="data">
                 <a :href="'/admin/orders/'+ data.item.id"><strong>{{ data.item.prefix }}</strong></a>
@@ -161,11 +159,11 @@
             </template>
             <template v-slot:cell(delete)="data">
                 <div v-if="!orders[data.index].deleted_at">
-                    <b-button class="p-0" variant="link" @click="editModal(data.index)"><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
-                    <b-button class="p-0" variant="link" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
+                    <b-button class="p-0" variant="link" @click="editModal(data.item)"><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
+                    <b-button class="p-0" variant="link" @click="deleteModal(data.item.id)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
                 </div>
                 <div v-else>
-                    <b-button class="p-0" variant="link" @click="restoreOrder(data.index)"><h5 class="d-inline"><i class="fa fa-arrow-up text-success"></i></h5></b-button>
+                    <b-button class="p-0" variant="link" @click="restoreOrder(data.item.id)"><h5 class="d-inline"><i class="fa fa-arrow-up text-success"></i></h5></b-button>
                 </div>
             </template>
             <template v-slot:table-busy>
@@ -177,7 +175,7 @@
         <!--Delete modal-->
         <b-modal :id="deletingModal.id" size="sm" title="Вы уверены?" centered>
             <template v-slot:modal-footer="{ ok }">
-                <b-button variant="danger" @click="deleteOrder(deletingModal.index)" v-bind:disabled="actionLoad">
+                <b-button variant="danger" @click="deleteOrder(deletingModal.order_id)" v-bind:disabled="actionLoad">
                     <span v-if="!actionLoad">Удалить</span>
                     <span v-else>
                         <b-spinner small></b-spinner>
@@ -188,7 +186,7 @@
         </b-modal>
         <!--Edit modal-->
         <b-modal :id="editingModal.id" @hide="resetEditingModal" size="sm" title="Редактирование" hide-footer centered>
-            <b-form @submit.prevent="editOrder(editingModal.index)">
+            <b-form @submit.prevent="editOrder">
                 <b-form-group label="Заказчик:">
                     <b-form-select
                         v-model="editingModal.diller_id"
@@ -449,14 +447,14 @@
                     order: this.new_order
                 })
                     .then((response) => {
-                        this.orders.push(response.data);
+                        this.load();
                         this.new_order = {};
                         this.actionLoad = false;
                         this.$refs['modalAdd'].hide();
-                        this.makeToast('Заказ усешно добавлен', 'success');
+                        this.makeToast('Заказ успешно добавлен', 'success');
                     });
             },
-            editOrder(index) {
+            editOrder() {
                 this.actionLoad = true;
                 axios.put('/admin/orders/'+this.editingModal.order_id, {
                     order: this.editingModal
@@ -468,39 +466,38 @@
                         this.makeToast('Данные заказа успешно сохранены', 'success');
                     });
             },
-            deleteOrder(index){
+            deleteOrder(id){
                 this.actionLoad = true;
-                axios.delete('/admin/orders/'+this.orders[index].id)
-                    .then((response) => {
-                        this.$delete(this.orders, index);
-                        this.actionLoad = false;
-                        this.$bvModal.hide(this.deletingModal.id);
-                        this.deletingModal.index = null;
-                        this.makeToast('Заказ усешно удален', 'danger');
-                    });
-            },
-            restoreOrder(index) {
-                this.actionLoad = true;
-                axios.post(`/admin/orders/restore/${this.orders[index].id}`)
+                axios.delete('/admin/orders/'+id)
                     .then((response) => {
                         this.load();
                         this.actionLoad = false;
-                        this.makeToast('Заказ усешно восстановлен', 'success');
+                        this.$bvModal.hide(this.deletingModal.id);
+                        this.deletingModal.order_id = null;
+                        this.makeToast('Заказ успешно удален', 'danger');
                     });
             },
-            deleteModal(index) {
-                this.deletingModal.index = index;
+            restoreOrder(id) {
+                this.actionLoad = true;
+                axios.post(`/admin/orders/restore/${id}`)
+                    .then((response) => {
+                        this.load();
+                        this.actionLoad = false;
+                        this.makeToast('Заказ успешно восстановлен', 'success');
+                    });
+            },
+            deleteModal(id) {
+                this.deletingModal.order_id = id;
                 this.$root.$emit('bv::show::modal', this.deletingModal.id);
             },
-            editModal(index) {
-                this.editingModal.index = index;
-                this.editingModal.order_id = this.orders[index].id;
-                this.editingModal.diller_id = this.orders[index].diller_id;
-                this.editingModal.prefix = this.orders[index].prefix;
-                this.editingModal.product_type_id = this.orders[index].product_type_id;
-                this.editingModal.construction_type_id = this.orders[index].construction_type_id;
-                this.editingModal.payment_type_id = this.orders[index].payment_type_id;
-                this.getConstructionTypes(this.orders[index].product_type_id);
+            editModal(item) {
+                this.editingModal.order_id = item.id;
+                this.editingModal.diller_id = item.diller_id;
+                this.editingModal.prefix = item.prefix;
+                this.editingModal.product_type_id = item.product_type_id;
+                this.editingModal.construction_type_id = item.construction_type_id;
+                this.editingModal.payment_type_id = item.payment_type_id;
+                this.getConstructionTypes(item.product_type_id);
                 this.$root.$emit('bv::show::modal', this.editingModal.id);
             },
             resetEditingModal() {

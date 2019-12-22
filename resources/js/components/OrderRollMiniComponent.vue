@@ -4,7 +4,7 @@
             <b-col lg="1">
                 <b-button variant="success" v-b-modal.modalAdd>Добавить</b-button>
                 <b-modal ref="modalAdd" id="modalAdd" size="sm" title="Добавление" hide-footer centered>
-                    <b-form @submit.prevent="addOrder">
+                    <b-form @submit.prevent="addProduct">
                         <b-form-group label="Ширина:">
                             <b-form-input type="number" min="0.1" step="0.01" v-model="new_product.width" required></b-form-input>
                         </b-form-group>
@@ -77,7 +77,6 @@
                                 name="checkbox-1"
                                 value="accepted"
                                 unchecked-value="not_accepted"
-                                required
                             >
                                 Фиксатор цепи
                             </b-form-checkbox>
@@ -87,7 +86,6 @@
                                 name="checkbox-1"
                                 value="accepted"
                                 unchecked-value="not_accepted"
-                                required
                             >
                                 Натяжитель цепи
                             </b-form-checkbox>
@@ -97,7 +95,6 @@
                                 name="checkbox-1"
                                 value="accepted"
                                 unchecked-value="not_accepted"
-                                required
                             >
                                 Леска
                             </b-form-checkbox>
@@ -107,7 +104,6 @@
                                 name="checkbox-1"
                                 value="accepted"
                                 unchecked-value="not_accepted"
-                                required
                             >
                                 Магниты
                             </b-form-checkbox>
@@ -117,13 +113,12 @@
                                 name="checkbox-1"
                                 value="accepted"
                                 unchecked-value="not_accepted"
-                                required
                             >
                                 Крепление без сверления
                             </b-form-checkbox>
                         </b-form-group>
                         <b-form-group label="Количество изделий:">
-                            <b-form-input min="1" type="number" v-model="new_product.count" required></b-form-input>
+                            <b-form-input min="1" type="number" v-model="new_product_count" required></b-form-input>
                         </b-form-group>
                         <b-form-group label="Примечание:">
                             <b-form-textarea v-model="new_product.note"></b-form-textarea>
@@ -150,16 +145,148 @@
             :current-page="currentPage"
             :striped="true"
             :busy="isBusy"
-            sort-by="created_at"
-            sort-desc
         >
+            <template v-slot:cell(delete)="data">
+                <b-button class="p-0" variant="link" @click="editModal(data.item)"><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
+                <b-button class="p-0" variant="link" @click="deleteModal(data.item.id)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
+            </template>
         </b-table>
+        <!--Edit modal-->
+        <b-modal :id="editingModal.id" size="sm" title="Редактирование" hide-footer centered>
+            <b-form @submit.prevent="editProduct">
+                <b-form-group label="Ширина:">
+                    <b-form-input type="number" min="0.1" step="0.01" v-model="editingModal.width" required></b-form-input>
+                </b-form-group>
+                <b-form-group label="Высота:">
+                    <b-form-input type="number" min="0.1" step="0.01" v-model="editingModal.height" required></b-form-input>
+                </b-form-group>
+                <b-form-group label="Управление:">
+                    <b-form-select
+                        v-model="editingModal.rule_type_id"
+                        :options="rule_types"
+                        class="mb-3"
+                        value-field="id"
+                        text-field="label"
+                        required
+                    >
+                        <template v-slot:first>
+                            <option :value="null" disabled selected>Выберите тип управления...</option>
+                        </template>
+                    </b-form-select>
+                </b-form-group>
+                <b-form-group label="Длина управления:">
+                    <b-form-input type="number" step="0.01" v-model="editingModalLenght" required></b-form-input>
+                </b-form-group>
+                <b-form-group label="Комплектация:">
+                    <b-form-select
+                        v-model="editingModal.complectation_type_id"
+                        :options="complectation_types"
+                        class="mb-3"
+                        value-field="id"
+                        text-field="label"
+                        required
+                    >
+                        <template v-slot:first>
+                            <option :value="null" disabled selected>Выберите тип комплектации...</option>
+                        </template>
+                    </b-form-select>
+                </b-form-group>
+                <b-form-group label="Ткань:">
+                    <b-form-select
+                        v-model="editingModal.material_id"
+                        :options="materials"
+                        class="mb-3"
+                        value-field="id"
+                        text-field="label"
+                        required
+                    >
+                        <template v-slot:first>
+                            <option :value="null" disabled selected>Выберите ткань...</option>
+                        </template>
+                    </b-form-select>
+                </b-form-group>
+                <b-form-group label="Цвет фурнитуры:">
+                    <b-form-select
+                        v-model="editingModal.furn_color_id"
+                        :options="furn_colors"
+                        class="mb-3"
+                        value-field="id"
+                        text-field="label"
+                        required
+                    >
+                        <template v-slot:first>
+                            <option :value="null" disabled selected>Выберите цвет фурнитуры...</option>
+                        </template>
+                    </b-form-select>
+                </b-form-group>
+                <b-form-group>
+                    <b-form-checkbox
+                        v-model="editingModal.chain_lock"
+                        value="1"
+                        unchecked-value="0"
+                    >
+                        Фиксатор цепи
+                    </b-form-checkbox>
+                    <b-form-checkbox
+                        v-model="editingModal.chain_tensioner"
+                        value="1"
+                        unchecked-value="0"
+                    >
+                        Натяжитель цепи
+                    </b-form-checkbox>
+                    <b-form-checkbox
+                        v-model="editingModal.fishing_line"
+                        value="1"
+                        unchecked-value="0"
+                    >
+                        Леска
+                    </b-form-checkbox>
+                    <b-form-checkbox
+                        v-model="editingModal.magnets"
+                        value="1"
+                        unchecked-value="0"
+                    >
+                        Магниты
+                    </b-form-checkbox>
+                    <b-form-checkbox
+                        v-model="editingModal.without_drilling"
+                        value="1"
+                        unchecked-value="0"
+                    >
+                        Крепление без сверления
+                    </b-form-checkbox>
+                </b-form-group>
+                <b-form-group label="Примечание:">
+                    <b-form-textarea v-model="editingModal.note"></b-form-textarea>
+                </b-form-group>
+                <b-button variant="primary" type="submit" v-bind:disabled="actionLoad">
+                    <span v-if="!actionLoad">Сохранить</span>
+                    <span v-else>
+                        <b-spinner small></b-spinner>
+                        Подождите...
+                    </span>
+                </b-button>
+            </b-form>
+        </b-modal>
+        <!--Delete modal-->
+        <b-modal :id="deletingModal.id" size="sm" title="Вы уверены?" centered>
+            <template v-slot:modal-footer="{ ok }">
+                <b-button variant="danger" @click="deleteProduct(deletingModal.product_id)" v-bind:disabled="actionLoad">
+                    <span v-if="!actionLoad">Удалить</span>
+                    <span v-else>
+                        <b-spinner small></b-spinner>
+                        Подождите...
+                    </span>
+                </b-button>
+            </template>
+        </b-modal>
     </div>
 </template>
 
 <script>
     export default {
         name: "OrderRollMiniComponent",
+        props:['order'],
         data() {
             return {
                 perPage: 10,
@@ -202,7 +329,24 @@
                         label: 'Действия'
                     }
                 ],
-                new_product: {
+                new_product: {},
+                new_product_count: 1,
+                products: [],
+                rule_types: [],
+                materials: [],
+                complectation_types: [],
+                furn_colors: [],
+                deletingModal: {
+                    id: 'delMod',
+                    index: null,
+                },
+                editingModal: {
+                    id: 'edMod',
+                    order_id: this.order.id,
+                    type_id: this.order.product_type_id,
+                    construction_id: this.order.construction_type_id,
+                    width: null,
+                    height: null,
                     rule_lenght: null,
                     rule_type_id: null,
                     complectation_type_id: null,
@@ -213,15 +357,8 @@
                     fishing_line: false,
                     magnets: false,
                     without_drilling: false,
-                    count: 1,
                     note: '',
                 },
-                products: [],
-                rule_types: [],
-                materials: [],
-                complectation_types: [],
-                furn_colors: [],
-
             }
         },
         mounted() {
@@ -230,16 +367,22 @@
             this.loadRules();
             this.loadComplectations();
             this.loadFurnColors();
+            this.resetNewProduct();
         },
         computed: {
             newRuleLenght: function() {
                 return  this.new_product.rule_lenght = this.new_product.height;
+            },
+            editingModalLenght: function() {
+                return  this.editingModal.rule_lenght = this.editingModal.height;
             }
         },
         methods: {
             loadProducts(){
                 this.isBusy = true;
-                axios.post('/admin/products/getAll')
+                axios.post('/admin/roll_products/getAll', {
+                    order_id: this.order.id,
+                })
                     .then((response) => {
                         this.products = response.data;
                         this.isBusy = false;
@@ -269,7 +412,98 @@
                     .then((response) => {
                         this.furn_colors = response.data;
                     });
-            }
+            },
+            addProduct(){
+                this.actionLoad = true;
+                axios.post('/admin/roll_products', {
+                    product: this.new_product,
+                    count: this.new_product_count,
+                })
+                    .then((response) => {
+                        // this.products.push(response.data);
+                        this.loadProducts();
+                        this.new_product = {};
+                        this.actionLoad = false;
+                        this.$refs['modalAdd'].hide();
+                        this.makeToast('Изделия успешно добавлены', 'success');
+                        this.resetNewProduct();
+                    });
+            },
+            resetNewProduct(){
+                this.new_product= {
+                    order_id: this.order.id,
+                    type_id: this.order.product_type_id,
+                    construction_id: this.order.construction_type_id,
+                    rule_lenght: null,
+                    rule_type_id: null,
+                    complectation_type_id: 1,
+                    material_id: null,
+                    furn_color_id: null,
+                    chain_lock: false,
+                    chain_tensioner: false,
+                    fishing_line: false,
+                    magnets: false,
+                    without_drilling: false,
+                    note: '',
+                };
+                this.new_product_count = 1;
+            },
+            deleteModal(id) {
+                this.deletingModal.product_id = id;
+                this.$root.$emit('bv::show::modal', this.deletingModal.id);
+            },
+            deleteProduct(id){
+                this.actionLoad = true;
+                axios.delete('/admin/roll_products/'+id)
+                    .then((response) => {
+                        this.loadProducts();
+                        this.actionLoad = false;
+                        this.$bvModal.hide(this.deletingModal.id);
+                        this.deletingModal.product_id = null;
+                        this.makeToast('Изделия усешно удалены', 'danger');
+                    });
+            },
+            editModal(item) {
+                this.editingModal.product_id = item.id;
+                this.editingModal.width = item.width;
+                this.editingModal.height = item.height;
+                this.editingModal.order_id = item.order_id;
+                this.editingModal.construction_id = item.construction_id;
+                this.editingModal.rule_lenght = item.rule_lenght;
+                this.editingModal.rule_type_id = item.rule_type_id;
+                this.editingModal.complectation_type_id = item.complectation_type_id;
+                this.editingModal.material_id = item.material_id;
+                this.editingModal.furn_color_id = item.furn_color_id;
+                this.editingModal.chain_lock = item.chain_lock;
+                this.editingModal.chain_tensioner = item.chain_tensioner;
+                this.editingModal.fishing_line = item.fishing_line;
+                this.editingModal.magnets = item.magnets;
+                this.editingModal.without_drilling = item.without_drilling;
+                this.editingModal.note = item.note;
+                this.$root.$emit('bv::show::modal', this.editingModal.id);
+            },
+            editProduct() {
+                this.actionLoad = true;
+                axios.put('/admin/roll_products/'+this.editingModal.product_id, {
+                    product: this.editingModal
+                })
+                    .then((response) => {
+                        this.loadProducts();
+                        this.actionLoad = false;
+                        this.$bvModal.hide(this.editingModal.id);
+                        this.makeToast('Данные изделия успешно сохранены', 'success');
+                    });
+            },
+            makeToast(message, color) {
+                this.$bvToast.toast(message, {
+                    title: 'Уведомление',
+                    autoHideDelay: 3000,
+                    variant: color,
+                    appendToast: false,
+                    toaster: 'b-toaster-top-right',
+                })
+            },
+
         }
     }
 </script>

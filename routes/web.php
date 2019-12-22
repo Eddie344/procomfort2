@@ -35,9 +35,9 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
     Route::post('/orders/get/{id}', 'OrderController@get');
     Route::post('/orders/restore/{id}', 'OrderController@restore');
 
-    Route::resource('products', 'RollProductController');
-    Route::post('/products/getAll', 'RollProductController@getAll');
-    Route::post('/products/get/{id}', 'RollProductController@get');
+    Route::apiResource('roll_products', 'RollProductController');
+    Route::post('/roll_products/getAll', 'RollProductController@getAll');
+    Route::post('/roll_products/get/{id}', 'RollProductController@get');
 
     Route::prefix('storage')->group(function () {
         Route::get('/', 'StorageController@index')->name('storage.index');

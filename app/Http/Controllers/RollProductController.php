@@ -21,15 +21,20 @@ class RollProductController extends Controller
 
     public function getAll()
     {
-        $products = RollProduct::with(['order', 'type', 'construction', 'rule', 'material', 'complectation', 'measurement', 'mount', 'furnColor'])->get();
+        $products = RollProduct::with(['order', 'type', 'construction', 'rule', 'material', 'complectation', 'measurement', 'mount', 'furnColor'])
+            ->filter()
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($products);
     }
 
-    public function get($id)
-    {
-        $order = Order::with(['user', 'productType', 'constructionType', 'status', 'diller', 'paymentType'])->find($id);
-        return response()->json($order);
-    }
+//    public function get($id)
+//    {
+//        $order = Order::with(['user', 'productType', 'constructionType', 'status', 'diller', 'paymentType'])->find($id);
+//        return response()->json($order);
+//    }
 
 
     /**
@@ -50,9 +55,12 @@ class RollProductController extends Controller
      */
     public function store(Request $request)
     {
-        $order = Order::create($request->order);
-        $new_order = $order->with(['user', 'productType', 'constructionType', 'status', 'diller', 'paymentType'])->find($order->id);
-        return response()->json($new_order);
+        for($i = 0; $i < $request->count; $i++)
+        {
+            $product = RollProduct::create($request->product);
+        }
+//        $new_product = $product->with(['order', 'type', 'construction', 'rule', 'material', 'complectation', 'measurement', 'mount', 'furnColor'])->find($product->id);
+        return response()->json($product);
     }
 
     /**
@@ -86,9 +94,9 @@ class RollProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $order = Order::find($id);
-        $order->update($request->order);
-        return response()->json(Order::with(['user', 'productType', 'constructionType', 'status', 'diller', 'paymentType'])->find($id));
+        $product = RollProduct::find($id);
+        $product->update($request->product);
+        return response('ok');
     }
 
     /**
@@ -99,7 +107,7 @@ class RollProductController extends Controller
      */
     public function destroy($id)
     {
-        Order::destroy($id);
+        RollProduct::destroy($id);
         return response($id);
     }
 
