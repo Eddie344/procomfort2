@@ -49,9 +49,8 @@ class RollStorageController extends Controller
      */
     public function store(Request $request)
     {
-        $item = RollStorage::create($request->item);
-        $new_item = $item->with(['catalog', 'category', 'picture'])->find($item->id);
-        return response()->json($new_item);
+        RollStorage::create($request->item);
+        return response('ok');
     }
 
     /**
@@ -86,9 +85,8 @@ class RollStorageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $item = $request->item;
-        RollStorage::find($id)->update($item);
-        return response()->json(RollStorage::with(['catalog', 'category', 'picture'])->find($id));
+        RollStorage::find($id)->update($request->item);
+        return response('ok');
     }
 
 
