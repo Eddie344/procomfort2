@@ -21,7 +21,10 @@ class MetalStorageController extends Controller
 
     public function getAll()
     {
-        $metals = MetalStorage::all();
+        $metals = MetalStorage::all()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($metals);
     }
 

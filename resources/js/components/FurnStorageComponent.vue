@@ -76,8 +76,8 @@
                 <a :href="'/admin/storage/furn/'+ data.item.id">{{ data.item.label }}</a>
             </template>
             <template v-slot:cell(delete)="data">
-                <b-button class="p-0" variant="link" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
-                <b-button class="p-0" variant="link" @click="editModal(data.index, data.item)" ><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
+                <b-button class="p-0" variant="link" @click="deleteModal(data.item.id)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
+                <b-button class="p-0" variant="link" @click="editModal(data.item)" ><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
             </template>
             <template v-slot:table-busy>
                 <div class="text-center text-primary my-2">
@@ -88,7 +88,7 @@
         <!--Delete modal-->
         <b-modal :id="deletingModal.id" size="sm" title="Вы уверены?" centered>
             <template v-slot:modal-footer="{ ok }">
-                <b-button variant="danger" @click="deleteItem(deletingModal.index)" v-bind:disabled="actionLoad">
+                <b-button variant="danger" @click="deleteItem" v-bind:disabled="actionLoad">
                     <span v-if="!actionLoad">Удалить</span>
                     <span v-else>
                         <b-spinner small></b-spinner>
@@ -99,7 +99,7 @@
         </b-modal>
         <!--Edit modal-->
         <b-modal :id="editingModal.id" @hide="resetEditingModal" size="sm" title="Редактирование" hide-footer centered>
-            <b-form @submit.prevent="editItem(editingModal.index)">
+            <b-form @submit.prevent="editItem">
                 <b-form-group label="Наименование:">
                     <b-form-input type="text" v-model="editingModal.label" required></b-form-input>
                 </b-form-group>
@@ -148,7 +148,7 @@
 
 <script>
     export default {
-        name: "ListStorageComponent",
+        name: "FurnStorageComponent",
         data() {
             return {
                 perPage: 10,
@@ -176,12 +176,11 @@
                 filterOn: [],
                 deletingModal: {
                     id: 'delMod',
-                    index: null,
+                    item_id: null,
                 },
                 editingModal: {
                     id: 'edMod',
                     item_id: null,
-                    index: null,
                     label: '',
                     unit: '',
                 }
@@ -218,14 +217,14 @@
                     item: this.new_item
                 })
                     .then((response) => {
-                        this.items.push(response.data);
+                        this.load();
                         this.new_item = {};
                         this.actionLoad = false;
                         this.$refs['modalAddPrice'].hide();
                         this.makeToast('Предмет успешно добавлен', 'success');
                     });
             },
-            editItem(index) {
+            editItem() {
                 this.actionLoad = true;
                 axios.put('/admin/storage/furn/'+this.editingModal.item_id, {
                     item: {
@@ -234,36 +233,34 @@
                     }
                 })
                     .then((response) => {
-                        _.extend(this.items[index], response.data);
+                        this.load();
                         this.actionLoad = false;
                         this.$bvModal.hide(this.editingModal.id);
                         this.makeToast('Предмет успешно изменен', 'primary');
                     });
             },
-            deleteItem(index){
+            deleteItem(){
                 this.actionLoad = true;
-                axios.delete('/admin/storage/furn/'+this.items[index].id)
+                axios.delete('/admin/storage/furn/'+this.deletingModal.item_id)
                     .then((response) => {
-                        this.$delete(this.items, index);
+                        this.load();
                         this.actionLoad = false;
                         this.$bvModal.hide(this.deletingModal.id);
                         this.deletingModal.index = null;
                         this.makeToast('Предмет успешно удален', 'danger');
                     });
             },
-            deleteModal(index) {
-                this.deletingModal.index = index;
+            deleteModal(id) {
+                this.deletingModal.item_id = id;
                 this.$root.$emit('bv::show::modal', this.deletingModal.id);
             },
-            editModal(index, item) {
-                this.editingModal.index = index;
+            editModal(item) {
                 this.editingModal.item_id = item.id;
                 this.editingModal.label = item.label;
                 this.editingModal.unit = item.unit;
                 this.$root.$emit('bv::show::modal', this.editingModal.id);
             },
             resetEditingModal() {
-                this.editingModal.index = null;
                 this.editingModal.item_id = null;
                 this.editingModal.label = '';
                 this.editingModal.unit = '';

@@ -4,7 +4,7 @@
             <b-col lg="1">
                 <b-button class="mr-3" variant="success" v-b-modal.modalAddPrice>Добавить</b-button>
 
-                <b-modal ref="modalAddPrice" id="modalAddPrice" size="sm" title="Добавление" hide-footer centered>
+                <b-modal ref="modalAddPrice" id="modalAddPrice" size="sm" title="Добавление" @hide="resetNewItem" hide-footer centered>
                     <b-form @submit.prevent="addItem">
                         <b-form-group label="Наименование:">
                             <b-form-input type="text" v-model="new_item.label" required></b-form-input>
@@ -277,6 +277,7 @@
                     catalog_id: null,
                     category_id: null,
                     picture_id: null,
+                    isFirstOpen: true,
                 },
                 isBusy: false,
                 actionLoad: false,
@@ -294,6 +295,7 @@
                     catalog_id: null,
                     category_id: null,
                     picture_id: null,
+                    isFirstOpen: true,
                 }
             }
         },
@@ -331,7 +333,6 @@
                 })
                     .then((response) => {
                         this.load();
-                        this.new_item = {};
                         this.actionLoad = false;
                         this.$refs['modalAddPrice'].hide();
                         this.makeToast('Предмет успешно добавлен', 'success');
@@ -379,12 +380,19 @@
                 this.$root.$emit('bv::show::modal', this.editingModal.id);
             },
             resetEditingModal() {
-                this.editingModal.index = null;
                 this.editingModal.item_id = null;
                 this.editingModal.label = '';
                 this.editingModal.catalog_id = null;
                 this.editingModal.category_id = null;
                 this.editingModal.picture_id = null;
+                this.editingModal.isFirstOpen = true;
+            },
+            resetNewItem() {
+                this.new_item.label = '';
+                this.new_item.catalog_id = null;
+                this.new_item.category_id = null;
+                this.new_item.picture_id = null;
+                this.new_item.isFirstOpen = true;
             },
             getCategories(modal_type){
                 axios.post('/admin/other/categories/roll/get', {
@@ -392,7 +400,9 @@
                 })
                     .then((response) => {
                         this.categories = response.data;
-                        modal_type.category_id = null;
+                        //Фикс обнуления категории при первом открытии в editingModal
+                        if(modal_type.isFirstOpen === false) modal_type.category_id = null;
+                        modal_type.isFirstOpen = false;
                     });
             },
             getCatalogs(){

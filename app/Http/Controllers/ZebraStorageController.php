@@ -21,7 +21,11 @@ class ZebraStorageController extends Controller
 
     public function getAll()
     {
-        $zebras = ZebraStorage::with(['catalog', 'category'])->get();
+        $zebras = ZebraStorage::with(['catalog', 'category'])
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($zebras);
     }
 

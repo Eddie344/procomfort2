@@ -21,7 +21,10 @@ class FurnStorageController extends Controller
 
     public function getAll()
     {
-        $furns = FurnStorage::all();
+        $furns = FurnStorage::all()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($furns);
     }
 

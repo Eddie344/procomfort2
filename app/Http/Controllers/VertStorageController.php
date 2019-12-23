@@ -21,7 +21,11 @@ class VertStorageController extends Controller
 
     public function getAll()
     {
-        $verts = VertStorage::with(['catalog', 'category'])->get();
+        $verts = VertStorage::with(['catalog', 'category'])
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($verts);
     }
 
