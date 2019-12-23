@@ -16,7 +16,7 @@
                                 class="mb-3"
                                 value-field="id"
                                 text-field="label"
-                                @change="getCategories"
+                                @change="getCategories(new_item)"
                                 required
                             >
                                 <template v-slot:first>
@@ -127,8 +127,8 @@
                 {{ data.item.picture.label }}
             </template>
             <template v-slot:cell(delete)="data">
-                <b-button class="p-0" variant="link" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
-                <b-button class="p-0" variant="link" @click="editModal(data.index, data.item)" ><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
+                <b-button class="p-0" variant="link" @click="deleteModal(data.item.id)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
+                <b-button class="p-0" variant="link" @click="editModal(data.item)" ><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
             </template>
             <template v-slot:table-busy>
                 <div class="text-center text-primary my-2">
@@ -139,7 +139,7 @@
         <!--Delete modal-->
         <b-modal :id="deletingModal.id" size="sm" title="Вы уверены?" centered>
             <template v-slot:modal-footer="{ ok }">
-                <b-button variant="danger" @click="deleteItem(deletingModal.index)" v-bind:disabled="actionLoad">
+                <b-button variant="danger" @click="deleteItem" v-bind:disabled="actionLoad">
                     <span v-if="!actionLoad">Удалить</span>
                     <span v-else>
                         <b-spinner small></b-spinner>
@@ -150,17 +150,19 @@
         </b-modal>
         <!--Edit modal-->
         <b-modal :id="editingModal.id" @hide="resetEditingModal" size="sm" title="Редактирование" hide-footer centered>
-            <b-form @submit.prevent="editItem(editingModal.index)">
+            <b-form @submit.prevent="editItem">
                 <b-form-group label="Наименование:">
                     <b-form-input type="text" v-model="editingModal.label" required></b-form-input>
                 </b-form-group>
                 <b-form-group label="Каталог:">
                     <b-form-select
-                        v-model="editingModal.catalog"
+                        v-model="editingModal.catalog_id"
                         :options="catalogs"
                         class="mb-3"
                         value-field="id"
                         text-field="label"
+                        @change="getCategories(editingModal)"
+                        required
                     >
                         <template v-slot:first>
                             <option :value="null" disabled selected>Выберите каталог...</option>
@@ -169,11 +171,12 @@
                 </b-form-group>
                 <b-form-group label="Категория:">
                     <b-form-select
-                        v-model="editingModal.category"
+                        v-model="editingModal.category_id"
                         :options="categories"
                         class="mb-3"
                         value-field="id"
                         text-field="label"
+                        required
                     >
                         <template v-slot:first>
                             <option :value="null" disabled selected>Выберите категорию...</option>
@@ -182,11 +185,12 @@
                 </b-form-group>
                 <b-form-group label="Направление рисунка:">
                     <b-form-select
-                        v-model="editingModal.picture"
+                        v-model="editingModal.picture_id"
                         :options="pictures"
                         class="mb-3"
                         value-field="id"
                         text-field="label"
+                        required
                     >
                         <template v-slot:first>
                             <option :value="null" disabled selected>Выберите направление рисунка...</option>
@@ -281,16 +285,15 @@
                 filterOn: [],
                 deletingModal: {
                     id: 'delMod',
-                    index: null,
+                    item_id: null,
                 },
                 editingModal: {
                     id: 'edMod',
                     item_id: null,
-                    index: null,
                     label: '',
-                    catalog: null,
-                    category: null,
-                    picture: null,
+                    catalog_id: null,
+                    category_id: null,
+                    picture_id: null,
                 }
             }
         },
@@ -327,52 +330,52 @@
                     item: this.new_item
                 })
                     .then((response) => {
-                        this.items.push(response.data);
+                        this.load();
                         this.new_item = {};
                         this.actionLoad = false;
                         this.$refs['modalAddPrice'].hide();
                         this.makeToast('Предмет успешно добавлен', 'success');
                     });
             },
-            editItem(index) {
+            editItem() {
                 this.actionLoad = true;
                 axios.put('/admin/storage/roll/'+this.editingModal.item_id, {
                     item: {
                         label: this.editingModal.label,
-                        catalog_id: this.editingModal.catalog,
-                        category_id: this.editingModal.category,
-                        picture_id: this.editingModal.picture,
+                        catalog_id: this.editingModal.catalog_id,
+                        category_id: this.editingModal.category_id,
+                        picture_id: this.editingModal.picture_id,
                     }
                 })
                     .then((response) => {
-                        _.extend(this.items[index], response.data);
+                        this.load();
                         this.actionLoad = false;
                         this.$bvModal.hide(this.editingModal.id);
                         this.makeToast('Предмет успешно изменен', 'primary');
                     });
             },
-            deleteItem(index){
+            deleteItem(){
                 this.actionLoad = true;
-                axios.delete('/admin/storage/roll/'+this.items[index].id)
+                axios.delete('/admin/storage/roll/'+this.deletingModal.item_id)
                     .then((response) => {
-                        this.$delete(this.items, index);
+                        this.load();
                         this.actionLoad = false;
                         this.$bvModal.hide(this.deletingModal.id);
                         this.deletingModal.index = null;
                         this.makeToast('Предмет успешно удален', 'danger');
                     });
             },
-            deleteModal(index) {
-                this.deletingModal.index = index;
+            deleteModal(id) {
+                this.deletingModal.item_id = id;
                 this.$root.$emit('bv::show::modal', this.deletingModal.id);
             },
-            editModal(index, item) {
-                this.editingModal.index = index;
+            editModal(item) {
                 this.editingModal.item_id = item.id;
                 this.editingModal.label = item.label;
-                this.editingModal.catalog = item.catalog_id;
-                this.editingModal.category = item.category_id;
-                this.editingModal.picture = item.picture_id;
+                this.editingModal.catalog_id = item.catalog_id;
+                this.editingModal.category_id = item.category_id;
+                this.editingModal.picture_id = item.picture_id;
+                this.getCategories(this.editingModal);
                 this.$root.$emit('bv::show::modal', this.editingModal.id);
             },
             resetEditingModal() {
@@ -381,15 +384,15 @@
                 this.editingModal.label = '';
                 this.editingModal.catalog_id = null;
                 this.editingModal.category_id = null;
-                this.editingModal.picture = null;
+                this.editingModal.picture_id = null;
             },
-            getCategories(){
+            getCategories(modal_type){
                 axios.post('/admin/other/categories/roll/get', {
-                    catalog_id: this.new_item.catalog_id
+                    catalog_id: modal_type.catalog_id
                 })
                     .then((response) => {
                         this.categories = response.data;
-                        this.new_item.category_id = null;
+                        modal_type.category_id = null;
                     });
             },
             getCatalogs(){
