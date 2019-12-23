@@ -379,8 +379,8 @@
                 this.editingModal.index = null;
                 this.editingModal.item_id = null;
                 this.editingModal.label = '';
-                this.editingModal.catalog = null;
-                this.editingModal.category = null;
+                this.editingModal.catalog_id = null;
+                this.editingModal.category_id = null;
                 this.editingModal.picture = null;
             },
             getCategories(){
