@@ -20,7 +20,12 @@ class RollActionsStorageController extends Controller
 
     public function getAll(Request $request)
     {
-        $actions = RollActionsStorage::with(['type', 'user', 'rollStorage'])->filter()->get();
+        $actions = RollActionsStorage::with(['type', 'user', 'rollStorage'])
+            ->filter()
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($actions);
     }
 

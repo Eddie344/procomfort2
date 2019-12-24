@@ -18,7 +18,11 @@ class MetalPartsStorageController extends Controller
 
     public function getAll(Request $request)
     {
-        $parts = MetalPartsStorage::with(['type', 'status', 'provider', 'metalStorage'])->where('metal_storage_id', $request->metal_storage_id)->get();
+        $parts = MetalPartsStorage::with(['type', 'status', 'provider', 'metalStorage'])->where('metal_storage_id', $request->metal_storage_id)
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($parts);
     }
 

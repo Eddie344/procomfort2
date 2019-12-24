@@ -18,7 +18,11 @@ class FurnPartsStorageController extends Controller
 
     public function getAll(Request $request)
     {
-        $parts = FurnPartsStorage::with(['type', 'status', 'provider', 'furnStorage'])->where('furn_storage_id', $request->furn_storage_id)->get();
+        $parts = FurnPartsStorage::with(['type', 'status', 'provider', 'furnStorage'])->where('furn_storage_id', $request->furn_storage_id)
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($parts);
     }
 

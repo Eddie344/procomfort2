@@ -23,7 +23,11 @@ class RollPartsStorageController extends Controller
 
     public function getAll(Request $request)
     {
-        $parts = RollPartsStorage::with(['type', 'status', 'provider', 'rollStorage'])->where('roll_storage_id', $request->roll_storage_id)->get();
+        $parts = RollPartsStorage::with(['type', 'status', 'provider', 'rollStorage'])->where('roll_storage_id', $request->roll_storage_id)
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($parts);
     }
 

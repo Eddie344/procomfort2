@@ -23,7 +23,11 @@ class VertPartsStorageController extends Controller
 
     public function getAll(Request $request)
     {
-        $parts = VertPartsStorage::with(['type', 'status', 'provider', 'vertStorage'])->where('vert_storage_id', $request->vert_storage_id)->get();
+        $parts = VertPartsStorage::with(['type', 'status', 'provider', 'vertStorage'])->where('vert_storage_id', $request->vert_storage_id)
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($parts);
     }
 

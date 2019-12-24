@@ -20,7 +20,12 @@ class MetalActionsStorageController extends Controller
 
     public function getAll(Request $request)
     {
-        $actions = MetalActionsStorage::with(['type', 'user', 'metalStorage'])->filter()->get();
+        $actions = MetalActionsStorage::with(['type', 'user', 'metalStorage'])
+            ->filter()
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($actions);
     }
 

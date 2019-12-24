@@ -23,7 +23,11 @@ class ZebraPartsStorageController extends Controller
 
     public function getAll(Request $request)
     {
-        $parts = ZebraPartsStorage::with(['type', 'status', 'provider', 'zebraStorage'])->where('zebra_storage_id', $request->zebra_storage_id)->get();
+        $parts = ZebraPartsStorage::with(['type', 'status', 'provider', 'zebraStorage'])->where('zebra_storage_id', $request->zebra_storage_id)
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($parts);
     }
 

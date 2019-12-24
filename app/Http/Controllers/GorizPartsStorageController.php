@@ -23,7 +23,11 @@ class GorizPartsStorageController extends Controller
 
     public function getAll(Request $request)
     {
-        $parts = GorizPartsStorage::with(['type', 'status', 'provider', 'gorizStorage'])->where('goriz_storage_id', $request->goriz_storage_id)->get();
+        $parts = GorizPartsStorage::with(['type', 'status', 'provider', 'gorizStorage'])->where('goriz_storage_id', $request->goriz_storage_id)
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($parts);
     }
 

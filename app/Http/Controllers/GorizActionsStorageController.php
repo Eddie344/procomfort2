@@ -20,7 +20,12 @@ class GorizActionsStorageController extends Controller
 
     public function getAll(Request $request)
     {
-        $actions = GorizActionsStorage::with(['type', 'user', 'gorizStorage'])->filter()->get();
+        $actions = GorizActionsStorage::with(['type', 'user', 'gorizStorage'])
+            ->filter()
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($actions);
     }
 

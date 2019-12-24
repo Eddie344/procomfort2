@@ -20,7 +20,12 @@ class FurnActionsStorageController extends Controller
 
     public function getAll(Request $request)
     {
-        $actions = FurnActionsStorage::with(['type', 'user', 'furnStorage'])->filter()->get();
+        $actions = FurnActionsStorage::with(['type', 'user', 'furnStorage'])
+            ->filter()
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($actions);
     }
 

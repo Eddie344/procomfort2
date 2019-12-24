@@ -20,7 +20,12 @@ class VertActionsStorageController extends Controller
 
     public function getAll(Request $request)
     {
-        $actions = VertActionsStorage::with(['type', 'user', 'vertStorage'])->filter()->get();
+        $actions = VertActionsStorage::with(['type', 'user', 'vertStorage'])
+            ->filter()
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($actions);
     }
 

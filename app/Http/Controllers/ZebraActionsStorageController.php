@@ -20,7 +20,12 @@ class ZebraActionsStorageController extends Controller
 
     public function getAll(Request $request)
     {
-        $actions = ZebraActionsStorage::with(['type', 'user', 'zebraStorage'])->filter()->get();
+        $actions = ZebraActionsStorage::with(['type', 'user', 'zebraStorage'])
+            ->filter()
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($actions);
     }
 

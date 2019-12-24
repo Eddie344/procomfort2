@@ -162,8 +162,8 @@
                                 {{ data.item.price }} $
                             </template>
                             <template v-slot:cell(delete)="data">
-                                <b-button class="p-0" variant="link" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
-                                <b-button class="p-0" variant="link" @click="editModal(data.index, data.item)" ><h5 class="d-inline"><i class="fa fa-arrow-down text-secondary"></i></h5></b-button>
+                                <b-button class="p-0" variant="link" @click="deleteModal(data.item)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
+                                <b-button class="p-0" variant="link" @click="editModal(data.item)" ><h5 class="d-inline"><i class="fa fa-arrow-down text-secondary"></i></h5></b-button>
                             </template>
                             <template v-slot:table-busy>
                                 <div class="text-center text-primary my-2">
@@ -173,7 +173,7 @@
                         </b-table>
                         <!--Delete modal-->
                         <b-modal :id="deletingModal.id" @hide="deletingModal.reason = ''" size="sm" title="Удаление" hide-footer centered>
-                            <b-form @submit.prevent="deletePart(deletingModal.index)">
+                            <b-form @submit.prevent="deletePart">
                                 <b-form-group label="Причина:">
                                     <b-form-input type="text" v-model="deletingModal.reason" required></b-form-input>
                                 </b-form-group>
@@ -188,7 +188,7 @@
                         </b-modal>
                         <!--Edit modal-->
                         <b-modal :id="editingModal.id" @hide="resetEditingModal" size="sm" title="Списание" hide-footer centered>
-                            <b-form @submit.prevent="editPart(editingModal.index)">
+                            <b-form @submit.prevent="editPart">
                                 <b-form-group label="Ширина, м:">
                                     <b-form-input type="number" :state="editWidthError" step="0.01" v-model="editingModal.width" required></b-form-input>
                                     <b-form-invalid-feedback :state="editWidthError">
@@ -466,15 +466,14 @@
                 actionsFilterOn: [],
                 editingModal: {
                     id: 'edMod',
-                    part_id: null,
-                    index: null,
+                    part: null,
                     width: null,
                     lenght: null,
                     reason: '',
                 },
                 deletingModal: {
                     id: 'delMod',
-                    index: null,
+                    part: null,
                 },
                 //datepicker
                 dateRange: {
@@ -527,10 +526,10 @@
                     })
             },
             editWidthError() {
-                return this.editingModal.width && this.editingModal.width != 0 && this.editingModal.width <= this.parts[this.editingModal.index].width
+                return this.editingModal.width && this.editingModal.width != 0 && this.editingModal.width <= this.editingModal.part.width
             },
             editLenghtError() {
-                return this.editingModal.lenght && this.editingModal.lenght != 0 && this.editingModal.lenght <= this.parts[this.editingModal.index].lenght
+                return this.editingModal.lenght && this.editingModal.lenght != 0 && this.editingModal.lenght <= this.editingModal.part.lenght
             },
         },
         created() {
@@ -605,66 +604,65 @@
                         this.actions.push(response.data);
                     })
             },
-            deletePart(index){
+            deleteModal(item) {
+                this.deletingModal.part = item;
+                this.$root.$emit('bv::show::modal', this.deletingModal.id);
+            },
+            editModal(item) {
+                this.editingModal.part = item;
+                this.$root.$emit('bv::show::modal', this.editingModal.id);
+            },
+            deletePart(){
                 this.actionLoad = true;
-                axios.delete('/admin/storage/roll_parts/'+this.parts[index].id)
+                axios.delete('/admin/storage/roll_parts/'+this.deletingModal.part.id)
                     .then((response) => {
-                        this.addAction(2, this.deletingModal.reason, this.parts[index].width, this.parts[index].lenght);
-                        this.$delete(this.parts, index);
+                        this.addAction(2, this.deletingModal.reason, this.deletingModal.part.width, this.deletingModal.part.lenght);
+                        this.loadParts();
                         this.actionLoad = false;
                         this.$bvModal.hide(this.deletingModal.id);
-                        this.deletingModal.index = null;
+                        this.deletingModal.part = null;
                         this.makeToast('Остаток успешно удален', 'danger');
                     });
             },
-            deleteModal(index) {
-                this.deletingModal.index = index;
-                this.$root.$emit('bv::show::modal', this.deletingModal.id);
-            },
-            editPart(index) {
+            editPart() {
                 if(!this.editWidthError || !this.editLenghtError) return false;
                 this.actionLoad = true;
-                if(this.editingModal.lenght == this.parts[index].lenght && this.editingModal.width == this.parts[index].width){
+                if(this.editingModal.lenght == this.editingModal.part.lenght && this.editingModal.width == this.editingModal.part.width){
                     this.deletingModal.reason = this.editingModal.reason;
-                    this.deletePart(index);
+                    this.deletingModal.part = this.editingModal.part;
+                    this.deletePart();
                     this.actionLoad = false;
                     this.$bvModal.hide(this.editingModal.id);
                     return false;
                 }
-                axios.put('/admin/storage/roll_parts/'+this.editingModal.part_id, {
+                axios.put('/admin/storage/roll_parts/'+this.editingModal.part.id, {
                     part: {
-                        lenght: this.parts[index].lenght - this.editingModal.lenght,
+                        lenght: this.editingModal.part.lenght - this.editingModal.lenght,
                     }
                 })
                     .then((response) => {
                         this.addAction(2, this.editingModal.reason, this.editingModal.width, this.editingModal.lenght);
-                        if(this.editingModal.width < this.parts[index].width){
-                            this.cutPart(index);
+                        if(this.editingModal.width < this.editingModal.part.width){
+                            this.cutPart(this.editingModal.part);
                         }
-                        _.extend(this.parts[index], response.data);
+                        this.loadParts();
                         this.actionLoad = false;
                         this.$bvModal.hide(this.editingModal.id);
                         this.makeToast('Успешное списание', 'danger');
                     });
             },
-            cutPart(index){
-                this.new_part.width =  this.parts[index].width - this.editingModal.width;
+            cutPart(item){
+                this.new_part.width =  item.width - this.editingModal.width;
                 this.new_part.lenght = this.editingModal.lenght;
-                this.new_part.price = this.parts[index].price;
+                this.new_part.price = item.price;
                 this.new_part.reason = this.editingModal.reason;
                 this.new_part.type_id = 2;
-                this.new_part.status_id = this.parts[index].status_id;
-                this.new_part.provider_id = this.parts[index].provider_id;
+                this.new_part.status_id = item.status_id;
+                this.new_part.provider_id = item.provider_id;
                 this.addPart()
             },
-            editModal(index, part) {
-                this.editingModal.index = index;
-                this.editingModal.part_id = part.id;
-                this.$root.$emit('bv::show::modal', this.editingModal.id);
-            },
             resetEditingModal() {
-                this.editingModal.index = null;
-                this.editingModal.part_id = null;
+                this.editingModal.part = null;
                 this.editingModal.width = null;
                 this.editingModal.lenght = null;
                 this.editingModal.reason = '';
