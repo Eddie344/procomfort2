@@ -140,8 +140,6 @@
                             :busy="partsIsBusy"
                             :filter="partsFilter"
                             :filterIncludedFields="partsFilterOn"
-                            sort-by="created_at"
-                            sort-desc
                         >
                             <template v-slot:cell(provider)="data">
                                 {{ data.item.provider.label }}
@@ -306,8 +304,6 @@
                             :striped="true"
                             :filter="actionsFilter"
                             :filterIncludedFields="actionsFilterOn"
-                            sort-by="created_at"
-                            sort-desc
                         >
                             <template v-slot:cell(type)="data">
                                 <b :class="'text-'+data.item.type.color">{{ data.item.type.label }}</b>
@@ -560,7 +556,6 @@
                     endDate: moment(this.dateRange.endDate),
                 })
                     .then((response) => {
-                        console.log(response.data);
                         this.actions = response.data;
                         this.isActionsBusy = false;
                     })
@@ -570,7 +565,6 @@
                     roll_storage_id: this.id
                 })
                     .then((response) => {
-                        console.log(response.data);
                         this.parts = response.data;
                     })
             },
@@ -581,7 +575,7 @@
                     part: this.new_part,
                 })
                     .then((response) => {
-                        this.parts.push(response.data);
+                        this.loadParts();
                         this.addAction(1, this.new_part.reason, this.new_part.width, this.new_part.lenght);
                         this.new_part = {};
                         this.actionLoad = false;
@@ -600,8 +594,7 @@
                     }
                 })
                     .then((response) => {
-                        console.log(response.data);
-                        this.actions.push(response.data);
+                        this.loadActions();
                     })
             },
             deleteModal(item) {

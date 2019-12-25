@@ -100,12 +100,12 @@
                 {{ data.item.balance }} $
             </template>
             <template v-slot:cell(delete)="data">
-                <div v-if="!users[data.index].deleted_at">
-                    <b-button class="p-0" variant="link" @click="editModal(data.index)"><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
-                    <b-button class="p-0" variant="link" v-if="users[data.index].id !== auth_user" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
+                <div v-if="!data.item.deleted_at">
+                    <b-button class="p-0" variant="link" @click="editModal(data.item)"><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
+                    <b-button class="p-0" variant="link" v-if="data.item.id !== auth_user" @click="deleteModal(data.item)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
                 </div>
                 <div v-else>
-                    <b-button class="p-0" variant="link" @click="restoreUser(data.index)"><h5 class="d-inline"><i class="fa fa-arrow-up text-success"></i></h5></b-button>
+                    <b-button class="p-0" variant="link" @click="restoreUser(data.item.id)"><h5 class="d-inline"><i class="fa fa-arrow-up text-success"></i></h5></b-button>
                 </div>
             </template>
             <template v-slot:table-busy>
@@ -117,7 +117,7 @@
         <!--Delete modal-->
         <b-modal :id="deletingModal.id" size="sm" title="Вы уверены?" centered>
             <template v-slot:modal-footer="{ ok }">
-                <b-button variant="danger" @click="deleteUser(deletingModal.index)" v-bind:disabled="actionLoad">
+                <b-button variant="danger" @click="deleteUser" v-bind:disabled="actionLoad">
                     <span v-if="!actionLoad">Удалить</span>
                     <span v-else>
                         <b-spinner small></b-spinner>
@@ -128,7 +128,7 @@
         </b-modal>
         <!--Edit modal-->
         <b-modal :id="editingModal.id" @hide="resetEditingModal" size="sm" title="Редактирование" hide-footer centered>
-            <b-form @submit.prevent="editUser(editingModal.index)">
+            <b-form @submit.prevent="editUser">
                 <b-form-group label="Имя:">
                     <b-form-input type="text" v-model="editingModal.name" required></b-form-input>
                 </b-form-group>
@@ -207,6 +207,7 @@
                     {
                         key: 'city',
                         label: 'Город',
+                        sortable: true,
                     },
                     {
                         key: 'phone',
@@ -219,6 +220,7 @@
                     {
                         key: 'balance',
                         label: 'Баланс',
+                        sortable: true,
                     },
                     {
                         key: 'delete',
@@ -235,10 +237,11 @@
                 filterOn: [],
                 deletingModal: {
                     id: 'delMod',
-                    index: null,
+                    item: null,
                 },
                 editingModal: {
                     id: 'edMod',
+                    item: null,
                     user_id: null,
                     name: '',
                     surname: '',
@@ -287,62 +290,61 @@
                     user: this.new_user
                 })
                     .then((response) => {
-                        this.users.push(response.data);
+                        this.load();
                         this.new_user = {};
                         this.actionLoad = false;
                         this.$refs['modalAddPrice'].hide();
                         this.makeToast('Пользователь усешно добавлен', 'success');
                     });
             },
-            editUser(index) {
+            editUser() {
                 this.actionLoad = true;
                 axios.put('/admin/users/'+this.editingModal.user_id, {
                     user: this.editingModal
                 })
                     .then((response) => {
-                        _.extend(this.users[index], response.data);
+                        this.load();
                         this.actionLoad = false;
                         this.$bvModal.hide(this.editingModal.id);
                         this.makeToast('Данные пользователя успешно сохранены', 'success');
                     });
             },
-            deleteUser(index){
+            deleteUser(){
                 this.actionLoad = true;
-                axios.delete('/admin/users/'+this.users[index].id)
+                axios.delete('/admin/users/'+this.deletingModal.item.id)
                     .then((response) => {
-                        this.$delete(this.users, index);
+                        this.load();
                         this.actionLoad = false;
                         this.$bvModal.hide(this.deletingModal.id);
-                        this.deletingModal.index = null;
+                        this.deletingModal.item = null;
                         this.makeToast('Пользователь усешно удален', 'danger');
                     });
             },
-            restoreUser(index) {
+            restoreUser(id) {
                 this.actionLoad = true;
-                axios.post(`/admin/users/restore/${this.users[index].id}`)
+                axios.post(`/admin/users/restore/${id}`)
                     .then((response) => {
                         this.load();
                         this.actionLoad = false;
                         this.makeToast('Пользователь успешно восстановлен', 'success');
                     });
             },
-            deleteModal(index) {
-                this.deletingModal.index = index;
+            deleteModal(item) {
+                this.deletingModal.item = item;
                 this.$root.$emit('bv::show::modal', this.deletingModal.id);
             },
-            editModal(index) {
-                this.editingModal.index = index;
-                this.editingModal.user_id = this.users[index].id;
-                this.editingModal.name = this.users[index].name;
-                this.editingModal.surname = this.users[index].surname;
-                this.editingModal.alias = this.users[index].alias;
-                this.editingModal.city = this.users[index].city;
-                this.editingModal.phone = this.users[index].phone;
-                this.editingModal.email = this.users[index].email;
+            editModal(item) {
+                this.editingModal.user_id = item.id;
+                this.editingModal.name = item.name;
+                this.editingModal.surname = item.surname;
+                this.editingModal.alias = item.alias;
+                this.editingModal.city = item.city;
+                this.editingModal.phone = item.phone;
+                this.editingModal.email = item.email;
                 this.$root.$emit('bv::show::modal', this.editingModal.id);
             },
             resetEditingModal() {
-                this.editingModal.index = null;
+                this.editingModal.item = null;
                 this.editingModal.user_id = null;
                 this.editingModal.name = '';
                 this.editingModal.surname = '';

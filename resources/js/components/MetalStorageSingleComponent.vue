@@ -130,8 +130,8 @@
                                 {{ data.item.price }} $
                             </template>
                             <template v-slot:cell(delete)="data">
-                                <b-button class="p-0" variant="link" @click="deleteModal(data.index)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
-                                <b-button class="p-0" variant="link" @click="editModal(data.index, data.item)" ><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
+                                <b-button class="p-0" variant="link" @click="deleteModal(data.item)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
+                                <b-button class="p-0" variant="link" @click="editModal(data.item)" ><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
                             </template>
                             <template v-slot:table-busy>
                                 <div class="text-center text-primary my-2">
@@ -141,7 +141,7 @@
                         </b-table>
                         <!--Delete modal-->
                         <b-modal :id="deletingModal.id" @hide="deletingModal.reason = ''" size="sm" title="Удаление" hide-footer centered>
-                            <b-form @submit.prevent="deletePart(deletingModal.index)">
+                            <b-form @submit.prevent="deletePart">
                                 <b-form-group label="Причина:">
                                     <b-form-input type="text" v-model="deletingModal.reason" required></b-form-input>
                                 </b-form-group>
@@ -415,15 +415,14 @@
                 actionsFilterOn: [],
                 editingModal: {
                     id: 'edMod',
-                    part_id: null,
-                    index: null,
+                    part: null,
                     lenght: null,
                     reason: '',
                     checked: true,
                 },
                 deletingModal: {
                     id: 'delMod',
-                    index: null,
+                    part: null,
                 },
                 //datepicker
                 dateRange: {
@@ -476,7 +475,7 @@
                     })
             },
             editLenghtError() {
-                return this.editingModal.lenght && this.editingModal.lenght != 0 && this.editingModal.lenght <= this.parts[this.editingModal.index].lenght
+                return this.editingModal.lenght && this.editingModal.lenght != 0 && this.editingModal.lenght <= this.editingModal.part.lenght
             },
         },
         created() {
@@ -527,7 +526,7 @@
                     part: this.new_part,
                 })
                     .then((response) => {
-                        this.parts.push(response.data);
+                        this.loadParts();
                         this.addAction(1, this.new_part.reason, this.new_part.lenght);
                         this.new_part = {};
                         this.actionLoad = false;
@@ -545,24 +544,28 @@
                     }
                 })
                     .then((response) => {
-                        this.actions.push(response.data);
+                        this.loadActions();
                     })
             },
-            deletePart(index){
+            deletePart(){
                 this.actionLoad = true;
-                axios.delete('/admin/storage/metal_parts/'+this.parts[index].id)
+                axios.delete('/admin/storage/metal_parts/'+this.deletingModal.part.id)
                     .then((response) => {
-                        this.addAction(2, this.deletingModal.reason, this.parts[index].lenght);
-                        this.$delete(this.parts, index);
+                        this.addAction(2, this.deletingModal.reason, +this.deletingModal.part.lenght);
+                        this.loadParts();
                         this.actionLoad = false;
                         this.$bvModal.hide(this.deletingModal.id);
-                        this.deletingModal.index = null;
+                        this.deletingModal.part = null;
                         this.makeToast('Остаток успешно удален', 'danger');
                     });
             },
-            deleteModal(index) {
-                this.deletingModal.index = index;
+            deleteModal(item) {
+                this.deletingModal.part = item;
                 this.$root.$emit('bv::show::modal', this.deletingModal.id);
+            },
+            editModal(item) {
+                this.editingModal.part = item;
+                this.$root.$emit('bv::show::modal', this.editingModal.id);
             },
             editPart() {
                 if(this.editingModal.checked) {
@@ -573,50 +576,43 @@
                 }
             },
             editPartOn() {
-                let index = this.editingModal.index;
                 if(!this.editLenghtError) return false;
                 this.actionLoad = true;
-                axios.put('/admin/storage/metal_parts/'+this.editingModal.part_id, {
+                axios.put('/admin/storage/metal_parts/'+this.editingModal.part.id, {
                     part: {
-                        lenght: parseInt(this.parts[index].lenght) + parseInt(this.editingModal.lenght),
+                        lenght: parseInt(this.editingModal.part.lenght) + parseInt(this.editingModal.lenght),
                     }
                 })
                     .then((response) => {
                         this.addAction(1, this.editingModal.reason, this.editingModal.lenght);
-                        _.extend(this.parts[index], response.data);
+                        this.loadParts();
                         this.actionLoad = false;
                         this.$bvModal.hide(this.editingModal.id);
                         this.makeToast('Успешное пополнение', 'success');
                     });
             },
             editPartOff() {
-                let index = this.editingModal.index;
                 if(!this.editLenghtError) return false;
                 this.actionLoad = true;
-                if(this.editingModal.lenght == this.parts[index].lenght) {
+                if(this.editingModal.lenght == this.editingModal.part.lenght) {
                     this.deletingModal.reason = this.editingModal.reason;
-                    this.deletePart(index);
+                    this.loadParts();
                     this.actionLoad = false;
                     this.$bvModal.hide(this.editingModal.id);
                     return false;
                 }
-                axios.put('/admin/storage/metal_parts/'+this.editingModal.part_id, {
+                axios.put('/admin/storage/metal_parts/'+this.editingModal.part.id, {
                     part: {
-                        lenght: parseInt(this.parts[index].lenght) - parseInt(this.editingModal.lenght),
+                        lenght: parseInt(this.editingModal.part.lenght) - parseInt(this.editingModal.lenght),
                     }
                 })
                     .then((response) => {
                         this.addAction(2, this.editingModal.reason, this.editingModal.lenght);
-                        _.extend(this.parts[index], response.data);
+                        this.loadParts();
                         this.actionLoad = false;
                         this.$bvModal.hide(this.editingModal.id);
                         this.makeToast('Успешное списание', 'danger');
                     });
-            },
-            editModal(index, part) {
-                this.editingModal.index = index;
-                this.editingModal.part_id = part.id;
-                this.$root.$emit('bv::show::modal', this.editingModal.id);
             },
             resetEditingModal() {
                 this.editingModal.index = null;

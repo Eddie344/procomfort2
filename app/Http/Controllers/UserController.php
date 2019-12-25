@@ -16,7 +16,11 @@ class UserController extends Controller
 
     public function getAll()
     {
-        $users = User::filter()->get();
+        $users = User::filter()
+            ->get()
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
         return response()->json($users);
     }
 
