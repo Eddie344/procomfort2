@@ -32,7 +32,7 @@ class CreateZebraProductsTable extends Migration
             $table->float('price', 8, 2);
             $table->float('width', 8, 2);
             $table->float('height', 8, 2);
-            $table->text('note');
+            $table->text('note')->nullable();
 
             $table->unsignedBigInteger('material_id');
             $table->foreign('material_id')->references('id')->on('zebra_storages');
