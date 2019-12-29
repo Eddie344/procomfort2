@@ -110,6 +110,7 @@
                                     <a class="list-group-item" href="{{ route('other.categories.index') }}">Категории тканей</a>
                                     <a class="list-group-item" href="{{ route('other.catalogs.index') }}">Каталоги</a>
                                     <a class="list-group-item" href="{{ route('other.providers.index') }}">Поставщики</a>
+                                    <a class="list-group-item" href="{{ route('other.retirements.index') }}">Списание метала и фурнитуры</a>
                                 </div>
                             </div>
                         </div>

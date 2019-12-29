@@ -34,6 +34,8 @@ class DatabaseSeeder extends Seeder
             RollCategoryTableSeeder::class,
             RollStorageTableSeeder::class,
             //RollActionStoregeTableSeeder::class,
+            MetalRetirementTableSeeder::class,
+            FurnRetirementTableSeeder::class,
         ]);
     }
 }

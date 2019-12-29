@@ -206,6 +206,12 @@ Route::prefix('admin')->middleware('islogged', 'isadmin')->group(function () {
         ]);
         Route::post('/providers/get', 'ProviderController@get')->name('other.providers.get');
 
+        Route::view('/retirements', 'admin.other.retirements.index')->name('other.retirements.index');
+        Route::apiResource('/metal_retirements', 'MetalRetirementController');
+        Route::post('/metal_retirements/getAll', 'MetalRetirementController@getAll');
+        Route::apiResource('/furn_retirements', 'FurnRetirementController');
+        Route::post('/furn_retirements/getAll', 'FurnRetirementController@getAll');
+
         //
         Route::post('/product_types/get', 'ProductTypeController@get');
         Route::post('/construction_types/get', 'ConstructionTypeController@get');
