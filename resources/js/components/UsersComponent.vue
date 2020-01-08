@@ -294,7 +294,7 @@
                         this.new_user = {};
                         this.actionLoad = false;
                         this.$refs['modalAddPrice'].hide();
-                        this.makeToast('Пользователь усешно добавлен', 'success');
+                        this.makeToast('Пользователь успешно добавлен', 'success');
                     });
             },
             editUser() {
@@ -317,7 +317,7 @@
                         this.actionLoad = false;
                         this.$bvModal.hide(this.deletingModal.id);
                         this.deletingModal.item = null;
-                        this.makeToast('Пользователь усешно удален', 'danger');
+                        this.makeToast('Пользователь успешно удален', 'danger');
                     });
             },
             restoreUser(id) {

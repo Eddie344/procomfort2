@@ -56,7 +56,8 @@ class MetalRetirementController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        MetalRetirement::find($id)->update($request->item);
+        return response('Ok');
     }
 
     /**

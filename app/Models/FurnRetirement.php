@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class FurnRetirement extends Model
 {
+    public $timestamps = false;
+
+    protected $fillable = [
+        'furn_id'
+    ];
+
     public function furn()
     {
         return $this->belongsTo('App\Models\FurnStorage', 'furn_id', 'id');

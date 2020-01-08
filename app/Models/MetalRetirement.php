@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class MetalRetirement extends Model
 {
+    public $timestamps = false;
+
+    protected $fillable = [
+        'metal_id'
+    ];
+
     public function metal()
     {
         return $this->belongsTo('App\Models\MetalStorage', 'metal_id', 'id');

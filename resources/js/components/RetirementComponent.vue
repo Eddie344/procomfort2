@@ -23,6 +23,7 @@
                                         :options="metal_storages"
                                         value-field="id"
                                         text-field="label"
+                                        @change="changeMetal(data.item)"
                                     >
                                         <template v-slot:first>
                                             <option :value="null" disabled>Выберите позицию на складе...</option>
@@ -34,7 +35,22 @@
                     </b-tab>
                     <b-tab title="Фурнитура">
                         <b-card-text>
-                            <b-table striped hover :items="furn_retirements" :fields="furn_fields"></b-table>
+                            <b-table striped hover :items="furn_retirements" :fields="furn_fields">
+                                <template v-slot:cell(furn.label)="data">
+                                    <b-form-select
+                                        size="sm"
+                                        v-model="data.item.furn_id"
+                                        :options="furn_storages"
+                                        value-field="id"
+                                        text-field="label"
+                                        @change="changeFurn(data.item)"
+                                    >
+                                        <template v-slot:first>
+                                            <option :value="null" disabled>Выберите позицию на складе...</option>
+                                        </template>
+                                    </b-form-select>
+                                </template>
+                            </b-table>
                         </b-card-text>
                     </b-tab>
                 </b-tabs>
@@ -53,8 +69,8 @@
                 construction_type_selected: null,
                 product_types: {},
                 construction_types: {},
-                metal_retirements: {},
-                furn_retirements: {},
+                metal_retirements: [],
+                furn_retirements: [],
                 metal_storages: {},
                 furn_storages: {},
                 metal_fields: [
@@ -139,8 +155,25 @@
                         this.furn_storages = response.data;
                     });
             },
-            changeMetal() {
-
+            changeMetal(item) {
+                axios.put(`/admin/other/metal_retirements/${item.id}`, {
+                    item: {
+                        metal_id: item.metal_id
+                    },
+                })
+                    .then((response) => {
+                        console.log(response.data)
+                    })
+            },
+            changeFurn(item) {
+                axios.put(`/admin/other/furn_retirements/${item.id}`, {
+                    item: {
+                        furn_id: item.furn_id
+                    },
+                })
+                    .then((response) => {
+                        console.log(response.data)
+                    })
             },
         }
     }

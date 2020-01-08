@@ -75,8 +75,9 @@
                                 id="checkbox-1"
                                 v-model="new_product.chain_lock"
                                 name="checkbox-1"
-                                value="accepted"
-                                unchecked-value="not_accepted"
+                                value="1"
+                                unchecked-value="0"
+                                switch
                             >
                                 Фиксатор цепи
                             </b-form-checkbox>
@@ -84,8 +85,9 @@
                                 id="checkbox-2"
                                 v-model="new_product.chain_tensioner"
                                 name="checkbox-1"
-                                value="accepted"
-                                unchecked-value="not_accepted"
+                                value="1"
+                                unchecked-value="0"
+                                switch
                             >
                                 Натяжитель цепи
                             </b-form-checkbox>
@@ -93,8 +95,9 @@
                                 id="checkbox-3"
                                 v-model="new_product.fishing_line"
                                 name="checkbox-1"
-                                value="accepted"
-                                unchecked-value="not_accepted"
+                                value="1"
+                                unchecked-value="0"
+                                switch
                             >
                                 Леска
                             </b-form-checkbox>
@@ -102,8 +105,9 @@
                                 id="checkbox-4"
                                 v-model="new_product.magnets"
                                 name="checkbox-1"
-                                value="accepted"
-                                unchecked-value="not_accepted"
+                                value="1"
+                                unchecked-value="0"
+                                switch
                             >
                                 Магниты
                             </b-form-checkbox>
@@ -111,8 +115,9 @@
                                 id="checkbox-5"
                                 v-model="new_product.without_drilling"
                                 name="checkbox-1"
-                                value="accepted"
-                                unchecked-value="not_accepted"
+                                value="1"
+                                unchecked-value="0"
+                                switch
                             >
                                 Крепление без сверления
                             </b-form-checkbox>
@@ -224,6 +229,7 @@
                         v-model="editingModal.chain_lock"
                         value="1"
                         unchecked-value="0"
+                        switch
                     >
                         Фиксатор цепи
                     </b-form-checkbox>
@@ -231,6 +237,7 @@
                         v-model="editingModal.chain_tensioner"
                         value="1"
                         unchecked-value="0"
+                        switch
                     >
                         Натяжитель цепи
                     </b-form-checkbox>
@@ -238,6 +245,7 @@
                         v-model="editingModal.fishing_line"
                         value="1"
                         unchecked-value="0"
+                        switch
                     >
                         Леска
                     </b-form-checkbox>
@@ -245,6 +253,7 @@
                         v-model="editingModal.magnets"
                         value="1"
                         unchecked-value="0"
+                        switch
                     >
                         Магниты
                     </b-form-checkbox>
@@ -252,6 +261,7 @@
                         v-model="editingModal.without_drilling"
                         value="1"
                         unchecked-value="0"
+                        switch
                     >
                         Крепление без сверления
                     </b-form-checkbox>
@@ -460,7 +470,7 @@
                         this.actionLoad = false;
                         this.$bvModal.hide(this.deletingModal.id);
                         this.deletingModal.product_id = null;
-                        this.makeToast('Изделия усешно удалены', 'danger');
+                        this.makeToast('Изделия успешно удалены', 'danger');
                     });
             },
             editModal(item) {

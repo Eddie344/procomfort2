@@ -7,18 +7,24 @@
                 <b-modal ref="modalAdd" id="modalAdd" size="sm" title="Добавление" hide-footer centered>
                     <b-form @submit.prevent="addOrder">
                         <b-form-group label="Заказчик:">
-                            <b-form-select
+                            <v-select :options="users"
                                 v-model="new_order.diller_id"
-                                :options="users"
-                                class="mb-3"
-                                value-field="id"
-                                text-field="alias"
-                                required
-                            >
-                                <template v-slot:first>
-                                    <option :value="null" disabled selected>Выберите заказчика...</option>
-                                </template>
-                            </b-form-select>
+                                :reduce="alias => alias.id"
+                                label="alias"
+                                placeholder="Выберите заказчика">
+                                                            </v-select>
+                                <!--                            <b-form-select-->
+<!--                                v-model="new_order.diller_id"-->
+<!--                                :options="users"-->
+<!--                                class="mb-3"-->
+<!--                                value-field="id"-->
+<!--                                text-field="alias"-->
+<!--                                required-->
+<!--                            >-->
+<!--                                <template v-slot:first>-->
+<!--                                    <option :value="null" disabled selected>Выберите заказчика...</option>-->
+<!--                                </template>-->
+<!--                            </b-form-select>-->
                         </b-form-group>
                         <b-form-group label="Префикс:">
                             <b-form-input type="text" v-model="new_order.prefix" required></b-form-input>

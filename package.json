@@ -28,6 +28,7 @@
         "bootstrap-vue": "^2.0.4",
         "moment": "^2.24.0",
         "moment-timezone": "^0.5.27",
+        "vue-select": "^3.4.0",
         "vue-xeditable": "^1.1.2",
         "vue2-datepicker": "^3.2.1",
         "vue2-daterange-picker": "^0.3.1"
