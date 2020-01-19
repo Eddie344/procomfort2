@@ -1,7 +1,7 @@
 <template>
     <div>
-        <b-row class="mb-3">
-            <b-col lg="1">
+        <div class="d-inline-flex align-items-center mb-3">
+            <div>
                 <b-button variant="success" v-b-modal.modalAdd>Добавить</b-button>
                 <b-modal ref="modalAdd" id="modalAdd" size="sm" title="Добавление" hide-footer centered>
                     <b-form @submit.prevent="addProduct">
@@ -137,8 +137,16 @@
                         </b-button>
                     </b-form>
                 </b-modal>
-            </b-col>
-        </b-row>
+            </div>
+            <div class="align-items-center d-inline-flex px-4">
+                <b-dropdown id="dropdown-left" variant="outline-primary" class="m-2">
+                    <template v-slot:button-content>
+                        Статус: <strong>{{ order.status.label }}</strong>
+                    </template>
+                    <b-dropdown-item href="#">Изменить до {{ order_statuses[ order.status.id ].label }}</b-dropdown-item>
+                </b-dropdown>
+            </div>
+        </div>
         <b-table
             show-empty
             empty-text="Нет записей"
@@ -342,6 +350,7 @@
                 new_product: {},
                 new_product_count: 1,
                 products: [],
+                order_statuses: [],
                 rule_types: [],
                 materials: [],
                 complectation_types: [],
@@ -377,6 +386,7 @@
             this.loadRules();
             this.loadComplectations();
             this.loadFurnColors();
+            this.loadOrderStatuses();
             this.resetNewProduct();
         },
         computed: {
@@ -421,6 +431,12 @@
                 axios.post('/admin/other/furn_colors/get')
                     .then((response) => {
                         this.furn_colors = response.data;
+                    });
+            },
+            loadOrderStatuses(){
+                axios.post('/admin/other/order_statuses/get')
+                    .then((response) => {
+                        this.order_statuses = response.data;
                     });
             },
             addProduct(){

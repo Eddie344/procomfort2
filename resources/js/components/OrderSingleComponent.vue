@@ -18,9 +18,6 @@
                             <dt class="col-sm-3">Вид изделий:</dt>
                             <dd class="col-sm-9">{{ order.product_type.label }} <span v-if="order.construction_type_id">{{ order.construction_type.label }}</span></dd>
 
-                            <dt class="col-sm-3">Статус:</dt>
-                            <dd class="col-sm-9">{{ order.status.label }}</dd>
-
                             <dt class="col-sm-3">Создан:</dt>
                             <dd class="col-sm-9">{{ order.created_at }}</dd>
 
