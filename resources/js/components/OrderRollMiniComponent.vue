@@ -1,151 +1,183 @@
 <template>
     <div>
         <div class="d-inline-flex align-items-center mb-3">
-            <div>
-                <b-button variant="success" v-b-modal.modalAdd>Добавить</b-button>
-                <b-modal ref="modalAdd" id="modalAdd" size="sm" title="Добавление" hide-footer centered>
-                    <b-form @submit.prevent="addProduct">
-                        <b-form-group label="Ширина:">
-                            <b-form-input type="number" min="0.1" step="0.01" v-model="new_product.width" required></b-form-input>
-                        </b-form-group>
-                        <b-form-group label="Высота:">
-                            <b-form-input type="number" min="0.1" step="0.01" v-model="new_product.height" required></b-form-input>
-                        </b-form-group>
-                        <b-form-group label="Управление:">
-                            <b-form-select
-                                v-model="new_product.rule_type_id"
-                                :options="rule_types"
-                                class="mb-3"
-                                value-field="id"
-                                text-field="label"
-                                required
-                            >
-                                <template v-slot:first>
-                                    <option :value="null" disabled selected>Выберите тип управления...</option>
-                                </template>
-                            </b-form-select>
-                        </b-form-group>
-                        <b-form-group label="Длина управления:">
-                            <b-form-input type="number" step="0.01" v-model="newRuleLenght" required></b-form-input>
-                        </b-form-group>
-                        <b-form-group label="Комплектация:">
-                            <b-form-select
-                                v-model="new_product.complectation_type_id"
-                                :options="complectation_types"
-                                class="mb-3"
-                                value-field="id"
-                                text-field="label"
-                                required
-                            >
-                                <template v-slot:first>
-                                    <option :value="null" disabled selected>Выберите тип комплектации...</option>
-                                </template>
-                            </b-form-select>
-                        </b-form-group>
-                        <b-form-group label="Ткань:">
-                            <b-form-select
-                                v-model="new_product.material_id"
-                                :options="materials"
-                                class="mb-3"
-                                value-field="id"
-                                text-field="label"
-                                required
-                            >
-                                <template v-slot:first>
-                                    <option :value="null" disabled selected>Выберите ткань...</option>
-                                </template>
-                            </b-form-select>
-                        </b-form-group>
-                        <b-form-group label="Цвет фурнитуры:">
-                            <b-form-select
-                                v-model="new_product.furn_color_id"
-                                :options="furn_colors"
-                                class="mb-3"
-                                value-field="id"
-                                text-field="label"
-                                required
-                            >
-                                <template v-slot:first>
-                                    <option :value="null" disabled selected>Выберите цвет фурнитуры...</option>
-                                </template>
-                            </b-form-select>
-                        </b-form-group>
-                        <b-form-group>
-                            <b-form-checkbox
-                                id="checkbox-1"
-                                v-model="new_product.chain_lock"
-                                name="checkbox-1"
-                                value="1"
-                                unchecked-value="0"
-                                switch
-                            >
-                                Фиксатор цепи
-                            </b-form-checkbox>
-                            <b-form-checkbox
-                                id="checkbox-2"
-                                v-model="new_product.chain_tensioner"
-                                name="checkbox-1"
-                                value="1"
-                                unchecked-value="0"
-                                switch
-                            >
-                                Натяжитель цепи
-                            </b-form-checkbox>
-                            <b-form-checkbox
-                                id="checkbox-3"
-                                v-model="new_product.fishing_line"
-                                name="checkbox-1"
-                                value="1"
-                                unchecked-value="0"
-                                switch
-                            >
-                                Леска
-                            </b-form-checkbox>
-                            <b-form-checkbox
-                                id="checkbox-4"
-                                v-model="new_product.magnets"
-                                name="checkbox-1"
-                                value="1"
-                                unchecked-value="0"
-                                switch
-                            >
-                                Магниты
-                            </b-form-checkbox>
-                            <b-form-checkbox
-                                id="checkbox-5"
-                                v-model="new_product.without_drilling"
-                                name="checkbox-1"
-                                value="1"
-                                unchecked-value="0"
-                                switch
-                            >
-                                Крепление без сверления
-                            </b-form-checkbox>
-                        </b-form-group>
-                        <b-form-group label="Количество изделий:">
-                            <b-form-input min="1" type="number" v-model="new_product_count" required></b-form-input>
-                        </b-form-group>
-                        <b-form-group label="Примечание:">
-                            <b-form-textarea v-model="new_product.note"></b-form-textarea>
-                        </b-form-group>
-                        <b-button variant="primary" type="submit" v-bind:disabled="actionLoad">
-                            <span v-if="!actionLoad">Добавить</span>
-                            <span v-else>
-                                <b-spinner small></b-spinner>
-                                Подождите...
-                            </span>
-                        </b-button>
-                    </b-form>
-                </b-modal>
-            </div>
-            <div class="align-items-center d-inline-flex px-4">
-                <b-dropdown id="dropdown-left" variant="outline-primary" class="m-2">
-                    <template v-slot:button-content>
-                        Статус: <strong>{{ order.status.label }}</strong>
-                    </template>
-                    <b-dropdown-item href="#">Изменить до {{ order_statuses[ order.status.id ].label }}</b-dropdown-item>
-                </b-dropdown>
-            </div>
+            <b-button class="mr-3" variant="success" v-b-modal.modalAdd>Добавить</b-button>
+            <b-modal ref="modalAdd" id="modalAdd" size="sm" title="Добавление" hide-footer centered>
+                <b-form @submit.prevent="addProduct">
+                    <b-form-group label="Ширина:">
+                        <b-form-input type="number" min="0.1" step="0.01" v-model="new_product.width" required></b-form-input>
+                    </b-form-group>
+                    <b-form-group label="Высота:">
+                        <b-form-input type="number" min="0.1" step="0.01" v-model="new_product.height" required></b-form-input>
+                    </b-form-group>
+                    <b-form-group label="Управление:">
+                        <b-form-select
+                            v-model="new_product.rule_type_id"
+                            :options="rule_types"
+                            class="mb-3"
+                            value-field="id"
+                            text-field="label"
+                            required
+                        >
+                            <template v-slot:first>
+                                <option :value="null" disabled selected>Выберите тип управления...</option>
+                            </template>
+                        </b-form-select>
+                    </b-form-group>
+                    <b-form-group label="Длина управления:">
+                        <b-form-input type="number" step="0.01" v-model="newRuleLenght" required></b-form-input>
+                    </b-form-group>
+                    <b-form-group label="Комплектация:">
+                        <b-form-select
+                            v-model="new_product.complectation_type_id"
+                            :options="complectation_types"
+                            class="mb-3"
+                            value-field="id"
+                            text-field="label"
+                            required
+                        >
+                            <template v-slot:first>
+                                <option :value="null" disabled selected>Выберите тип комплектации...</option>
+                            </template>
+                        </b-form-select>
+                    </b-form-group>
+                    <b-form-group label="Ткань:">
+                        <b-form-select
+                            v-model="new_product.material_id"
+                            :options="materials"
+                            class="mb-3"
+                            value-field="id"
+                            text-field="label"
+                            required
+                        >
+                            <template v-slot:first>
+                                <option :value="null" disabled selected>Выберите ткань...</option>
+                            </template>
+                        </b-form-select>
+                    </b-form-group>
+                    <b-form-group label="Цвет фурнитуры:">
+                        <b-form-select
+                            v-model="new_product.furn_color_id"
+                            :options="furn_colors"
+                            class="mb-3"
+                            value-field="id"
+                            text-field="label"
+                            required
+                        >
+                            <template v-slot:first>
+                                <option :value="null" disabled selected>Выберите цвет фурнитуры...</option>
+                            </template>
+                        </b-form-select>
+                    </b-form-group>
+                    <b-form-group>
+                        <b-form-checkbox
+                            id="checkbox-1"
+                            v-model="new_product.chain_lock"
+                            name="checkbox-1"
+                            value="1"
+                            unchecked-value="0"
+                            switch
+                        >
+                            Фиксатор цепи
+                        </b-form-checkbox>
+                        <b-form-checkbox
+                            id="checkbox-2"
+                            v-model="new_product.chain_tensioner"
+                            name="checkbox-1"
+                            value="1"
+                            unchecked-value="0"
+                            switch
+                        >
+                            Натяжитель цепи
+                        </b-form-checkbox>
+                        <b-form-checkbox
+                            id="checkbox-3"
+                            v-model="new_product.fishing_line"
+                            name="checkbox-1"
+                            value="1"
+                            unchecked-value="0"
+                            switch
+                        >
+                            Леска
+                        </b-form-checkbox>
+                        <b-form-checkbox
+                            id="checkbox-4"
+                            v-model="new_product.magnets"
+                            name="checkbox-1"
+                            value="1"
+                            unchecked-value="0"
+                            switch
+                        >
+                            Магниты
+                        </b-form-checkbox>
+                        <b-form-checkbox
+                            id="checkbox-5"
+                            v-model="new_product.without_drilling"
+                            name="checkbox-1"
+                            value="1"
+                            unchecked-value="0"
+                            switch
+                        >
+                            Крепление без сверления
+                        </b-form-checkbox>
+                    </b-form-group>
+                    <b-form-group label="Количество изделий:">
+                        <b-form-input min="1" type="number" v-model="new_product_count" required></b-form-input>
+                    </b-form-group>
+                    <b-form-group label="Примечание:">
+                        <b-form-textarea v-model="new_product.note"></b-form-textarea>
+                    </b-form-group>
+                    <b-button variant="primary" type="submit" v-bind:disabled="actionLoad">
+                        <span v-if="!actionLoad">Добавить</span>
+                        <span v-else>
+                            <b-spinner small></b-spinner>
+                            Подождите...
+                        </span>
+                    </b-button>
+                </b-form>
+            </b-modal>
+            <b-dropdown id="dropdown-left" v-bind:disabled="order.status.id === 7" variant="light" class="mr-3">
+                <template v-slot:button-content>
+                    Статус: <strong v-if="!statusChanging">{{ order.status.label }}</strong> <b-spinner v-if="statusChanging" small label="Обновление..."></b-spinner>
+                </template>
+                <b-dropdown-item v-if="order.status.id < 7" @click="changeStatus(order.status.id+1)">Изменить до {{ order_statuses[order.status.id].label }}</b-dropdown-item>
+                <b-dropdown-item v-if="order.status.id === 2" @click="changeStatus(order.status.id+2)">Изменить до {{ order_statuses[order.status.id+1].label }}</b-dropdown-item>
+            </b-dropdown>
+            <b-dropdown v-if="order.status.id > 1" text="Комплектация" id="dropdown-left" v-bind:disabled="order.status.id === 7" variant="primary" class="mr-3">
+                <b-dropdown-group id="metal-group" header="Метал">
+                    <b-dropdown-text>
+                        <div class="d-flex justify-content-between" style="width: 180px;">
+                            <span>Направляющие:</span>
+                            <span>{{ totalHeight*2 }} <b-icon icon="check" variant="success"></b-icon></span>
+                        </div>
+                        <div class="d-flex justify-content-between" style="width: 180px;">
+                            <span>Труба:</span>
+                            <span>{{ totalWidth }} <b-icon icon="x" variant="danger"></b-icon></span>
+                        </div>
+                        <div class="d-flex justify-content-between" style="width: 180px;">
+                            <span>Отвес:</span>
+                            <span>{{ totalWidth }} <b-icon icon="x" variant="danger"></b-icon></span>
+                        </div>
+                    </b-dropdown-text>
+                </b-dropdown-group>
+                <b-dropdown-divider></b-dropdown-divider>
+                <b-dropdown-group id="furn-group" header="Фурнитура">
+                    <b-dropdown-text>
+                        <div class="d-flex justify-content-between" style="width: 180px;">
+                            <span>Цепочка:</span>
+                            <span>{{ totalHeight*2 }} <b-icon icon="check" variant="success"></b-icon></span>
+                        </div>
+                        <div class="d-flex justify-content-between" style="width: 180px;">
+                            <span>Ручка:</span>
+                            <span>{{ products.length }} <b-icon icon="x" variant="danger"></b-icon></span>
+                        </div>
+                        <div class="d-flex justify-content-between" style="width: 180px;">
+                            <span>Механизм:</span>
+                            <span>{{ products.length }} <b-icon icon="x" variant="danger"></b-icon></span>
+                        </div>
+                    </b-dropdown-text>
+                </b-dropdown-group>
+            </b-dropdown>
         </div>
         <b-table
             show-empty
@@ -304,13 +336,14 @@
 <script>
     export default {
         name: "OrderRollMiniComponent",
-        props:['order'],
+        props: ['order'],
         data() {
             return {
                 perPage: 10,
                 currentPage: 1,
                 isBusy: false,
                 actionLoad: false,
+                statusChanging: false,
                 fields: [
                     {
                         key: 'width',
@@ -355,6 +388,8 @@
                 materials: [],
                 complectation_types: [],
                 furn_colors: [],
+                metal_retirements: [],
+                furn_retirements: [],
                 deletingModal: {
                     id: 'delMod',
                     index: null,
@@ -387,6 +422,8 @@
             this.loadComplectations();
             this.loadFurnColors();
             this.loadOrderStatuses();
+            this.loadMetalRetirements();
+            this.loadFurnRetirements();
             this.resetNewProduct();
         },
         computed: {
@@ -395,6 +432,20 @@
             },
             editingModalLenght: function() {
                 return  this.editingModal.rule_lenght = this.editingModal.height;
+            },
+            totalHeight: function () {
+                let height = 0;
+                this.products.forEach(function(item, i) {
+                    height += item.height;
+                });
+                return height;
+            },
+            totalWidth: function () {
+                let width = 0;
+                this.products.forEach(function(item, i) {
+                    width += item.width;
+                });
+                return width;
             }
         },
         methods: {
@@ -519,6 +570,37 @@
                         this.$bvModal.hide(this.editingModal.id);
                         this.makeToast('Данные изделия успешно сохранены', 'success');
                     });
+            },
+            changeStatus(status) {
+                this.statusChanging = true;
+                axios.put('/admin/orders/' + this.order.id, {
+                    order: {
+                        status_id: status
+                    }
+                })
+                    .then(response => {
+                        this.order = response.data;
+                        this.makeToast('Статус заказа успешно изменен', 'success');
+                        this.statusChanging = false;
+                    })
+            },
+            loadMetalRetirements() {
+                axios.post('/admin/other/metal_retirements/getAll', {
+                    type_id: this.order.product_type_id,
+                    construction_id: this.construction_type_id,
+                })
+                    .then((response) => {
+                        this.metal_retirements = response.data;
+                    })
+            },
+            loadFurnRetirements() {
+                axios.post('/admin/other/furn_retirements/getAll', {
+                    type_id: this.order.product_type_id,
+                    construction_id: this.order.construction_type_id,
+                })
+                    .then((response) => {
+                        this.furn_retirements = response.data;
+                    })
             },
             makeToast(message, color) {
                 this.$bvToast.toast(message, {
