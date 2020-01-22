@@ -22,6 +22,9 @@ class CreateFurnRetirementsTable extends Migration
             $table->string('label');
             $table->unsignedBigInteger('furn_id')->nullable();
             $table->foreign('furn_id')->references('id')->on('furn_storages');
+            $table->string('depends');
+            $table->string('dependsCount');
+            $table->bigInteger('count');
         });
     }
 

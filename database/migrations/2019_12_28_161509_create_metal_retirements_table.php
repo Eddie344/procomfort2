@@ -22,6 +22,9 @@ class CreateMetalRetirementsTable extends Migration
             $table->string('label');
             $table->unsignedBigInteger('metal_id')->nullable();
             $table->foreign('metal_id')->references('id')->on('metal_storages');
+            $table->string('depends');
+            $table->string('dependsCount');
+            $table->bigInteger('count');
         });
     }
 
