@@ -30,6 +30,18 @@
                                         </template>
                                     </b-form-select>
                                 </template>
+                                <template v-slot:cell(depends)="data">
+                                    <b-form-select
+                                        size="sm"
+                                        v-model="data.item.depends"
+                                        :options="dependsOf"
+                                    >
+                                        <template v-slot:first>
+                                            <option :value="null" disabled>Выберите зависимость...</option>
+                                        </template>
+                                    </b-form-select>
+                                </template>
+
                             </b-table>
                         </b-card-text>
                     </b-tab>
@@ -50,6 +62,17 @@
                                         </template>
                                     </b-form-select>
                                 </template>
+                                <template v-slot:cell(depends)="data">
+                                    <b-form-select
+                                        size="sm"
+                                        v-model="data.item.depends"
+                                        :options="dependsOf"
+                                    >
+                                        <template v-slot:first>
+                                            <option :value="null" disabled>Выберите зависимость...</option>
+                                        </template>
+                                    </b-form-select>
+                                </template>
                             </b-table>
                         </b-card-text>
                     </b-tab>
@@ -65,6 +88,20 @@
         data() {
             return {
                 tableLoaded: false,
+                dependsOf: [
+                    {
+                        value: 'Width',
+                        text: 'Ширина'
+                    },
+                    {
+                        value: 'Height',
+                        text: 'Высота'
+                    },
+                    {
+                        value: 'Count',
+                        text: 'Количество'
+                    },
+                ],
                 product_type_selected: null,
                 construction_type_selected: null,
                 product_types: {},
@@ -79,6 +116,18 @@
                         label: 'Наименование',
                     },
                     {
+                        key: 'count',
+                        label: 'Количество',
+                    },
+                    {
+                        key: 'depends',
+                        label: 'Зависимость',
+                    },
+                    {
+                        key: 'dependsCount',
+                        label: 'Коэффициент зависимости',
+                    },
+                    {
                         key: 'metal.label',
                         label: 'Позиция на складе',
                     }
@@ -87,6 +136,18 @@
                     {
                         key: 'label',
                         label: 'Наименование',
+                    },
+                    {
+                        key: 'count',
+                        label: 'Количество',
+                    },
+                    {
+                        key: 'depends',
+                        label: 'Зависимость',
+                    },
+                    {
+                        key: 'dependsCount',
+                        label: 'Коэффициент зависимости',
                     },
                     {
                         key: 'furn.label',

@@ -10,6 +10,11 @@ class MetalStorage extends Model
         'label',
     ];
 
+    public function parts()
+    {
+        return $this->hasMany('App\Models\MetalPartsStorage');
+    }
+
     public function scopeFilter($query)
     {
         if(request('label'))

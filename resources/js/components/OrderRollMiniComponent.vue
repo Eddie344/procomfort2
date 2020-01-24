@@ -136,7 +136,7 @@
                     </b-button>
                 </b-form>
             </b-modal>
-            <b-dropdown id="dropdown-left" v-bind:disabled="order.status.id === 7" variant="light" class="mr-3">
+            <b-dropdown id="dropdown-left" v-bind:disabled="order.status.id === 7 || products.length == 0" variant="light" class="mr-3">
                 <template v-slot:button-content>
                     Статус: <strong v-if="!statusChanging">{{ order.status.label }}</strong> <b-spinner v-if="statusChanging" small label="Обновление..."></b-spinner>
                 </template>
@@ -146,17 +146,9 @@
             <b-dropdown v-if="order.status.id > 1" text="Комплектация" id="dropdown-left" v-bind:disabled="order.status.id === 7" variant="primary" class="mr-3">
                 <b-dropdown-group id="metal-group" header="Метал">
                     <b-dropdown-text>
-                        <div class="d-flex justify-content-between" style="width: 180px;">
-                            <span>Направляющие:</span>
-                            <span>{{ totalHeight*2 }} <b-icon icon="check" variant="success"></b-icon></span>
-                        </div>
-                        <div class="d-flex justify-content-between" style="width: 180px;">
-                            <span>Труба:</span>
-                            <span>{{ totalWidth }} <b-icon icon="x" variant="danger"></b-icon></span>
-                        </div>
-                        <div class="d-flex justify-content-between" style="width: 180px;">
-                            <span>Отвес:</span>
-                            <span>{{ totalWidth }} <b-icon icon="x" variant="danger"></b-icon></span>
+                        <div v-for="item in metal_retirements" class="d-flex justify-content-between" style="width: 180px;">
+                            <span>{{ item.label }}</span>
+                            <span>{{ totalItem(item.depends, item.dependsCount, item.count) }} <b-icon icon="check" variant="success"></b-icon></span>
                         </div>
                     </b-dropdown-text>
                 </b-dropdown-group>
@@ -446,9 +438,13 @@
                     width += item.width;
                 });
                 return width.toFixed(2);
-            }
+            },
         },
         methods: {
+            totalItem: function (depends, dependsCount, count) {
+                let tot = eval('this.total'+depends);
+                return eval(tot+dependsCount+'*(this.products.length*'+count+')').toFixed(2);
+            },
             loadProducts(){
                 this.isBusy = true;
                 axios.post('/admin/roll_products/getAll', {
