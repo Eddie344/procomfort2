@@ -438,14 +438,14 @@
                 this.products.forEach(function(item, i) {
                     height += item.height;
                 });
-                return height;
+                return height.toFixed(2);
             },
             totalWidth: function () {
                 let width = 0;
                 this.products.forEach(function(item, i) {
                     width += item.width;
                 });
-                return width;
+                return width.toFixed(2);
             }
         },
         methods: {
