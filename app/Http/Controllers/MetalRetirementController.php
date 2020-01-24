@@ -19,7 +19,7 @@ class MetalRetirementController extends Controller
 
     public function getAll(Request $request)
     {
-        $metals = MetalRetirement::with(['metal'])
+        $metals = MetalRetirement::with(['metal.parts'])
             ->filter()
             ->get();
         return response()->json($metals);

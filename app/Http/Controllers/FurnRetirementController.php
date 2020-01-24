@@ -19,7 +19,7 @@ class FurnRetirementController extends Controller
 
     public function getAll(Request $request)
     {
-        $furns = FurnRetirement::with(['furn'])
+        $furns = FurnRetirement::with(['furn.parts'])
             ->filter()
             ->get();
         return response()->json($furns);

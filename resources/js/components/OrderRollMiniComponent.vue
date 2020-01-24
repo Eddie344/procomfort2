@@ -146,26 +146,26 @@
             <b-dropdown v-if="order.status.id > 1" text="Комплектация" id="dropdown-left" v-bind:disabled="order.status.id === 7" variant="primary" class="mr-3">
                 <b-dropdown-group id="metal-group" header="Метал">
                     <b-dropdown-text>
-                        <div v-for="item in metal_retirements" class="d-flex justify-content-between" style="width: 180px;">
+                        <div v-for="item in metal_retirements" class="d-flex justify-content-between" style="width: 250px;">
                             <span>{{ item.label }}</span>
-                            <span>{{ totalItem(item.depends, item.dependsCount, item.count) }} <b-icon icon="check" variant="success"></b-icon></span>
+                            <span>
+                                {{ totalItem(item.depends, item.dependsCount, item.count) }} / {{ sumMetalPartsLenght(item) }}
+                                <b-icon v-if="parseInt(totalItem(item.depends, item.dependsCount, item.count)) <= parseInt(sumMetalPartsLenght(item))" icon="check" variant="success" font-scale="1.5" shift-v="-1"></b-icon>
+                                <b-icon v-else icon="x" variant="danger" font-scale="1.5" shift-v="-1"></b-icon>
+                            </span>
                         </div>
                     </b-dropdown-text>
                 </b-dropdown-group>
                 <b-dropdown-divider></b-dropdown-divider>
                 <b-dropdown-group id="furn-group" header="Фурнитура">
                     <b-dropdown-text>
-                        <div class="d-flex justify-content-between" style="width: 180px;">
-                            <span>Цепочка:</span>
-                            <span>{{ totalHeight*2 }} <b-icon icon="check" variant="success"></b-icon></span>
-                        </div>
-                        <div class="d-flex justify-content-between" style="width: 180px;">
-                            <span>Ручка:</span>
-                            <span>{{ products.length }} <b-icon icon="x" variant="danger"></b-icon></span>
-                        </div>
-                        <div class="d-flex justify-content-between" style="width: 180px;">
-                            <span>Механизм:</span>
-                            <span>{{ products.length }} <b-icon icon="x" variant="danger"></b-icon></span>
+                        <div v-for="item in furn_retirements" class="d-flex justify-content-between" style="width: 250px;">
+                            <span>{{ item.label }}</span>
+                            <span>
+                                {{ totalItem(item.depends, item.dependsCount, item.count) }} / {{ sumFurnPartsCount(item) }}
+                                <b-icon v-if="parseInt(totalItem(item.depends, item.dependsCount, item.count)) <= parseInt(sumFurnPartsCount(item))" icon="check" variant="success" font-scale="1.5" shift-v="-1"></b-icon>
+                                <b-icon v-else icon="x" variant="danger" font-scale="1.5" shift-v="-1"></b-icon>
+                            </span>
                         </div>
                     </b-dropdown-text>
                 </b-dropdown-group>
@@ -439,11 +439,51 @@
                 });
                 return width.toFixed(2);
             },
+            totalCount: function () {
+                return this.products.length;
+            },
         },
         methods: {
-            totalItem: function (depends, dependsCount, count) {
+            totalItem(depends, dependsCount, count) {
                 let tot = eval('this.total'+depends);
-                return eval(tot+dependsCount+'*(this.products.length*'+count+')').toFixed(2);
+                return (eval(tot+dependsCount)*(this.products.length*count)).toFixed(2);
+            },
+            sumMetalPartsLenght(item) {
+                let lenght = 0;
+                item.metal.parts.forEach(function(part, i) {
+                    lenght += part.lenght;
+                });
+                return lenght.toFixed(2);
+            },
+            sumFurnPartsCount(item) {
+                let count = 0;
+                item.furn.parts.forEach(function(part, i) {
+                    count += part.count;
+                });
+                if(item.furn.unit === 'шт'){
+                    return count;
+                }
+                else {
+                    return count.toFixed(2);
+                }
+            },
+            checkMetalFails() {
+                let fails = 0;
+                this.metal_retirements.forEach(function(item, i) {
+                    if(parseInt(this.totalItem(item.depends, item.dependsCount, item.count)) > parseInt(this.sumMetalPartsLenght(item))){
+                        fails++;
+                    }
+                });
+                return fails;
+            },
+            checkFurnFails() {
+                let fails = 0;
+                this.furn_retirements.forEach(function(item, i) {
+                    if(parseInt(this.totalItem(item.depends, item.dependsCount, item.count)) > parseInt(this.sumFurnPartsCount(item))){
+                        fails++;
+                    }
+                });
+                return fails;
             },
             loadProducts(){
                 this.isBusy = true;
@@ -569,16 +609,22 @@
             },
             changeStatus(status) {
                 this.statusChanging = true;
-                axios.put('/admin/orders/' + this.order.id, {
-                    order: {
-                        status_id: status
-                    }
-                })
-                    .then(response => {
-                        this.order = response.data;
-                        this.makeToast('Статус заказа успешно изменен', 'success');
-                        this.statusChanging = false;
+                if(this.checkMetalFails !== 0 || this.checkFurnFails !== 0) {
+                    this.makeToast('Не хватает материала на складе', 'danger');
+                    this.statusChanging = false;
+                }
+                else {
+                    axios.put('/admin/orders/' + this.order.id, {
+                        order: {
+                            status_id: status
+                        }
                     })
+                        .then(response => {
+                            this.order = response.data;
+                            this.makeToast('Статус заказа успешно изменен', 'success');
+                            this.statusChanging = false;
+                        })
+                }
             },
             loadMetalRetirements() {
                 axios.post('/admin/other/metal_retirements/getAll', {

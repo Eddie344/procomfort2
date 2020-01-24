@@ -10,6 +10,11 @@ class FurnStorage extends Model
         'label', 'unit',
     ];
 
+    public function parts()
+    {
+        return $this->hasMany('App\Models\FurnPartsStorage');
+    }
+
     public function scopeFilter($query)
     {
         if(request('label'))

@@ -19,7 +19,7 @@ class MetalRetirementTableSeeder extends Seeder
                 'construction_id' => '1',
                 'label' => 'Направляющие',
                 'depends' => 'Height',
-                'dependsCount' => '+0',
+                'dependsCount' => '+0.02',
                 'count' => '2',
             ],
             [
@@ -27,7 +27,7 @@ class MetalRetirementTableSeeder extends Seeder
                 'construction_id' => '1',
                 'label' => 'Труба',
                 'depends' => 'Width',
-                'dependsCount' => '+0',
+                'dependsCount' => '+0.03',
                 'count' => '1',
             ],
             [
@@ -35,7 +35,7 @@ class MetalRetirementTableSeeder extends Seeder
                 'construction_id' => '1',
                 'label' => 'Отвес',
                 'depends' => 'Width',
-                'dependsCount' => '+0',
+                'dependsCount' => '+0.04',
                 'count' => '1',
             ],
         ]);
