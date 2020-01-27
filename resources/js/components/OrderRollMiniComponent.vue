@@ -149,8 +149,8 @@
                         <div v-for="item in metal_retirements" class="d-flex justify-content-between" style="width: 250px;">
                             <span>{{ item.label }}</span>
                             <span>
-                                {{ totalItem(item.depends, item.dependsCount, item.count) }} / {{ sumMetalPartsLenght(item) }}
-                                <b-icon v-if="parseInt(totalItem(item.depends, item.dependsCount, item.count)) <= parseInt(sumMetalPartsLenght(item))" icon="check" variant="success" font-scale="1.5" shift-v="-1"></b-icon>
+                                {{ totalItem(item) }} / {{ sumMetalPartsLenght(item) }}
+                                <b-icon v-if="parseInt(totalItem(item)) <= parseInt(sumMetalPartsLenght(item))" icon="check" variant="success" font-scale="1.5" shift-v="-1"></b-icon>
                                 <b-icon v-else icon="x" variant="danger" font-scale="1.5" shift-v="-1"></b-icon>
                             </span>
                         </div>
@@ -162,8 +162,8 @@
                         <div v-for="item in furn_retirements" class="d-flex justify-content-between" style="width: 250px;">
                             <span>{{ item.label }}</span>
                             <span>
-                                {{ totalItem(item.depends, item.dependsCount, item.count) }} / {{ sumFurnPartsCount(item) }}
-                                <b-icon v-if="parseInt(totalItem(item.depends, item.dependsCount, item.count)) <= parseInt(sumFurnPartsCount(item))" icon="check" variant="success" font-scale="1.5" shift-v="-1"></b-icon>
+                                {{ totalItem(item) }} / {{ sumFurnPartsCount(item) }}
+                                <b-icon v-if="parseInt(totalItem(item)) <= parseInt(sumFurnPartsCount(item))" icon="check" variant="success" font-scale="1.5" shift-v="-1"></b-icon>
                                 <b-icon v-else icon="x" variant="danger" font-scale="1.5" shift-v="-1"></b-icon>
                             </span>
                         </div>
@@ -430,60 +430,46 @@
                 this.products.forEach(function(item, i) {
                     height += item.height;
                 });
-                return height.toFixed(2);
+                return +height.toFixed(2);
             },
             totalWidth: function () {
                 let width = 0;
                 this.products.forEach(function(item, i) {
                     width += item.width;
                 });
-                return width.toFixed(2);
+                return +width.toFixed(2);
             },
             totalCount: function () {
                 return this.products.length;
             },
         },
         methods: {
-            totalItem(depends, dependsCount, count) {
-                let tot = eval('this.total'+depends);
-                return (eval(tot+dependsCount)*(this.products.length*count)).toFixed(2);
+            totalItem(item) {
+                return +(eval(eval('this.total'+item.depends)+item.dependsCount)*item.count).toFixed(2);
             },
             sumMetalPartsLenght(item) {
                 let lenght = 0;
                 item.metal.parts.forEach(function(part, i) {
                     lenght += part.lenght;
                 });
-                return lenght.toFixed(2);
+                return +lenght.toFixed(2);
             },
             sumFurnPartsCount(item) {
                 let count = 0;
                 item.furn.parts.forEach(function(part, i) {
                     count += part.count;
                 });
-                if(item.furn.unit === 'шт'){
-                    return count;
-                }
-                else {
-                    return count.toFixed(2);
-                }
+                return +count.toFixed(2);
             },
             checkMetalFails() {
-                let fails = 0;
                 this.metal_retirements.forEach(function(item, i) {
-                    if(parseInt(this.totalItem(item.depends, item.dependsCount, item.count)) > parseInt(this.sumMetalPartsLenght(item))){
-                        fails++;
-                    }
+                    return parseInt(this.totalItem(item)) > parseInt(this.sumMetalPartsLenght(item));
                 });
-                return fails;
             },
             checkFurnFails() {
-                let fails = 0;
                 this.furn_retirements.forEach(function(item, i) {
-                    if(parseInt(this.totalItem(item.depends, item.dependsCount, item.count)) > parseInt(this.sumFurnPartsCount(item))){
-                        fails++;
-                    }
+                    return parseInt(this.totalItem(item)) > parseInt(this.sumFurnPartsCount(item));
                 });
-                return fails;
             },
             loadProducts(){
                 this.isBusy = true;
@@ -492,7 +478,6 @@
                 })
                     .then((response) => {
                         this.products = response.data;
-                        this.addConstructionData();
                         this.isBusy = false;
                     });
             },
@@ -610,11 +595,12 @@
             },
             changeStatus(status) {
                 this.statusChanging = true;
-                if(this.checkMetalFails !== 0 || this.checkFurnFails !== 0) {
+                if(this.checkMetalFails === true || this.checkFurnFails === true) {
                     this.makeToast('Не хватает материала на складе', 'danger');
                     this.statusChanging = false;
                 }
                 else {
+                    if(this.order.status_id === 2) this.writeOff();
                     axios.put('/admin/orders/' + this.order.id, {
                         order: {
                             status_id: status
@@ -626,6 +612,25 @@
                             this.statusChanging = false;
                         })
                 }
+            },
+            writeOff(){
+                this.metal_retirements.forEach((item, i) => {
+                    let total = this.totalItem(item);
+                    for(let p = 0; p < item.metal.parts.length; p++) {
+                        if(item.metal.parts[p].lenght > total) {
+                            item.metal.parts[p].lenght -= total;
+                            break;
+                        }
+                        if(item.metal.parts[p].lenght === total) {
+                            delete(item.metal.parts[p]);
+                            break;
+                        }
+                        if(item.metal.parts[p] < total) { //item.metal.parts[i] < total
+                            delete(item.metal.parts[p]);
+                            total -= item.metal.parts[p].lenght;
+                        }
+                    }
+                });
             },
             loadMetalRetirements() {
                 axios.post('/admin/other/metal_retirements/getAll', {
