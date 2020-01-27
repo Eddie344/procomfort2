@@ -492,6 +492,7 @@
                 })
                     .then((response) => {
                         this.products = response.data;
+                        this.addConstructionData();
                         this.isBusy = false;
                     });
             },
