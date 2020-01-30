@@ -446,7 +446,7 @@
         methods: {
             totalItem(depends, dependsCount, count) {
                 let tot = eval('this.total'+depends);
-                return (eval(tot+dependsCount)*(this.products.length*count)).toFixed(2);
+                return (eval(tot+dependsCount)*(this.products.length)).toFixed(2);
             },
             sumMetalPartsLenght(item) {
                 let lenght = 0;
