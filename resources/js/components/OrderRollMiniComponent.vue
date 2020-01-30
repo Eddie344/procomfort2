@@ -331,6 +331,7 @@
         props: ['order'],
         data() {
             return {
+                order: this.order,
                 perPage: 10,
                 currentPage: 1,
                 isBusy: false,
@@ -619,25 +620,51 @@
                     for(let p = 0; p < item.metal.parts.length; p++) {
                         if(item.metal.parts[p].lenght > total) {
                             item.metal.parts[p].lenght = +(item.metal.parts[p].lenght - total).toFixed(2);
+                            axios.put('/admin/storage/metal_parts/'+item.metal.parts[p].id, {
+                                part: {
+                                    lenght: item.metal.parts[p].lenght,
+                                }
+                            });
+                            axios.post('/admin/storage/metal_actions', {
+                                action: {
+                                    metal_storage_id: item.metal.id,
+                                    type_id: 2,
+                                    user_id: this.order.diller_id,
+                                    reason: 'Заказ №'+this.order.id,
+                                    lenght: total,
+                                }
+                            });
                             break;
                         }
                         if(item.metal.parts[p].lenght === total) {
-                            delete(item.metal.parts[p]);
+                            axios.post('/admin/storage/metal_actions', {
+                                action: {
+                                    metal_storage_id: item.metal.id,
+                                    type_id: 2,
+                                    user_id: this.order.diller_id,
+                                    reason: 'Заказ №'+this.order.id,
+                                    lenght: total,
+                                }
+                            });
+                            axios.delete('/admin/storage/metal_parts/'+item.metal.parts[p].id)
+                                .then(delete(item.metal.parts[p]));
                             break;
                         }
                         if(item.metal.parts[p] < total) {
-                            delete(item.metal.parts[p]);
+                            console.log('1');
                             total = +(total - item.metal.parts[p].lenght).toFixed(2);
+                            axios.post('/admin/storage/metal_actions', {
+                                action: {
+                                    metal_storage_id: item.metal.id,
+                                    type_id: 2,
+                                    user_id: this.order.diller_id,
+                                    reason: 'Заказ №'+this.order.id,
+                                    lenght: total,
+                                }
+                            });
+                            axios.delete('/admin/storage/metal_parts/'+item.metal.parts[p].id)
+                                .then(delete(item.metal.parts[p]));
                         }
-                        axios.post('/admin/storage/metal_parts/'+item.metal.parts[p].id, {
-                            lenght: item.metal.parts[p].lenght,
-                        });
-                        axios.post('/admin/storage/metal_actions/', {
-                            metal_storage_id: item.metal.parts[p].id,
-                            type_id: 2,
-                            user_id,
-                            lenght: item.metal.parts[p].lenght,
-                        });
                     }
                 });
             },
