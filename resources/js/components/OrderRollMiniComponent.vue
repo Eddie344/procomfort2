@@ -617,6 +617,15 @@
             writeOff(){
                 this.metal_retirements.forEach((item, i) => {
                     let total = this.totalItem(item);
+                    axios.post('/admin/storage/metal_actions', {
+                        action: {
+                            metal_storage_id: item.metal.id,
+                            type_id: 2,
+                            user_id: this.order.diller_id,
+                            reason: 'Заказ №'+this.order.id,
+                            lenght: total,
+                        }
+                    });
                     for(let p = 0; p < item.metal.parts.length; p++) {
                         if(item.metal.parts[p].lenght > total) {
                             item.metal.parts[p].lenght = +(item.metal.parts[p].lenght - total).toFixed(2);
@@ -625,43 +634,16 @@
                                     lenght: item.metal.parts[p].lenght,
                                 }
                             });
-                            axios.post('/admin/storage/metal_actions', {
-                                action: {
-                                    metal_storage_id: item.metal.id,
-                                    type_id: 2,
-                                    user_id: this.order.diller_id,
-                                    reason: 'Заказ №'+this.order.id,
-                                    lenght: total,
-                                }
-                            });
                             break;
                         }
-                        if(item.metal.parts[p].lenght === total) {
-                            axios.post('/admin/storage/metal_actions', {
-                                action: {
-                                    metal_storage_id: item.metal.id,
-                                    type_id: 2,
-                                    user_id: this.order.diller_id,
-                                    reason: 'Заказ №'+this.order.id,
-                                    lenght: total,
-                                }
-                            });
+                        else if(item.metal.parts[p].lenght === total) {
                             axios.delete('/admin/storage/metal_parts/'+item.metal.parts[p].id)
                                 .then(delete(item.metal.parts[p]));
                             break;
                         }
-                        if(item.metal.parts[p] < total) {
+                        else { //if(item.metal.parts[p] < total) {
                             console.log('1');
                             total = +(total - item.metal.parts[p].lenght).toFixed(2);
-                            axios.post('/admin/storage/metal_actions', {
-                                action: {
-                                    metal_storage_id: item.metal.id,
-                                    type_id: 2,
-                                    user_id: this.order.diller_id,
-                                    reason: 'Заказ №'+this.order.id,
-                                    lenght: total,
-                                }
-                            });
                             axios.delete('/admin/storage/metal_parts/'+item.metal.parts[p].id)
                                 .then(delete(item.metal.parts[p]));
                         }
