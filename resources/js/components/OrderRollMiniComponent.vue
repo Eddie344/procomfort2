@@ -463,13 +463,21 @@
                 return +count.toFixed(2);
             },
             checkMetalFails() {
-                this.metal_retirements.forEach(function(item, i) {
-                    return parseInt(this.totalItem(item)) > parseInt(this.sumMetalPartsLenght(item));
+                this.metal_retirements.forEach(function(item) {
+                    let errors = 0;
+                    if(parseInt(this.totalItem(item)) > parseInt(this.sumMetalPartsLenght(item))){
+                        errors++;
+                    }
+                    return errors;
                 });
             },
             checkFurnFails() {
-                this.furn_retirements.forEach(function(item, i) {
-                    return parseInt(this.totalItem(item)) > parseInt(this.sumFurnPartsCount(item));
+                this.furn_retirements.forEach(function(item) {
+                    let errors = 0;
+                    if(parseInt(this.totalItem(item)) > parseInt(this.sumFurnPartsCount(item))){
+                        errors++;
+                    }
+                    return errors;
                 });
             },
             loadProducts(){
@@ -601,7 +609,10 @@
                     this.statusChanging = false;
                 }
                 else {
-                    if(this.order.status_id === 2) this.writeOff();
+                    if(this.order.status_id === 2) {
+                        this.writeOffMetal();
+                        this.writeOffFurn();
+                    }
                     axios.put('/admin/orders/' + this.order.id, {
                         order: {
                             status_id: status
@@ -614,7 +625,8 @@
                         })
                 }
             },
-            writeOff(){
+            writeOffMetal() {
+                // metal
                 this.metal_retirements.forEach((item, i) => {
                     let total = this.totalItem(item);
                     axios.post('/admin/storage/metal_actions', {
@@ -622,30 +634,63 @@
                             metal_storage_id: item.metal.id,
                             type_id: 2,
                             user_id: this.order.diller_id,
-                            reason: 'Заказ №'+this.order.id,
+                            reason: 'Заказ №' + this.order.id,
                             lenght: total,
                         }
                     });
-                    for(let p = 0; p < item.metal.parts.length; p++) {
-                        if(item.metal.parts[p].lenght > total) {
+                    for (let p = 0; p < item.metal.parts.length; p++) {
+                        if (item.metal.parts[p].lenght > total) {
                             item.metal.parts[p].lenght = +(item.metal.parts[p].lenght - total).toFixed(2);
-                            axios.put('/admin/storage/metal_parts/'+item.metal.parts[p].id, {
+                            axios.put('/admin/storage/metal_parts/' + item.metal.parts[p].id, {
                                 part: {
                                     lenght: item.metal.parts[p].lenght,
                                 }
                             });
                             break;
+                        } else if (item.metal.parts[p].lenght === total) {
+                            axios.delete('/admin/storage/metal_parts/' + item.metal.parts[p].id)
+                                .then(delete (item.metal.parts[p]));
+                            break;
+                        } else { //if(item.metal.parts[p] < total) {
+                            total = +(total - item.metal.parts[p].lenght).toFixed(2);
+                            axios.delete('/admin/storage/metal_parts/' + item.metal.parts[p].id)
+                                .then(delete (item.metal.parts[p]));
                         }
-                        else if(item.metal.parts[p].lenght === total) {
-                            axios.delete('/admin/storage/metal_parts/'+item.metal.parts[p].id)
-                                .then(delete(item.metal.parts[p]));
+                    }
+                });
+            },
+            writeOffFurn() {
+                // furn
+                this.furn_retirements.forEach((item, i) => {
+                    let total = this.totalItem(item);
+                    axios.post('/admin/storage/furn_actions', {
+                        action: {
+                            furn_storage_id: item.furn.id,
+                            type_id: 2,
+                            user_id: this.order.diller_id,
+                            reason: 'Заказ №'+this.order.id,
+                            count: total,
+                        }
+                    });
+                    for(let p = 0; p < item.furn.parts.length; p++) {
+                        if(item.furn.parts[p].count > total) {
+                            item.furn.parts[p].count = +(item.furn.parts[p].count - total).toFixed(2);
+                            axios.put('/admin/storage/furn_parts/'+item.furn.parts[p].id, {
+                                part: {
+                                    count: item.furn.parts[p].count,
+                                }
+                            });
+                            break;
+                        }
+                        else if(item.furn.parts[p].count === total) {
+                            axios.delete('/admin/storage/furn_parts/'+item.furn.parts[p].id)
+                                .then(delete(item.furn.parts[p]));
                             break;
                         }
                         else { //if(item.metal.parts[p] < total) {
-                            console.log('1');
-                            total = +(total - item.metal.parts[p].lenght).toFixed(2);
-                            axios.delete('/admin/storage/metal_parts/'+item.metal.parts[p].id)
-                                .then(delete(item.metal.parts[p]));
+                            total = +(total - item.furn.parts[p].count).toFixed(2);
+                            axios.delete('/admin/storage/furn_parts/'+item.furn.parts[p].id)
+                                .then(delete(item.furn.parts[p]));
                         }
                     }
                 });
