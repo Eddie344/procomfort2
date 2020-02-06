@@ -443,6 +443,24 @@
             totalCount: function () {
                 return this.products.length;
             },
+            checkMetalFails: function () {
+                let errors = 0;
+                this.metal_retirements.forEach(item => {
+                    if(parseInt(this.totalItem(item)) > parseInt(this.sumMetalPartsLenght(item))){
+                        errors++;
+                    }
+                });
+                return errors;
+            },
+            checkFurnFails: function () {
+                let errors = 0;
+                this.furn_retirements.forEach(item => {
+                    if(parseInt(this.totalItem(item)) > parseInt(this.sumFurnPartsCount(item))){
+                        errors++;
+                    }
+                });
+                return errors;
+            },
         },
         methods: {
             totalItem(item) {
@@ -461,24 +479,6 @@
                     count += part.count;
                 });
                 return +count.toFixed(2);
-            },
-            checkMetalFails() {
-                this.metal_retirements.forEach(function(item) {
-                    let errors = 0;
-                    if(parseInt(this.totalItem(item)) > parseInt(this.sumMetalPartsLenght(item))){
-                        errors++;
-                    }
-                    return errors;
-                });
-            },
-            checkFurnFails() {
-                this.furn_retirements.forEach(function(item) {
-                    let errors = 0;
-                    if(parseInt(this.totalItem(item)) > parseInt(this.sumFurnPartsCount(item))){
-                        errors++;
-                    }
-                    return errors;
-                });
             },
             loadProducts(){
                 this.isBusy = true;
@@ -604,7 +604,9 @@
             },
             changeStatus(status) {
                 this.statusChanging = true;
-                if(this.checkMetalFails === true || this.checkFurnFails === true) {
+                console.log(this.checkMetalFails > 0);
+                console.log(this.checkFurnFails > 0);
+                if(this.checkMetalFails > 0 || this.checkFurnFails > 0) {
                     this.makeToast('Не хватает материала на складе', 'danger');
                     this.statusChanging = false;
                 }

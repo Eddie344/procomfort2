@@ -335,7 +335,7 @@
     export default {
         name: "FurnStorageSingleComponent",
         components: { DateRangePicker },
-        props:['id'],
+        props:['id', 'user_id'],
         data() {
             return {
                 partsPerPage: 10,
@@ -537,6 +537,7 @@
             addAction(type, reason, count){
                 axios.post('/admin/storage/furn_actions', {
                     action: {
+                        user_id: this.user_id,
                         furn_storage_id: this.id,
                         type_id: type,
                         reason: reason,

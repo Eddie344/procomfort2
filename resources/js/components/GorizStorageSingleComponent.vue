@@ -336,7 +336,7 @@
     export default {
         name: "GorizStorageSingleComponent",
         components: { DateRangePicker },
-        props:['id'],
+        props:['id', 'user_id'],
         data() {
             return {
                 partsPerPage: 10,
@@ -536,6 +536,7 @@
             addAction(type, reason, lenght){
                 axios.post('/admin/storage/goriz_actions', {
                     action: {
+                        user_id: this.user_id,
                         goriz_storage_id: this.id,
                         type_id: type,
                         reason: reason,

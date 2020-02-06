@@ -362,7 +362,7 @@
     export default {
         name: "ZebraStorageSingleComponent",
         components: { DateRangePicker },
-        props:['id'],
+        props:['id', 'user_id'],
         data() {
             return {
                 partsPerPage: 10,
@@ -582,6 +582,7 @@
             addAction(type, reason, width, lenght){
                 axios.post('/admin/storage/zebra_actions', {
                     action: {
+                        user_id: this.user_id,
                         zebra_storage_id: this.id,
                         type_id: type,
                         reason: reason,

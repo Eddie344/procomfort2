@@ -38,7 +38,6 @@ class FurnActionsStorageController extends Controller
     public function store(Request $request)
     {
         $new_action = $request->action;
-        if(!$new_action['user_id']) $new_action['user_id'] = Auth::id();
         $item = FurnActionsStorage::create($new_action);
         $new_item = $item->with(['type', 'user', 'furnStorage'])->find($item->id);
         return response()->json($new_item);
