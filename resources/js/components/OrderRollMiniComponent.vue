@@ -375,6 +375,7 @@
                 ],
                 new_product: {},
                 new_product_count: 1,
+                new_product_additional: {},
                 products: [],
                 order_statuses: [],
                 rule_types: [],
@@ -464,7 +465,7 @@
         },
         methods: {
             totalItem(item) {
-                return +(eval(eval('this.total'+item.depends)+item.dependsCount)*item.count).toFixed(2);
+                return +(eval(eval('this.new_product.'+item.depends)+item.dependsCount)*item.count).toFixed(2);
             },
             sumMetalPartsLenght(item) {
                 let lenght = 0;
@@ -523,19 +524,27 @@
             },
             addProduct(){
                 this.actionLoad = true;
+                this.setAdditional();
                 axios.post('/admin/roll_products', {
                     product: this.new_product,
                     count: this.new_product_count,
+                    additional: this.new_product_additional,
                 })
-                    .then((response) => {
+                    .then(response => {
                         // this.products.push(response.data);
                         this.loadProducts();
-                        this.new_product = {};
                         this.actionLoad = false;
                         this.$refs['modalAdd'].hide();
                         this.makeToast('Изделия успешно добавлены', 'success');
                         this.resetNewProduct();
                     });
+            },
+            setAdditional() {
+                this.metal_retirements.forEach(item => {
+                    this.new_product_additional[item.id] = {
+                        count: this.totalItem(item),
+                    }
+                })
             },
             resetNewProduct(){
                 this.new_product= {

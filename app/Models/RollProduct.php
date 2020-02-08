@@ -31,6 +31,11 @@ class RollProduct extends Model
         'cover_box'
     ];
 
+    public function metal()
+    {
+        return $this->belongsToMany('App\Models\MetalRetirement', 'roll_product_metal', 'roll_product_id', 'metal_id')->withPivot('count');
+    }
+
     public function order()
     {
         return $this->belongsTo('App\Models\Order', 'order_id');
