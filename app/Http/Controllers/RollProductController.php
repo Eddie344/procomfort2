@@ -21,7 +21,7 @@ class RollProductController extends Controller
 
     public function getAll()
     {
-        $products = RollProduct::with(['metal', 'order', 'type', 'construction', 'rule', 'material', 'complectation', 'measurement', 'mount', 'furnColor'])
+        $products = RollProduct::with(['metal', 'furn', 'order', 'type', 'construction', 'rule', 'material', 'complectation', 'measurement', 'mount', 'furnColor'])
             ->filter()
             ->get()
             ->sortByDesc('created_at')
@@ -58,7 +58,8 @@ class RollProductController extends Controller
         for($i = 0; $i < $request->count; $i++)
         {
             $product = RollProduct::create($request->product);
-            $product->metal()->sync($request->additional);
+            $product->metal()->sync($request->additional_metal);
+            $product->furn()->sync($request->additional_furn);
         }
 //        $new_product = $product->with(['order', 'type', 'construction', 'rule', 'material', 'complectation', 'measurement', 'mount', 'furnColor'])->find($product->id);
         return response()->json($product);
@@ -97,6 +98,8 @@ class RollProductController extends Controller
     {
         $product = RollProduct::find($id);
         $product->update($request->product);
+        $product->metal()->sync($request->additional_metal);
+        $product->furn()->sync($request->additional_furn);
         return response('ok');
     }
 
@@ -110,6 +113,7 @@ class RollProductController extends Controller
     {
         $product = RollProduct::find($id);
         $product->metal()->detach();
+        $product->furn()->detach();
         $product->delete();
         return response($id);
     }

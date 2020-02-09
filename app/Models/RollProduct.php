@@ -35,6 +35,10 @@ class RollProduct extends Model
     {
         return $this->belongsToMany('App\Models\MetalRetirement', 'roll_product_metal', 'roll_product_id', 'metal_id')->withPivot('count');
     }
+    public function furn()
+    {
+        return $this->belongsToMany('App\Models\FurnRetirement', 'roll_product_furn', 'roll_product_id', 'furn_id')->withPivot('count');
+    }
 
     public function order()
     {

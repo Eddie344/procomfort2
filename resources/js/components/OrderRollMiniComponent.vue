@@ -149,8 +149,8 @@
                         <div v-for="item in metal_retirements" class="d-flex justify-content-between" style="width: 250px;">
                             <span>{{ item.label }}</span>
                             <span>
-                                {{ totalItem(item) }} / {{ sumMetalPartsLenght(item) }}
-                                <b-icon v-if="parseInt(totalItem(item)) <= parseInt(sumMetalPartsLenght(item))" icon="check" variant="success" font-scale="1.5" shift-v="-1"></b-icon>
+                                {{ sumProductMetal(item) }} / {{ sumMetalPartsLenght(item) }}
+                                <b-icon v-if="parseInt(sumProductMetal(item)) <= parseInt(sumMetalPartsLenght(item))" icon="check" variant="success" font-scale="1.5" shift-v="-1"></b-icon>
                                 <b-icon v-else icon="x" variant="danger" font-scale="1.5" shift-v="-1"></b-icon>
                             </span>
                         </div>
@@ -162,8 +162,8 @@
                         <div v-for="item in furn_retirements" class="d-flex justify-content-between" style="width: 250px;">
                             <span>{{ item.label }}</span>
                             <span>
-                                {{ totalItem(item) }} / {{ sumFurnPartsCount(item) }}
-                                <b-icon v-if="parseInt(totalItem(item)) <= parseInt(sumFurnPartsCount(item))" icon="check" variant="success" font-scale="1.5" shift-v="-1"></b-icon>
+                                {{ sumProductFurn(item) }} / {{ sumFurnPartsCount(item) }}
+                                <b-icon v-if="parseInt(sumProductFurn(item)) <= parseInt(sumFurnPartsCount(item))" icon="check" variant="success" font-scale="1.5" shift-v="-1"></b-icon>
                                 <b-icon v-else icon="x" variant="danger" font-scale="1.5" shift-v="-1"></b-icon>
                             </span>
                         </div>
@@ -373,9 +373,12 @@
                         label: 'Действия'
                     }
                 ],
-                new_product: {},
+                new_product: {
+                    count: 1,
+                },
                 new_product_count: 1,
-                new_product_additional: {},
+                product_additional_metal: {},
+                product_additional_furn: {},
                 products: [],
                 order_statuses: [],
                 rule_types: [],
@@ -447,7 +450,7 @@
             checkMetalFails: function () {
                 let errors = 0;
                 this.metal_retirements.forEach(item => {
-                    if(parseInt(this.totalItem(item)) > parseInt(this.sumMetalPartsLenght(item))){
+                    if(parseInt(this.sumProductMetal(item)) > parseInt(this.sumMetalPartsLenght(item))){
                         errors++;
                     }
                 });
@@ -456,7 +459,7 @@
             checkFurnFails: function () {
                 let errors = 0;
                 this.furn_retirements.forEach(item => {
-                    if(parseInt(this.totalItem(item)) > parseInt(this.sumFurnPartsCount(item))){
+                    if(parseInt(this.sumProductFurn(item)) > parseInt(this.sumFurnPartsCount(item))){
                         errors++;
                     }
                 });
@@ -464,8 +467,29 @@
             },
         },
         methods: {
-            totalItem(item) {
+            totalNewItem(item) {
                 return +(eval(eval('this.new_product.'+item.depends)+item.dependsCount)*item.count).toFixed(2);
+            },
+            totalEditItem(item) {
+                return +(eval(eval('this.editingModal.'+item.depends)+item.dependsCount)*item.count).toFixed(2);
+            },
+            sumProductMetal(item) {
+                let metal = null;
+                this.products.forEach(p => {
+                    p.metal.forEach(m => {
+                        if(item.id === m.id) metal += +m.pivot.count;
+                    })
+                });
+                return +metal.toFixed(2);
+            },
+            sumProductFurn(item) {
+                let furn = null;
+                this.products.forEach(p => {
+                    p.furn.forEach(m => {
+                        if(item.id === m.id) furn += +m.pivot.count;
+                    })
+                });
+                return +furn.toFixed(2);
             },
             sumMetalPartsLenght(item) {
                 let lenght = 0;
@@ -524,14 +548,16 @@
             },
             addProduct(){
                 this.actionLoad = true;
-                this.setAdditional();
+                this.setNewAdditional();
                 axios.post('/admin/roll_products', {
                     product: this.new_product,
                     count: this.new_product_count,
-                    additional: this.new_product_additional,
+                    additional_metal: this.product_additional_metal,
+                    additional_furn: this.product_additional_furn,
                 })
                     .then(response => {
                         // this.products.push(response.data);
+                        this.unsetAdditional();
                         this.loadProducts();
                         this.actionLoad = false;
                         this.$refs['modalAdd'].hide();
@@ -539,15 +565,52 @@
                         this.resetNewProduct();
                     });
             },
-            setAdditional() {
-                this.metal_retirements.forEach(item => {
-                    this.new_product_additional[item.id] = {
-                        count: this.totalItem(item),
-                    }
+            editProduct() {
+                this.actionLoad = true;
+                this.setEditAdditional();
+                axios.put('/admin/roll_products/'+this.editingModal.product_id, {
+                    product: this.editingModal,
+                    additional_metal: this.product_additional_metal,
+                    additional_furn: this.product_additional_furn,
                 })
+                    .then((response) => {
+                        this.unsetAdditional();
+                        this.loadProducts();
+                        this.actionLoad = false;
+                        this.$bvModal.hide(this.editingModal.id);
+                        this.makeToast('Данные изделия успешно сохранены', 'success');
+                    });
+            },
+            setNewAdditional() {
+                this.metal_retirements.forEach(item => {
+                    this.product_additional_metal[item.id] = {
+                        count: this.totalNewItem(item),
+                    }
+                });
+                this.furn_retirements.forEach(item => {
+                    this.product_additional_furn[item.id] = {
+                        count: this.totalNewItem(item),
+                    }
+                });
+            },
+            setEditAdditional() {
+                this.metal_retirements.forEach(item => {
+                    this.product_additional_metal[item.id] = {
+                        count: this.totalEditItem(item),
+                    }
+                });
+                this.furn_retirements.forEach(item => {
+                    this.product_additional_furn[item.id] = {
+                        count: this.totalNewItem(item),
+                    }
+                });
+            },
+            unsetAdditional() {
+                this.product_additional_metal = {};
+                this.product_additional_furn = {};
             },
             resetNewProduct(){
-                this.new_product= {
+                this.new_product = {
                     order_id: this.order.id,
                     type_id: this.order.product_type_id,
                     construction_id: this.order.construction_type_id,
@@ -562,6 +625,7 @@
                     magnets: false,
                     without_drilling: false,
                     note: '',
+                    count: 1,
                 };
                 this.new_product_count = 1;
             },
@@ -599,23 +663,9 @@
                 this.editingModal.note = item.note;
                 this.$root.$emit('bv::show::modal', this.editingModal.id);
             },
-            editProduct() {
-                this.actionLoad = true;
-                axios.put('/admin/roll_products/'+this.editingModal.product_id, {
-                    product: this.editingModal
-                })
-                    .then((response) => {
-                        this.loadProducts();
-                        this.actionLoad = false;
-                        this.$bvModal.hide(this.editingModal.id);
-                        this.makeToast('Данные изделия успешно сохранены', 'success');
-                    });
-            },
             changeStatus(status) {
                 this.statusChanging = true;
-                console.log(this.checkMetalFails > 0);
-                console.log(this.checkFurnFails > 0);
-                if(this.checkMetalFails > 0 || this.checkFurnFails > 0) {
+                if(this.order.status_id !== 1 && (this.checkMetalFails > 0 || this.checkFurnFails > 0)) {
                     this.makeToast('Не хватает материала на складе', 'danger');
                     this.statusChanging = false;
                 }

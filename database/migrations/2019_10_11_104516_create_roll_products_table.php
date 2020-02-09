@@ -45,6 +45,7 @@ class CreateRollProductsTable extends Migration
             $table->boolean('without_drilling');
             $table->boolean('mounting_profile');
             $table->boolean('cover_box');
+            $table->bigInteger('count')->default(1);
             $table->timestamps();
         });
     }

@@ -37,6 +37,7 @@ class CreateGorizProductsTable extends Migration
             $table->float('width', 8, 2);
             $table->float('height', 8, 2);
             $table->text('note')->nullable();
+            $table->bigInteger('count')->default(1);
             $table->timestamps();
         });
     }
