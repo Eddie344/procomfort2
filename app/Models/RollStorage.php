@@ -10,6 +10,11 @@ class RollStorage extends Model
         'label', 'catalog_id', 'category_id', 'picture_id'
     ];
 
+    public function parts()
+    {
+        return $this->hasMany('App\Models\RollPartsStorage');
+    }
+
     public function catalog()
     {
         return $this->belongsTo('App\Models\Catalog', 'catalog_id', 'id');

@@ -21,7 +21,7 @@ class RollProductController extends Controller
 
     public function getAll()
     {
-        $products = RollProduct::with(['metal', 'furn', 'order', 'type', 'construction', 'rule', 'material', 'complectation', 'measurement', 'mount', 'furnColor'])
+        $products = RollProduct::with(['metal', 'furn', 'order', 'type', 'construction', 'rule', 'material.parts', 'complectation', 'measurement', 'mount', 'furnColor'])
             ->filter()
             ->get()
             ->sortByDesc('created_at')

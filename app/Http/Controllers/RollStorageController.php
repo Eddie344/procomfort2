@@ -21,7 +21,7 @@ class RollStorageController extends Controller
 
     public function getAll()
     {
-        $rolls = RollStorage::with(['catalog', 'category', 'picture'])
+        $rolls = RollStorage::with(['parts', 'catalog', 'category', 'picture'])
             ->get()
             ->sortByDesc('created_at')
             ->values()

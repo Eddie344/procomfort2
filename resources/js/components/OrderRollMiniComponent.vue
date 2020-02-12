@@ -183,6 +183,11 @@
             :striped="true"
             :busy="isBusy"
         >
+            <template v-slot:cell(material.label)="data">
+                {{ data.item.material.label }}
+                <b-icon v-if="checkMaterial(data.item)" icon="check" variant="success" font-scale="1.5" shift-v="-1"></b-icon>
+                <b-icon v-else icon="x" variant="danger" font-scale="1.5" shift-v="-1"></b-icon>
+            </template>
             <template v-slot:cell(delete)="data">
                 <b-button class="p-0" variant="link" @click="editModal(data.item)"><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
                 <b-button class="p-0" variant="link" @click="deleteModal(data.item.id)"><h5 class="d-inline"><i class="fa fa-trash-o text-danger"></i></h5></b-button>
@@ -425,10 +430,10 @@
         },
         computed: {
             newRuleLenght: function() {
-                return  this.new_product.rule_lenght = this.new_product.height;
+                return this.new_product.rule_lenght = this.new_product.height;
             },
             editingModalLenght: function() {
-                return  this.editingModal.rule_lenght = this.editingModal.height;
+                return this.editingModal.rule_lenght = this.editingModal.height;
             },
             totalHeight: function () {
                 let height = 0;
@@ -755,6 +760,16 @@
                         }
                     }
                 });
+            },
+            checkMaterial(product) {
+                let filteredParts = product.material.parts.filter(part => {
+                    return part.width >= product.width && part.lenght >= product.height && Math.min()
+                });
+                let result = filteredParts.reduce(function(res, obj) {
+                    return (obj.width*obj.lenght  < res.width*res.lenght) ? obj : res;
+                });
+                console.log(result);
+                return result;
             },
             loadMetalRetirements() {
                 axios.post('/admin/other/metal_retirements/getAll', {
