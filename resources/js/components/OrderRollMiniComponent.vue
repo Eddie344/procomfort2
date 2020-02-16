@@ -185,8 +185,7 @@
         >
             <template v-slot:cell(material.label)="data">
                 {{ data.item.material.label }}
-                <b-icon v-if="checkMaterial(data.item)" icon="check" variant="success" font-scale="1.5" shift-v="-1"></b-icon>
-                <b-icon v-else icon="x" variant="danger" font-scale="1.5" shift-v="-1"></b-icon>
+                <b-icon :icon="data.item.enoughMaterial ? 'check' : 'x'" :variant="data.item.enoughMaterial ? 'success' : 'danger'" font-scale="1.5" shift-v="-1"></b-icon>
             </template>
             <template v-slot:cell(delete)="data">
                 <b-button class="p-0" variant="link" @click="editModal(data.item)"><h5 class="d-inline"><i class="fa fa-pencil text-primary"></i></h5></b-button>
@@ -418,8 +417,8 @@
             }
         },
         mounted() {
-            this.loadProducts();
             this.loadMaterials();
+            this.loadProducts();
             this.loadRules();
             this.loadComplectations();
             this.loadFurnColors();
@@ -510,6 +509,12 @@
                 });
                 return +count.toFixed(2);
             },
+            loadMaterials(){
+                axios.post('/admin/storage/roll/getAll')
+                    .then((response) => {
+                        this.materials = response.data;
+                    });
+            },
             loadProducts(){
                 this.isBusy = true;
                 axios.post('/admin/roll_products/getAll', {
@@ -517,13 +522,8 @@
                 })
                     .then((response) => {
                         this.products = response.data;
+                        this.products.forEach(item => this.checkMaterial(item));
                         this.isBusy = false;
-                    });
-            },
-            loadMaterials(){
-                axios.post('/admin/storage/roll/getAll')
-                    .then((response) => {
-                        this.materials = response.data;
                     });
             },
             loadRules(){
@@ -762,14 +762,17 @@
                 });
             },
             checkMaterial(product) {
-                let filteredParts = product.material.parts.filter(part => {
-                    return part.width >= product.width && part.lenght >= product.height && Math.min()
+                let material = this.materials.find(item => item.id === product.material.id);
+                let filteredParts = material.parts.filter(part => {
+                    return part.width >= product.width && part.lenght >= product.height && (!part.used || part.used === false) ? part : null;
                 });
-                let result = filteredParts.reduce(function(res, obj) {
-                    return (obj.width*obj.lenght  < res.width*res.lenght) ? obj : res;
-                });
-                console.log(result);
-                return result;
+                if(filteredParts.length) {
+                    let result = filteredParts.reduce(function(res, obj) {
+                        return (obj.width*obj.lenght < res.width*res.lenght) ? obj : res;
+                    });
+                    product.enoughMaterial = Boolean(result);
+                    result.used = product.id;
+                }
             },
             loadMetalRetirements() {
                 axios.post('/admin/other/metal_retirements/getAll', {
