@@ -416,9 +416,8 @@
                 },
             }
         },
-        mounted() {
+        created() {
             this.loadMaterials();
-            this.loadProducts();
             this.loadRules();
             this.loadComplectations();
             this.loadFurnColors();
@@ -426,6 +425,7 @@
             this.loadMetalRetirements();
             this.loadFurnRetirements();
             this.resetNewProduct();
+            this.loadProducts();
         },
         computed: {
             newRuleLenght: function() {
@@ -469,6 +469,13 @@
                 });
                 return errors;
             },
+            checkMaterialFails: function () {
+                let errors = 0;
+                this.products.forEach(item => {
+                   if(!item.enoughMaterial) errors++;
+                });
+                return errors;
+            }
         },
         methods: {
             totalNewItem(item) {
@@ -522,7 +529,8 @@
                 })
                     .then((response) => {
                         this.products = response.data;
-                        this.products.forEach(item => this.checkMaterial(item));
+                        this.loadMaterials();
+                        this.products.slice().reverse().forEach(item => this.writeOffMaterial(item));
                         this.isBusy = false;
                     });
             },
@@ -670,7 +678,7 @@
             },
             changeStatus(status) {
                 this.statusChanging = true;
-                if(this.order.status_id !== 1 && (this.checkMetalFails > 0 || this.checkFurnFails > 0)) {
+                if(this.order.status_id !== 1 && (this.checkMetalFails > 0 || this.checkFurnFails > 0 || this.checkMaterialFails > 0)) {
                     this.makeToast('Не хватает материала на складе', 'danger');
                     this.statusChanging = false;
                 }
@@ -761,17 +769,17 @@
                     }
                 });
             },
-            checkMaterial(product) {
+            writeOffMaterial(product) {
                 let material = this.materials.find(item => item.id === product.material.id);
                 let filteredParts = material.parts.filter(part => {
-                    return part.width >= product.width && part.lenght >= product.height && (!part.used || part.used === false) ? part : null;
+                    return part.width >= product.width && part.lenght >= product.height ? part : null;
                 });
                 if(filteredParts.length) {
                     let result = filteredParts.reduce(function(res, obj) {
                         return (obj.width*obj.lenght < res.width*res.lenght) ? obj : res;
                     });
+                    result.width = result.lenght = 0;
                     product.enoughMaterial = Boolean(result);
-                    result.used = product.id;
                 }
             },
             loadMetalRetirements() {
