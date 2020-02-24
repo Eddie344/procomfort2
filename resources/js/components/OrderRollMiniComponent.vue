@@ -424,8 +424,8 @@
             this.loadOrderStatuses();
             this.loadMetalRetirements();
             this.loadFurnRetirements();
-            this.resetNewProduct();
             this.loadProducts();
+            this.resetNewProduct();
         },
         computed: {
             newRuleLenght: function() {
@@ -491,7 +491,7 @@
                         if(item.id === m.id) metal += +m.pivot.count;
                     })
                 });
-                return +metal.toFixed(2);
+                return metal ? +metal.toFixed(2) : 0;
             },
             sumProductFurn(item) {
                 let furn = null;
@@ -500,7 +500,7 @@
                         if(item.id === m.id) furn += +m.pivot.count;
                     })
                 });
-                return +furn.toFixed(2);
+                return furn ? +furn.toFixed(2) : 0;
             },
             sumMetalPartsLenght(item) {
                 let lenght = 0;

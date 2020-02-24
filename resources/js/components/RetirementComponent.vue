@@ -90,15 +90,15 @@
                 tableLoaded: false,
                 dependsOf: [
                     {
-                        value: 'Width',
+                        value: 'width',
                         text: 'Ширина'
                     },
                     {
-                        value: 'Height',
+                        value: 'height',
                         text: 'Высота'
                     },
                     {
-                        value: 'Count',
+                        value: 'count',
                         text: 'Количество'
                     },
                 ],
