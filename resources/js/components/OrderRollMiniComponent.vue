@@ -686,6 +686,7 @@
                     if(this.order.status_id === 2) {
                         this.writeOffMetal();
                         this.writeOffFurn();
+                        this.updateMaterialParts();
                     }
                     axios.put('/admin/orders/' + this.order.id, {
                         order: {
@@ -700,9 +701,8 @@
                 }
             },
             writeOffMetal() {
-                // metal
                 this.metal_retirements.forEach((item, i) => {
-                    let total = this.totalItem(item);
+                    let total = this.sumProductMetal(item);
                     axios.post('/admin/storage/metal_actions', {
                         action: {
                             metal_storage_id: item.metal.id,
@@ -734,9 +734,8 @@
                 });
             },
             writeOffFurn() {
-                // furn
                 this.furn_retirements.forEach((item, i) => {
-                    let total = this.totalItem(item);
+                    let total = this.sumProductFurn(item);
                     axios.post('/admin/storage/furn_actions', {
                         action: {
                             furn_storage_id: item.furn.id,
@@ -779,8 +778,20 @@
                         return (obj.width*obj.lenght < res.width*res.lenght) ? obj : res;
                     });
                     result.width = result.lenght = 0;
+                    result.updated = true;
                     product.enoughMaterial = Boolean(result);
                 }
+            },
+            updateMaterialParts() {
+                this.materials.forEach(m => {
+                    m.parts.forEach(p => {
+                        if(p.updated === true) {
+                            axios.put('/admin/roll_parts/'+p.id, {
+                                part: p
+                            })
+                        }
+                    })
+                })
             },
             loadMetalRetirements() {
                 axios.post('/admin/other/metal_retirements/getAll', {
